@@ -1,0 +1,24 @@
+version: '3.8'
+
+# NOTA: Este archivo es SOLO para desarrollo local. 
+# Solo incluye la base de datos. Next.js correrá con 'npm run dev'.
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: parroquia_db_local
+    restart: always
+    environment:
+      # Credenciales de desarrollo (no usar en producción pública)
+      POSTGRES_USER: admin_parroquia
+      POSTGRES_PASSWORD: unaclavesegura123
+      POSTGRES_DB: sistema_church
+    ports:
+      # Expone el puerto 5432 de Docker al puerto 5432 de tu computadora (localhost)
+      - "5432:5432"
+    volumes:
+      # Guarda los datos en un volumen de Docker para que no se borren
+      - pgdata_local:/var/lib/postgresql/data
+
+volumes:
+  pgdata_local:

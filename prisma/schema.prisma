@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model IntencionMisa {
+  id                String   @id @default(uuid())
+  nombreSolicitante String
+  emailSolicitante  String
+  telefonoSolicitante String
+  tipoIntencion     String   // DIFUNTO, SALUD, ACCION_DE_GRACIAS, CUMPLEANOS, OTRO
+  nombreIntencion   String   // Nombre del difunto o la intención
+  fechaMisa         DateTime
+  horaMisa          String   // e.g. "07:00 AM", "06:00 PM", "07:00 PM"
+  montoOfrenda      Decimal  @default(0.00)
+  codigoYape        String   // Exactamente 3 dígitos
+  estado            String   @default("PENDIENTE") // PENDIENTE, APROBADO, RECHAZADO
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Bautizo {
+  id                         String   @id @default(uuid())
+  nombreBautizado            String
+  fechaNacimiento            DateTime
+  fechaBautizo               DateTime?
+  nombrePadre                String
+  nombreMadre                String
+  nombrePadrino              String
+  nombreMadrina              String
+  dniBautizado               String
+  dniPadres                  String
+  dniPadrinos                String
+  documentoActaNacimientoUrl String?
+  documentoDniPadresUrl      String?
+  documentoDniPadrinosUrl    String?
+  estado                     String   @default("PENDIENTE") // PENDIENTE, APROBADO, RECHAZADO
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+}
+
+model Feligres {
+  id        String   @id @default(uuid())
+  nombre    String
+  email     String   @unique
+  telefono  String
+  direccion String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
