@@ -4,6 +4,75 @@ import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+// Componente Logo que representa la silueta de la fachada de la Parroquia Nuestra Señora del Patrocinio
+function LogoIglesia({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="currentColor"
+    >
+      {/* Cruz Superior */}
+      <rect x="49" y="3" width="2.2" height="15" rx="0.5" />
+      <rect x="44.5" y="7.5" width="11" height="2.2" rx="0.5" />
+
+      {/* Cúpula del campanario central */}
+      <polygon points="43,20 50,14.5 57,20" />
+      <rect x="44" y="20" width="12" height="1.5" />
+
+      {/* Cuerpo del campanario central */}
+      <rect x="45" y="21.5" width="10" height="12" />
+      {/* Arco y campana del campanario */}
+      <rect x="48.5" y="24" width="3" height="6.5" rx="1.5" fill="white" />
+      <path d="M49,27.5 c-0.5,0 -0.8,0.4 -0.8,0.8 l-0.2,1.2 h2l-0.2,-1.2 c0,-0.4 -0.3,-0.8 -0.8,-0.8 z" fill="currentColor" />
+
+      {/* Techo intermedio inclinado */}
+      <polygon points="38,39.5 43,33.5 57,33.5 62,39.5" />
+
+      {/* Sección media del templo */}
+      <rect x="39" y="39.5" width="22" height="11.5" />
+      {/* Ventana circular central (Rosetón) */}
+      <circle cx="50" cy="45" r="3.8" fill="white" />
+
+      {/* Techo inferior inclinado principal */}
+      <polygon points="33,53.5 39,51 61,51 67,53.5" />
+
+      {/* Nave principal */}
+      <rect x="34.5" y="53.5" width="31" height="20" />
+      
+      {/* Arcos inferiores y campanas */}
+      {/* Arco izquierdo */}
+      <path d="M38.5,60.5 a4,4 0 0,1 8,0 v13 h-8 z" fill="white" />
+      <path d="M41.5,64.8 c-0.5,0 -0.8,0.4 -0.8,0.8 l-0.2,1.2 h2l-0.2,-1.2 c0,-0.4 -0.3,-0.8 -0.8,-0.8 z" fill="currentColor" />
+      
+      {/* Arco derecho */}
+      <path d="M51.5,60.5 a4,4 0 0,1 8,0 v13 h-8 z" fill="white" />
+      <path d="M54.5,64.8 c-0.5,0 -0.8,0.4 -0.8,0.8 l-0.2,1.2 h2l-0.2,-1.2 c0,-0.4 -0.3,-0.8 -0.8,-0.8 z" fill="currentColor" />
+
+      {/* Cúpula y torre lateral izquierda */}
+      <circle cx="24.5" cy="51.5" r="1.5" />
+      <rect x="24" y="53" width="1" height="4" />
+      <polygon points="21.5,60 24.5,56.5 27.5,60" />
+      <rect x="22.5" y="60" width="4.2" height="13.5" />
+      <path d="M23.6,64 a1,1 0 0,1 2,0 v9.5 h-2 z" fill="white" />
+
+      {/* Cúpula y torre lateral derecha */}
+      <circle cx="75.5" cy="51.5" r="1.5" />
+      <rect x="75" y="53" width="1" height="4" />
+      <polygon points="72.5,60 75.5,56.5 78.5,60" />
+      <rect x="73.3" y="60" width="4.2" height="13.5" />
+      <path d="M74.4,64 a1,1 0 0,1 2,0 v9.5 h-2 z" fill="white" />
+
+      {/* Muro base de unión inclinado */}
+      <polygon points="11,73.5 22.5,64.5 34.5,73.5" />
+      <polygon points="65.5,73.5 77.5,64.5 89,73.5" />
+
+      {/* Línea de base */}
+      <rect x="10" y="73.5" width="80" height="2.5" rx="1" />
+    </svg>
+  );
+}
+
 export default function Home() {
   const [isServicesVisible, setIsServicesVisible] = useState(false);
   const servicesSectionRef = useRef<HTMLElement>(null);
@@ -58,19 +127,7 @@ export default function Home() {
           {/* Logo & Title */}
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="w-8.5 h-8.5 rounded-full bg-white/10 text-white flex items-center justify-center border border-white/10 group-hover:bg-amber-400 group-hover:text-slate-950 group-hover:border-amber-400 transition-all duration-300">
-              <svg
-                className="w-4.5 h-4.5 shrink-0"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 2v20M5 8h14"
-                />
-              </svg>
+              <LogoIglesia className="w-5.5 h-5.5 shrink-0" />
             </div>
             <div>
               <span className="font-serif text-sm font-bold tracking-tight text-white leading-none block sm:text-base uppercase tracking-wider">
@@ -254,14 +311,14 @@ export default function Home() {
                         Celebraciones
                       </span>
                       <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3">
-                        Intenciones de Misa
+                        Misas y Sacramentos
                       </h3>
                       <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
-                        Reserva intenciones por el eterno descanso de difuntos, la salud de enfermos o en acción de gracias. Registra tu ofrenda vía Yape indicando tu nro de operación de 3 dígitos.
+                        Separa la fecha de tu misa comunitaria, ya sea para intenciones tradicionales (salud, difuntos) o celebraciones de bautizos y otros sacramentos. Registra tu ofrenda vía Yape.
                       </p>
                     </div>
                     <Link href="/misas/nueva" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-indigo-950 bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
-                      Solicitar Misa
+                      Reservar Misa
                     </Link>
                   </div>
                 </div>
@@ -291,14 +348,14 @@ export default function Home() {
                         Sacramentos
                       </span>
                       <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3">
-                        Trámites de Bautizo
+                        Requisitos de Sacramentos
                       </h3>
                       <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
-                        Inicia la inscripción de bautismo cargando la información básica, fotos de actas y DNI de padres y padrinos. Revisa el avance del expediente y las charlas presenciales.
+                        Revisa la lista completa de documentos obligatorios (DNI, acta de nacimiento) y charlas de preparación necesarias para padres y padrinos antes de celebrar un bautizo.
                       </p>
                     </div>
                     <Link href="/bautizos" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-indigo-950 bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
-                      Registrar Bautizo
+                      Ver Requisitos
                     </Link>
                   </div>
                 </div>
@@ -738,20 +795,8 @@ export default function Home() {
             {/* Branding Column */}
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-amber-400 border border-slate-700/60">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 2v20M5 8h14"
-                    />
-                  </svg>
+                <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center border border-slate-700/60 text-amber-400">
+                  <LogoIglesia className="w-6.5 h-6.5 shrink-0" />
                 </div>
                 <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-white">
                   Ntra. Sra. del Patrocinio
