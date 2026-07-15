@@ -1,0 +1,39 @@
+import { redirect } from 'next/navigation';
+import { getSessionPayload } from '../../lib/auth';
+import { obtenerTodasLasIntenciones, obtenerTodosLosFeligreses, obtenerTodasLasRestricciones } from '../../actions/misaActions';
+import AgendaClient from './AgendaClient';
+
+export const dynamic = 'force-dynamic';
+
+export default async function PriestAgendaPage() {
+  const payload = await getSessionPayload();
+
+  if (!payload) {
+    redirect('/admin/login');
+  }
+
+  // Obtener todas las intenciones
+  const intenciones = await obtenerTodasLasIntenciones();
+  
+  // Filtrar en el servidor para quedarnos solo con las aprobadas (listas y pagadas)
+  const intencionesAprobadas = intenciones.filter(
+    (int) => int.estado === 'APROBADO'
+  );
+
+  // Obtener todos los feligreses
+  const feligreses = await obtenerTodosLosFeligreses();
+
+  // Obtener restricciones de horarios
+  const restricciones = await obtenerTodasLasRestricciones();
+
+  return (
+    <div className="min-h-screen bg-slate-50/50">
+      <AgendaClient
+        initialIntenciones={intencionesAprobadas}
+        initialFeligreses={feligreses}
+        initialRestricciones={restricciones}
+        role={payload.role}
+      />
+    </div>
+  );
+}

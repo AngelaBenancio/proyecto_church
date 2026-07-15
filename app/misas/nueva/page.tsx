@@ -183,7 +183,7 @@ export default function NuevaMisaPage() {
       case "SALUD":
         return "Ej. Carlos Mendoza Gil (por su recuperación)";
       case "CUMPLEANOS":
-        return "Ej. Sofía Benancio Ramos";
+        return "Ej. Sofia Swilan Dan";
       default:
         return "Ej. Familia Espinoza Ramos";
     }
@@ -302,71 +302,101 @@ export default function NuevaMisaPage() {
     setLoading(true);
     setServerError(null);
 
-    // Formatear fecha local a string ISO seguro
-    const anio = selectedDate.getFullYear();
-    const mes = String(selectedDate.getMonth() + 1).padStart(2, "0");
-    const dia = String(selectedDate.getDate()).padStart(2, "0");
-    const fechaMisaStr = `${anio}-${mes}-${dia}`;
+    try {
+      // Formatear fecha local a string ISO seguro
+      const anio = selectedDate.getFullYear();
+      const mes = String(selectedDate.getMonth() + 1).padStart(2, "0");
+      const dia = String(selectedDate.getDate()).padStart(2, "0");
+      const fechaMisaStr = `${anio}-${mes}-${dia}`;
 
-    // Construir tipoIntencion y nombreIntencion final
-    let finalTipoIntencion = tipoIntencion;
-    let finalNombreIntencion = nombreIntencion;
-    let finalMensaje = mensaje;
+      // Construir tipoIntencion y nombreIntencion final
+      let finalTipoIntencion = tipoIntencion;
+      let finalNombreIntencion = nombreIntencion;
+      let finalMensaje = mensaje;
 
-    if (selectedSacraments.length > 0) {
-      finalTipoIntencion = selectedSacraments
-        .map((id) => TIPOS_INTENCION.find((t) => t.id === id)?.label || id)
-        .join(", ");
-    }
-
-    if (selectedSacraments.includes("BAUTIZO")) {
-      finalMensaje = `${finalMensaje}\n[Bautizo - Padres: ${padresNombres} | Padrinos: ${padrinosNombres}]`;
-    }
-
-    if (selectedSacraments.includes("MATRIMONIO")) {
-      if (selectedSacraments.length >= 2 && isMismaPersona === false) {
-        finalNombreIntencion = `${nombreIntencion} (Primer Contrayente) y ${nombreSegundaPersona} (Segundo Sacramento) [Cónyuge/Novio/a: ${conyugeNombre}]`;
-      } else {
-        finalNombreIntencion = `${nombreIntencion} y ${conyugeNombre}`;
+      if (selectedSacraments.length > 0) {
+        finalTipoIntencion = selectedSacraments
+          .map((id) => TIPOS_INTENCION.find((t) => t.id === id)?.label || id)
+          .join(", ");
       }
-      finalMensaje = `${finalMensaje}\n[Matrimonio - Contrayentes: ${nombreIntencion} y ${conyugeNombre}]`;
-    } else if (selectedSacraments.length >= 2 && isMismaPersona === false) {
-      finalNombreIntencion = `${nombreIntencion} y ${nombreSegundaPersona}`;
-      finalMensaje = `${finalMensaje}\n[Segunda persona sacramental: ${nombreSegundaPersona} - DNI: ${dniSegundaPersona}]`;
-    }
 
-    // Agregar nombres de los archivos subidos al mensaje de la base de datos
-    const archivosMensaje: string[] = [];
-    if (fileDniNino) archivosMensaje.push(`DNI Niño: ${fileDniNino.name}`);
-    if (fileActaNacimiento) archivosMensaje.push(`Acta Nacimiento: ${fileActaNacimiento.name}`);
-    if (fileDniContrayente1) archivosMensaje.push(`DNI Novio 1: ${fileDniContrayente1.name}`);
-    if (fileDniContrayente2) archivosMensaje.push(`DNI Novio 2: ${fileDniContrayente2.name}`);
-    if (fileActaBautismo) archivosMensaje.push(`Acta Bautismo: ${fileActaBautismo.name}`);
-    if (fileDniComulgante) archivosMensaje.push(`DNI Comulgante: ${fileDniComulgante.name}`);
-    if (fileDniConfirmando) archivosMensaje.push(`DNI Confirmando: ${fileDniConfirmando.name}`);
+      if (selectedSacraments.includes("BAUTIZO")) {
+        finalMensaje = `${finalMensaje}\n[Bautizo - Padres: ${padresNombres} | Padrinos: ${padrinosNombres}]`;
+      }
 
-    if (archivosMensaje.length > 0) {
-      finalMensaje = `${finalMensaje}\n[Documentos Cargados: ${archivosMensaje.join(" | ")}]`;
-    }
+      if (selectedSacraments.includes("MATRIMONIO")) {
+        if (selectedSacraments.length >= 2 && isMismaPersona === false) {
+          finalNombreIntencion = `${nombreIntencion} (Primer Contrayente) y ${nombreSegundaPersona} (Segundo Sacramento) [Cónyuge/Novio/a: ${conyugeNombre}]`;
+        } else {
+          finalNombreIntencion = `${nombreIntencion} y ${conyugeNombre}`;
+        }
+        finalMensaje = `${finalMensaje}\n[Matrimonio - Contrayentes: ${nombreIntencion} y ${conyugeNombre}]`;
+      } else if (selectedSacraments.length >= 2 && isMismaPersona === false) {
+        finalNombreIntencion = `${nombreIntencion} y ${nombreSegundaPersona}`;
+        finalMensaje = `${finalMensaje}\n[Segunda persona sacramental: ${nombreSegundaPersona} - DNI: ${dniSegundaPersona}]`;
+      }
 
-    const res = await crearIntencionMisa({
-      nombreSolicitante,
-      emailSolicitante,
-      telefonoSolicitante,
-      tipoIntencion: finalTipoIntencion,
-      nombreIntencion: finalNombreIntencion,
-      fechaMisaStr,
-      horaMisa: selectedHour,
-      montoOfrenda: parseFloat(montoOfrenda) || 0,
-      codigoYape,
-    });
+      // Agregar nombres de los archivos subidos al mensaje de la base de datos
+      const archivosMensaje: string[] = [];
+      if (fileDniNino) archivosMensaje.push(`DNI Niño: ${fileDniNino.name}`);
+      if (fileActaNacimiento) archivosMensaje.push(`Acta Nacimiento: ${fileActaNacimiento.name}`);
+      if (fileDniContrayente1) archivosMensaje.push(`DNI Novio 1: ${fileDniContrayente1.name}`);
+      if (fileDniContrayente2) archivosMensaje.push(`DNI Novio 2: ${fileDniContrayente2.name}`);
+      if (fileActaBautismo) archivosMensaje.push(`Acta Bautismo: ${fileActaBautismo.name}`);
+      if (fileDniComulgante) archivosMensaje.push(`DNI Comulgante: ${fileDniComulgante.name}`);
+      if (fileDniConfirmando) archivosMensaje.push(`DNI Confirmando: ${fileDniConfirmando.name}`);
 
-    setLoading(true);
+      if (archivosMensaje.length > 0) {
+        finalMensaje = `${finalMensaje}\n[Documentos Cargados: ${archivosMensaje.join(" | ")}]`;
+      }
 
-    if (res.success && res.trackingId) {
-      setSuccessData({ trackingId: res.trackingId });
-    } else {
-      setServerError(res.error || "Ocurrió un error al procesar el formulario.");
+      const res = await crearIntencionMisa({
+        nombreSolicitante,
+        emailSolicitante,
+        telefonoSolicitante,
+        tipoIntencion: finalTipoIntencion,
+        nombreIntencion: finalNombreIntencion,
+        fechaMisaStr,
+        horaMisa: selectedHour,
+        montoOfrenda: parseFloat(montoOfrenda) || 0,
+        codigoYape,
+      });
+
+      if (res.success && res.trackingId) {
+        // Disparar el envío de correo de ticket a través de la API Route en segundo plano
+        try {
+          fetch("/api/send-ticket", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              nombreSolicitante,
+              telefonoSolicitante,
+              emailSolicitante,
+              tipoCelebracion: selectedSacraments.length > 0 ? "SACRAMENTO" : "INTENCION",
+              tipoIntencion: finalTipoIntencion,
+              nombreIntencion: finalNombreIntencion,
+              fechaMisa: fechaMisaStr,
+              horaMisa: selectedHour,
+              montoOfrenda: parseFloat(montoOfrenda) || 0,
+              codigoOperacion: codigoYape,
+              documentos: archivosMensaje,
+            }),
+          }).catch((err) => console.error("Error asíncrono al disparar el ticket:", err));
+        } catch (err) {
+          console.error("Error al llamar a la API de tickets:", err);
+        }
+
+        setSuccessData({ trackingId: res.trackingId });
+      } else {
+        setServerError(res.error || "Ocurrió un error al procesar el formulario.");
+        setLoading(false);
+      }
+    } catch (err: any) {
+      console.error("Error de excepción en el registro:", err);
+      setServerError("Ocurrió un problema de red o conexión al comunicarse con el servidor. Intente de nuevo.");
+      setLoading(false);
     }
   };
 
@@ -479,17 +509,17 @@ export default function NuevaMisaPage() {
 
       {/* Header con Pasos Integrados y Degradado Litúrgico */}
       <header className="sticky top-0 z-40 bg-gradient-to-r from-[#80385e] via-[#a35b80] to-[#964a75] text-white py-3 px-4 sm:px-8 shadow-md border-b border-[#a35b80]/20 relative">
-        <div className="max-w-7xl mx-auto flex items-center justify-center w-full min-h-[40px] relative">
+        <div className="max-w-7xl mx-auto flex items-center justify-between w-full min-h-[40px] gap-3">
           {/* Volver al Inicio (Alineado a la Izquierda) */}
           <Link 
             href="/" 
-            className="absolute left-0 md:left-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white/90 hover:text-white transition-colors shrink-0"
+            className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-white/90 hover:text-white transition-colors shrink-0"
           >
-            <span className="text-sm font-semibold">&larr;</span> Volver al Inicio
+            <span className="text-sm font-semibold">&larr;</span> <span className="hidden sm:inline">Volver al Inicio</span><span className="sm:hidden">Inicio</span>
           </Link>
           
           {/* Pasos Centrados en el Header */}
-          <div className="flex items-center gap-x-4 sm:gap-x-8 select-none overflow-x-auto max-w-full no-scrollbar px-16 md:px-0">
+          <div className="flex-1 flex items-center justify-center gap-x-2 sm:gap-x-6 select-none overflow-x-auto no-scrollbar py-1">
             {[
               { number: 1, label: "Programación" },
               { number: 2, label: "Información" },
@@ -508,9 +538,9 @@ export default function NuevaMisaPage() {
                 <div key={s.number} className="relative flex flex-col items-center shrink-0">
                   <span
                     className={`
-                      text-[9.5px] sm:text-xs font-bold uppercase tracking-wider px-1 pb-1 border-b-2 transition-all duration-200
+                      text-[10px] sm:text-xs font-bold uppercase tracking-wider px-1.5 pb-1 border-b-2 transition-all duration-200
                       ${isSkipped
-                        ? "text-white/20 border-transparent line-through cursor-not-allowed"
+                        ? "text-white/20 border-transparent line-through cursor-not-allowed text-[8px]"
                         : isActive
                           ? "text-white border-[#E5B23B]" // Dorado brillante litúrgico
                           : isCompleted
@@ -519,7 +549,17 @@ export default function NuevaMisaPage() {
                       }
                     `}
                   >
-                    {s.label} {isSkipped ? "(Omitido)" : ""}
+                    {isSkipped ? (
+                      <span className="line-through">
+                        <span className="hidden sm:inline">{s.label}</span>
+                        <span className="sm:hidden">{s.number}</span>
+                      </span>
+                    ) : (
+                      <>
+                        <span className="sm:hidden">{isActive ? s.label : s.number}</span>
+                        <span className="hidden sm:inline">{s.label}</span>
+                      </>
+                    )}
                   </span>
                 </div>
               );
@@ -640,14 +680,16 @@ export default function NuevaMisaPage() {
               <div className="space-y-8 animate-fadeIn">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   
-                  {/* Calendario en su propia tarjeta */}
-                  <div className="lg:col-span-7 bg-gradient-to-b from-white to-[#FAF8F5]/90 border border-white/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-[#9E9A85]/15 relative overflow-hidden">
-                    {/* Imagen de Fondo del Santo Patrón */}
-                    <div 
-                      className="absolute inset-0 bg-no-repeat bg-cover bg-center pointer-events-none opacity-[0.06]" 
-                      style={{ backgroundImage: "url('/church_patron.png')" }}
-                    />
-                    
+                  {/* Calendario en su propia tarjeta con Imagen de Fondo Directa (Sin Overlay) */}
+                  <div 
+                    className="lg:col-span-7 bg-gradient-to-b from-white to-[#FAF8F5]/90 border border-white/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-[#9E9A85]/15 relative overflow-hidden"
+                    style={{
+                      backgroundImage: "linear-gradient(rgba(255, 255, 255, 0.84), rgba(250, 248, 245, 0.88)), url('/church_patron.png')",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat"
+                    }}
+                  >
                     <div className="relative z-10">
                       <div className="flex items-center justify-between mb-6 border-b border-[#E0E0E0]/60 pb-3">
                         <div className="flex items-center gap-2">
@@ -681,7 +723,7 @@ export default function NuevaMisaPage() {
                       <div className="grid grid-cols-7 gap-1 text-center text-xs font-bold text-[#8C6B2F] uppercase mb-4 tracking-wider">
                         <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
                       </div>
-                      <div className="grid grid-cols-7 gap-x-2 gap-y-4">
+                      <div className="grid grid-cols-7 gap-x-1 sm:gap-x-2 gap-y-2 sm:gap-y-4">
                         {celdasCalendario.map((day, idx) => {
                           if (day === null) {
                             return <div key={`empty-${idx}`} className="aspect-square bg-transparent" />;
@@ -693,11 +735,13 @@ export default function NuevaMisaPage() {
                           const horasOcupadas = intencionesPorFecha[formattedDate] || [];
                           const esDiaLleno = horasOcupadas.length >= HORARIOS_MISA.length;
 
-                          // Días del pasado: texto gris sin burbuja
+                          // Días del pasado: burbuja gris atenuada inhabilitada
                           if (esPasado) {
                             return (
-                              <div key={formattedDate} className="aspect-square flex items-center justify-center relative p-1.5 select-none">
-                                <span className="text-xs font-semibold text-[#666666]/30">{day.getDate()}</span>
+                              <div key={formattedDate} className="aspect-square flex items-center justify-center p-0.5 sm:p-1 md:p-1.5 relative select-none">
+                                <div className="w-full max-w-[48px] aspect-square text-xs sm:text-sm md:text-base rounded-full bg-[#D3CEBA]/25 border border-[#E0E0E0]/20 text-[#2B2B2B]/35 flex items-center justify-center font-bold cursor-not-allowed">
+                                  {day.getDate()}
+                                </div>
                               </div>
                             );
                           }
@@ -705,14 +749,14 @@ export default function NuevaMisaPage() {
                           // Burbuja seleccionada: Sólido Fucsia con halo doble rosado
                           if (esSeleccionada) {
                             return (
-                              <div key={formattedDate} className="aspect-square flex items-center justify-center p-1.5 relative">
+                              <div key={formattedDate} className="aspect-square flex items-center justify-center p-0.5 sm:p-1 md:p-1.5 relative">
                                 <button
                                   type="button"
                                   onClick={() => {
                                     setSelectedDate(day);
                                     setSelectedHour("");
                                   }}
-                                  className="w-12 h-12 sm:w-14 sm:h-14 text-sm sm:text-base rounded-full bg-[#a35b80] text-white flex items-center justify-center font-bold text-xs shadow-lg ring-4 ring-[#a35b80]/20 ring-offset-2 ring-offset-white transition-all duration-200 cursor-pointer select-none shrink-0"
+                                  className="w-full max-w-[48px] aspect-square text-xs sm:text-sm md:text-base rounded-full bg-[#a35b80] text-white flex items-center justify-center font-bold shadow-lg ring-4 ring-[#a35b80]/20 ring-offset-2 ring-offset-white transition-all duration-200 cursor-pointer select-none shrink-0"
                                 >
                                   {day.getDate()}
                                 </button>
@@ -723,11 +767,11 @@ export default function NuevaMisaPage() {
                           // Burbuja Lleno / Ocupado total: Fondo Rosa Suave
                           if (esDiaLleno) {
                             return (
-                              <div key={formattedDate} className="aspect-square flex items-center justify-center p-1.5 relative">
+                              <div key={formattedDate} className="aspect-square flex items-center justify-center p-0.5 sm:p-1 md:p-1.5 relative">
                                 <button
                                   type="button"
                                   disabled
-                                  className="w-12 h-12 sm:w-14 sm:h-14 text-sm sm:text-base rounded-full bg-[#a35b80]/15 border border-[#a35b80]/20 text-[#a35b80]/50 flex items-center justify-center font-semibold text-xs cursor-not-allowed select-none shrink-0 relative opacity-90 shadow-3xs"
+                                  className="w-full max-w-[48px] aspect-square text-xs sm:text-sm md:text-base rounded-full bg-[#a35b80]/15 border border-[#a35b80]/20 text-[#a35b80]/50 flex items-center justify-center font-semibold cursor-not-allowed select-none shrink-0 relative opacity-90 shadow-3xs"
                                 >
                                   <span className="line-through">{day.getDate()}</span>
                                 </button>
@@ -738,14 +782,14 @@ export default function NuevaMisaPage() {
                           // Burbuja Parcial (1/3 o 2/3): Rellenado hasta la mitad con dorado
                           if (horasOcupadas.length > 0) {
                             return (
-                              <div key={formattedDate} className="aspect-square flex items-center justify-center p-1.5 relative">
+                              <div key={formattedDate} className="aspect-square flex items-center justify-center p-0.5 sm:p-1 md:p-1.5 relative">
                                 <button
                                   type="button"
                                   onClick={() => {
                                     setSelectedDate(day);
                                     setSelectedHour("");
                                   }}
-                                  className="w-12 h-12 sm:w-14 sm:h-14 text-sm sm:text-base rounded-full bg-gradient-to-r from-[#E69526] from-50% to-white to-50% border-2 border-[#E69526] text-[#2B2B2B] flex items-center justify-center font-bold text-xs hover:scale-105 transition-all duration-200 cursor-pointer select-none shrink-0 shadow-2xs"
+                                  className="w-full max-w-[48px] aspect-square text-xs sm:text-sm md:text-base rounded-full bg-gradient-to-r from-[#E69526] from-50% to-white to-50% border-2 border-[#E69526] text-[#2B2B2B] flex items-center justify-center font-bold hover:scale-105 transition-all duration-200 cursor-pointer select-none shrink-0 shadow-2xs"
                                 >
                                   {day.getDate()}
                                 </button>
@@ -755,21 +799,21 @@ export default function NuevaMisaPage() {
 
                           // Burbuja Libre (0/3): Fondo Blanco con Borde Dorado
                           return (
-                            <div key={formattedDate} className="aspect-square flex items-center justify-center p-1.5 relative">
+                            <div key={formattedDate} className="aspect-square flex items-center justify-center p-0.5 sm:p-1 md:p-1.5 relative">
                               <button
                                 type="button"
                                 onClick={() => {
                                   setSelectedDate(day);
                                   setSelectedHour("");
                                 }}
-                                className="w-12 h-12 sm:w-14 sm:h-14 text-sm sm:text-base rounded-full bg-white text-[#2B2B2B] flex items-center justify-center font-bold text-xs border-2 border-[#E69526] hover:bg-[#E69526]/5 hover:scale-105 transition-all duration-200 cursor-pointer select-none shrink-0 shadow-2xs"
-                                >
-                                  {day.getDate()}
-                                </button>
-                              </div>
-                            );
-                          })}
-                        </div>
+                                className="w-full max-w-[48px] aspect-square text-xs sm:text-sm md:text-base rounded-full bg-white text-[#2B2B2B] flex items-center justify-center font-bold border-2 border-[#E69526] hover:bg-[#E69526]/5 hover:scale-105 transition-all duration-200 cursor-pointer select-none shrink-0 shadow-2xs"
+                              >
+                                {day.getDate()}
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
 
                       {/* Leyenda de Burbujas Sincronizada */}
                       <div className="mt-6 pt-4 border-t border-[#E0E0E0]/60 flex justify-center items-center gap-6 text-[10px] font-bold text-[#8C6B2F] uppercase tracking-wider">
@@ -789,26 +833,21 @@ export default function NuevaMisaPage() {
                     </div>
                   </div>
 
-                  {/* Horario en su propia tarjeta */}
-                  <div className="lg:col-span-5 flex flex-col gap-4">
-                    <div className="bg-gradient-to-b from-white to-[#FAF8F5]/90 border border-white/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-[#9E9A85]/15">
-                      <div className="flex items-center gap-2 mb-6 pb-3 border-b border-[#E0E0E0]/60">
-                        <h3 className="font-serif text-lg font-medium text-[#2B2B2B]">2. Horario</h3>
+                  {/* Horario y Celebración en la columna derecha */}
+                  <div className="lg:col-span-5 flex flex-col gap-6">
+                    
+                    {/* Tarjeta de Horario */}
+                    <div className="bg-gradient-to-b from-white to-[#FAF8F5]/90 border border-white/80 rounded-2xl p-4 sm:p-5 shadow-xl shadow-[#9E9A85]/15">
+                      <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#E0E0E0]/60">
+                        <h3 className="font-serif text-base font-bold text-[#2B2B2B]">2. Horario</h3>
                       </div>
                       
-                      <div className="grid grid-cols-1 gap-4">
+                      <div className="grid grid-cols-1 gap-2">
                         {HORARIOS_MISA.map((hora) => {
                           const esSeleccionado = selectedHour === hora;
                           const formattedSelectedDate = selectedDate ? selectedDate.toISOString().split("T")[0] : "";
                           const horasOcupadas = intencionesPorFecha[formattedSelectedDate] || [];
                           const esHoraOcupada = horasOcupadas.includes(hora);
-
-                          // Cupos simulados para la maqueta
-                          const cuposTexto = hora === "07:00 AM" 
-                            ? "15 cupos disponibles" 
-                            : hora === "06:00 PM" 
-                              ? "8 cupos disponibles" 
-                              : "20 cupos disponibles";
 
                           return (
                             <button
@@ -817,7 +856,7 @@ export default function NuevaMisaPage() {
                               onClick={() => setSelectedHour(hora)}
                               disabled={esHoraOcupada || !selectedDate}
                               className={`
-                                p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-center h-24 sm:h-26 shadow-2xs
+                                px-3 rounded-xl border text-left transition-all cursor-pointer flex items-center h-10 shadow-3xs
                                 ${esHoraOcupada
                                   ? "bg-[#D3CEBA]/10 text-[#666666]/30 border-[#E0E0E0]/60 cursor-not-allowed line-through"
                                   : !selectedDate
@@ -829,17 +868,92 @@ export default function NuevaMisaPage() {
                               `}
                             >
                               <div className="flex justify-between items-center w-full">
-                                <span className={`text-sm font-bold ${esSeleccionado ? "text-[#a35b80]" : "text-[#2B2B2B]"}`}>{hora}</span>
+                                <span className={`text-xs font-bold ${esSeleccionado ? "text-[#a35b80]" : "text-[#2B2B2B]"}`}>{hora}</span>
                                 {esHoraOcupada && (
-                                  <span className="text-[8px] text-red-500 font-bold uppercase tracking-wider">Ocupada</span>
+                                  <span className="text-[7.5px] text-red-500 font-bold uppercase tracking-wider">Ocupada</span>
                                 )}
                               </div>
-                              {!esHoraOcupada && selectedDate && (
-                                <div className="flex items-center gap-1.5 mt-1.5">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-[#E69526]" />
-                                  <span className="text-[9px] text-[#8C6B2F] uppercase tracking-wider font-bold">{cuposTexto}</span>
-                                </div>
-                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Tarjeta de Tipo de Celebración (Movida a la derecha) */}
+                    <div className="bg-gradient-to-b from-white to-[#FAF8F5]/90 border border-white/80 rounded-2xl p-4 sm:p-5 shadow-xl shadow-[#9E9A85]/15">
+                      <h3 className="font-serif text-base font-bold text-[#2B2B2B] border-b border-[#E0E0E0]/60 pb-2 mb-3">
+                        3. Tipo de Celebración
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {TIPOS_INTENCION.map((tipo) => {
+                          const esSeleccionado = tipo.isSacrament
+                            ? selectedSacraments.includes(tipo.id)
+                            : (tipoIntencion === tipo.id && selectedSacraments.length === 0);
+
+                          return (
+                            <button
+                              key={tipo.id}
+                              type="button"
+                              onClick={() => {
+                                if (!tipo.isSacrament) {
+                                  setSelectedSacraments([]);
+                                  setTipoIntencion(tipo.id);
+                                  setMontoOfrenda(tipo.defaultPrice);
+                                  setIsMismaPersona(null);
+                                  setNombreSegundaPersona("");
+                                  setDniSegundaPersona("");
+                                  setPadresNombres("");
+                                  setPadrinosNombres("");
+                                  setConyugeNombre("");
+                                } else {
+                                  let nuevosSacramentos = [...selectedSacraments];
+                                  if (nuevosSacramentos.includes(tipo.id)) {
+                                    nuevosSacramentos = nuevosSacramentos.filter((id) => id !== tipo.id);
+                                  } else {
+                                    if (nuevosSacramentos.length >= 3) return;
+                                    nuevosSacramentos.push(tipo.id);
+                                  }
+                                  setSelectedSacraments(nuevosSacramentos);
+
+                                  if (nuevosSacramentos.length === 0) {
+                                    setTipoIntencion("DIFUNTO");
+                                    setMontoOfrenda("10.00");
+                                    setIsMismaPersona(null);
+                                    setNombreSegundaPersona("");
+                                    setDniSegundaPersona("");
+                                  } else {
+                                    setTipoIntencion(nuevosSacramentos.join(","));
+                                    setMontoOfrenda(calcularPrecioOfrenda(nuevosSacramentos));
+                                    if (nuevosSacramentos.length < 2) {
+                                      setIsMismaPersona(null);
+                                      setNombreSegundaPersona("");
+                                      setDniSegundaPersona("");
+                                    }
+                                  }
+                                }
+                              }}
+                              className={`
+                                p-2 px-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between h-11 shadow-3xs
+                                ${esSeleccionado
+                                  ? "bg-[#a35b80]/5 border-[#a35b80] shadow-xs"
+                                  : "bg-[#FFFFFF] hover:bg-[#D3CEBA]/30 text-[#2B2B2B] border-[#E0E0E0] hover:border-[#E69526]/30"
+                                }
+                              `}
+                            >
+                              <div className="flex items-center justify-between w-full">
+                                <span className="text-[11px] font-bold text-[#2B2B2B] leading-tight">{tipo.label}</span>
+                                {tipo.isSacrament && (
+                                  <span className={`w-3 h-3 rounded border flex items-center justify-center text-[7.5px] transition-colors shrink-0 ${
+                                    esSeleccionado 
+                                      ? "bg-[#a35b80] border-[#a35b80] text-white font-bold" 
+                                      : "border-[#E0E0E0] bg-[#FFFFFF]"
+                                  }`}>
+                                    {esSeleccionado && "✓"}
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-[7.5px] text-[#666666] font-light leading-none mt-0.5 block truncate">{tipo.description}</span>
                             </button>
                           );
                         })}
@@ -863,92 +977,11 @@ export default function NuevaMisaPage() {
                     </button>
                   </div>
                 </div>
-
-                {/* Celebraciones / Sacramentos Selector en el Body */}
-                <div className="bg-gradient-to-b from-white to-[#FAF8F5]/90 border border-white/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-[#9E9A85]/15">
-                  <h3 className="font-serif text-lg font-medium text-[#2B2B2B] border-b border-[#E0E0E0]/60 pb-3 mb-4">
-                    3. Tipo de Celebración (Selección Múltiple para Sacramentos)
-                  </h3>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    {TIPOS_INTENCION.map((tipo) => {
-                      const esSeleccionado = tipo.isSacrament
-                        ? selectedSacraments.includes(tipo.id)
-                        : (tipoIntencion === tipo.id && selectedSacraments.length === 0);
-
-                      return (
-                        <button
-                          key={tipo.id}
-                          type="button"
-                          onClick={() => {
-                            if (!tipo.isSacrament) {
-                              setSelectedSacraments([]);
-                              setTipoIntencion(tipo.id);
-                              setMontoOfrenda(tipo.defaultPrice);
-                              setIsMismaPersona(null);
-                              setNombreSegundaPersona("");
-                              setDniSegundaPersona("");
-                              setPadresNombres("");
-                              setPadrinosNombres("");
-                              setConyugeNombre("");
-                            } else {
-                              let nuevosSacramentos = [...selectedSacraments];
-                              if (nuevosSacramentos.includes(tipo.id)) {
-                                nuevosSacramentos = nuevosSacramentos.filter((id) => id !== tipo.id);
-                              } else {
-                                if (nuevosSacramentos.length >= 3) return;
-                                nuevosSacramentos.push(tipo.id);
-                              }
-                              setSelectedSacraments(nuevosSacramentos);
-
-                              if (nuevosSacramentos.length === 0) {
-                                setTipoIntencion("DIFUNTO");
-                                setMontoOfrenda("10.00");
-                                setIsMismaPersona(null);
-                                setNombreSegundaPersona("");
-                                setDniSegundaPersona("");
-                              } else {
-                                setTipoIntencion(nuevosSacramentos.join(","));
-                                setMontoOfrenda(calcularPrecioOfrenda(nuevosSacramentos));
-                                if (nuevosSacramentos.length < 2) {
-                                  setIsMismaPersona(null);
-                                  setNombreSegundaPersona("");
-                                  setDniSegundaPersona("");
-                                }
-                              }
-                            }
-                          }}
-                          className={`
-                            p-3 text-left border rounded-xl transition-all cursor-pointer flex flex-col justify-between h-22 shadow-3xs
-                            ${esSeleccionado
-                              ? "bg-[#a35b80]/5 border-[#a35b80] shadow-xs"
-                              : "bg-[#FFFFFF] hover:bg-[#D3CEBA]/30 text-[#2B2B2B] border-[#E0E0E0] hover:border-[#E69526]/30"
-                            }
-                          `}
-                        >
-                          <div className="flex items-center justify-between w-full">
-                            <span className="text-xs font-bold text-[#2B2B2B]">{tipo.label}</span>
-                            {tipo.isSacrament && (
-                              <span className={`w-3.5 h-3.5 rounded border flex items-center justify-center text-[8px] transition-colors shrink-0 ${
-                                esSeleccionado 
-                                  ? "bg-[#a35b80] border-[#a35b80] text-white font-bold" 
-                                  : "border-[#E0E0E0] bg-[#FFFFFF]"
-                              }`}>
-                                {esSeleccionado && "✓"}
-                              </span>
-                            )}
-                          </div>
-                          <span className="text-[9px] text-[#666666] font-light leading-tight mt-1">{tipo.description}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
               </div>
             ) : (
               /* PASOS 2, 3 Y 4: DENTRO DE LA TARJETA BLANCA PRINCIPAL */
               <div className="bg-gradient-to-b from-white to-[#FAF8F5]/90 border border-white/80 rounded-3xl p-6 sm:p-10 shadow-xl shadow-[#9E9A85]/15 relative">
-                
+
                 {step === 2 && (
                   <div className="space-y-6 animate-fadeIn">
                     <h3 className="font-serif text-lg font-medium text-[#2B2B2B] border-b border-[#E0E0E0] pb-3">
@@ -966,7 +999,7 @@ export default function NuevaMisaPage() {
                           required
                           value={nombreSolicitante}
                           onChange={(e) => setNombreSolicitante(e.target.value)}
-                          placeholder="Ej. Juan Pérez Ramos"
+                          placeholder="Ej. Maha Torres Swilan"
                           className="w-full text-xs px-4 py-3 bg-[#FFFFFF] border border-[#E1DBCB] rounded-xl focus:outline-none focus:border-[#E69526] focus:ring-4 focus:ring-[#E69526]/10 text-[#2B2B2B] transition-all"
                         />
                         {nombreSolicitante && !isNombreValido && (
@@ -1522,6 +1555,84 @@ export default function NuevaMisaPage() {
                     <h3 className="font-serif text-lg font-medium text-[#2B2B2B] border-b border-[#E0E0E0] pb-3">
                       Ofrenda de la Celebración y Pago Vía Yape
                     </h3>
+
+                    {/* Tarjeta de Resumen Detallado */}
+                    <div className="bg-gradient-to-b from-[#FAF8F5] to-white border border-[#EADCB9]/60 rounded-2xl p-5 shadow-2xs space-y-4">
+                      <div className="flex items-center gap-2 border-b border-[#EADCB9]/30 pb-2 mb-1">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#a35b80]">Resumen de la Solicitud</span>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        <div>
+                          <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider">Tipo de Celebración</span>
+                          <span className="block font-serif font-medium text-[#2B2B2B] mt-0.5">
+                            {selectedSacraments.length > 0 
+                              ? selectedSacraments.map(id => TIPOS_INTENCION.find(t => t.id === id)?.label || id).join(", ")
+                              : tipoIntencion === "DIFUNTO" ? "Misa de Difunto (Q.E.P.D.)"
+                              : tipoIntencion === "SALUD" ? "Misa por la Salud"
+                              : tipoIntencion === "CUMPLEANOS" ? "Misa de Cumpleaños"
+                              : tipoIntencion === "ACCION_GRACIAS" ? "Acción de Gracias"
+                              : "Misa de Intención Comunitaria"
+                            }
+                          </span>
+                        </div>
+                        
+                        {nombreIntencion && (
+                          <div>
+                            <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider">Intención para / Festejado</span>
+                            <span className="block font-serif font-medium text-[#80385e] mt-0.5">
+                              {nombreIntencion}
+                              {conyugeNombre && ` y ${conyugeNombre}`}
+                              {nombreSegundaPersona && isMismaPersona === false && ` y ${nombreSegundaPersona}`}
+                            </span>
+                          </div>
+                        )}
+
+                        <div>
+                          <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider">Fecha Litúrgica</span>
+                          <span className="block font-mono font-bold text-[#2B2B2B] mt-0.5">
+                            {selectedDate ? selectedDate.toLocaleDateString('es-PE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : ''}
+                          </span>
+                        </div>
+
+                        <div>
+                          <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider">Hora Agendada</span>
+                          <span className="block font-mono font-bold text-[#2B2B2B] mt-0.5">
+                            {selectedHour}
+                          </span>
+                        </div>
+
+                        <div>
+                          <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider">Solicitante</span>
+                          <span className="block font-medium text-[#2B2B2B] mt-0.5">
+                            {nombreSolicitante} ({telefonoSolicitante})
+                          </span>
+                        </div>
+
+                        <div>
+                          <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider">Correo Electrónico</span>
+                          <span className="block font-medium text-[#2B2B2B] mt-0.5 break-all">
+                            {emailSolicitante}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Documentos Cargados */}
+                      {(fileDniNino || fileActaNacimiento || fileDniContrayente1 || fileDniContrayente2 || fileActaBautismo || fileDniComulgante || fileDniConfirmando) && (
+                        <div className="border-t border-[#EADCB9]/30 pt-3">
+                          <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider mb-1.5">Documentos Adjuntos</span>
+                          <div className="flex flex-wrap gap-2">
+                            {fileDniNino && <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 text-[10px] px-2 py-0.5 rounded-md font-medium">✓ DNI Niño: {fileDniNino.name}</span>}
+                            {fileActaNacimiento && <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 text-[10px] px-2 py-0.5 rounded-md font-medium">✓ Acta Nacimiento: {fileActaNacimiento.name}</span>}
+                            {fileDniContrayente1 && <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 text-[10px] px-2 py-0.5 rounded-md font-medium">✓ DNI Novio 1: {fileDniContrayente1.name}</span>}
+                            {fileDniContrayente2 && <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 text-[10px] px-2 py-0.5 rounded-md font-medium">✓ DNI Novio 2: {fileDniContrayente2.name}</span>}
+                            {fileActaBautismo && <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 text-[10px] px-2 py-0.5 rounded-md font-medium">✓ Acta Bautismo: {fileActaBautismo.name}</span>}
+                            {fileDniComulgante && <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 text-[10px] px-2 py-0.5 rounded-md font-medium">✓ DNI Comulgante: {fileDniComulgante.name}</span>}
+                            {fileDniConfirmando && <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 text-[10px] px-2 py-0.5 rounded-md font-medium">✓ DNI Confirmando: {fileDniConfirmando.name}</span>}
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
                     <div className="flex flex-col sm:flex-row gap-6 items-center bg-[#FAF8F3] border border-[#EADCB9]/40 rounded-2xl p-6 shadow-2xs">
                       <div className="flex-1 space-y-3">

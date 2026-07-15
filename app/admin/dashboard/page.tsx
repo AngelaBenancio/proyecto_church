@@ -1,0 +1,27 @@
+import { redirect } from 'next/navigation';
+import { getSessionPayload } from '../../lib/auth';
+import { obtenerTodasLasIntenciones } from '../../actions/misaActions';
+import DashboardClient from './DashboardClient';
+
+// Esta ruta debe ser dinámica porque lee cookies y consulta la base de datos en tiempo de solicitud
+export const dynamic = 'force-dynamic';
+
+export default async function AdminDashboardPage() {
+  const payload = await getSessionPayload();
+
+  if (!payload) {
+    redirect('/admin/login');
+  }
+
+  if (payload.role === 'sacerdote') {
+    redirect('/admin/agenda');
+  }
+
+  const intenciones = await obtenerTodasLasIntenciones();
+
+  return (
+    <div className="min-h-screen bg-slate-50/50">
+      <DashboardClient initialIntenciones={intenciones} />
+    </div>
+  );
+}

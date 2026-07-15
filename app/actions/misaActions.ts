@@ -144,9 +144,174 @@ export async function obtenerIntencionesPorMes(anio: number, mes: number): Promi
       }
     });
 
+    // Cargar restricciones para este mes
+    const restricciones = await prisma.horarioRestringido.findMany({
+      where: {
+        fechaStr: {
+          startsWith: `${anio}-${String(mes + 1).padStart(2, '0')}`
+        }
+      }
+    });
+
+    // Listado de todos los horarios disponibles por defecto en el sistema
+    const todosHorarios = ["07:00 AM", "06:00 PM", "07:00 PM"];
+
+    restricciones.forEach((res) => {
+      if (!ocupacionPorFecha[res.fechaStr]) {
+        ocupacionPorFecha[res.fechaStr] = [];
+      }
+
+      if (res.hora === null) {
+        // Bloquear todo el día: agregar todas las horas posibles
+        todosHorarios.forEach(h => {
+          if (!ocupacionPorFecha[res.fechaStr].includes(h)) {
+            ocupacionPorFecha[res.fechaStr].push(h);
+          }
+        });
+      } else {
+        // Bloquear una hora específica
+        if (!ocupacionPorFecha[res.fechaStr].includes(res.hora)) {
+          ocupacionPorFecha[res.fechaStr].push(res.hora);
+        }
+      }
+    });
+
     return ocupacionPorFecha;
   } catch (error) {
     console.error("Error al obtener intenciones por mes:", error);
     return {};
   }
 }
+
+// Obtener todas las intenciones de misa detalladas para la administración/sacerdote
+export async function obtenerTodasLasIntenciones() {
+  try {
+    const intenciones = await prisma.intencionMisa.findMany({
+      orderBy: [
+        { fechaMisa: "asc" },
+        { horaMisa: "asc" }
+      ]
+    });
+    
+    // Mapear Decimal a número para evitar problemas de serialización en Server Components
+    return intenciones.map(int => ({
+      ...int,
+      montoOfrenda: Number(int.montoOfrenda),
+      // Formatear fechas
+      fechaMisaStr: int.fechaMisa.toISOString().split('T')[0]
+    }));
+  } catch (error) {
+    console.error("Error al obtener todas las intenciones detalladas:", error);
+    return [];
+  }
+}
+
+// Actualizar el estado de una intención (ej. de PENDIENTE a APROBADO o RECHAZADO)
+export async function actualizarEstadoIntencion(id: string, nuevoEstado: 'PENDIENTE' | 'APROBADO' | 'RECHAZADO') {
+  try {
+    const intencionActualizada = await prisma.intencionMisa.update({
+      where: { id },
+      data: { estado: nuevoEstado }
+    });
+    
+    return {
+      success: true,
+      data: {
+        ...intencionActualizada,
+        montoOfrenda: Number(intencionActualizada.montoOfrenda)
+      }
+    };
+  } catch (error: any) {
+    console.error("Error al actualizar estado de la intención:", error);
+    return { success: false, error: "No se pudo actualizar el estado de la intención." };
+  }
+}
+
+// Obtener la lista de todos los feligreses
+export async function obtenerTodosLosFeligreses() {
+  try {
+    const feligreses = await prisma.feligres.findMany({
+      orderBy: { nombre: 'asc' }
+    });
+    
+    return feligreses.map(f => ({
+      ...f,
+      createdAtStr: f.createdAt.toISOString().split('T')[0]
+    }));
+  } catch (error) {
+    console.error("Error al obtener feligreses:", error);
+    return [];
+  }
+}
+
+// Obtener todas las restricciones de horarios
+export async function obtenerTodasLasRestricciones() {
+  try {
+    return await prisma.horarioRestringido.findMany({
+      orderBy: [
+        { fechaStr: 'asc' },
+        { hora: 'asc' }
+      ]
+    });
+  } catch (error) {
+    console.error("Error al obtener restricciones:", error);
+    return [];
+  }
+}
+
+// Agregar una restricción de horario (bloqueo)
+export async function agregarRestriccion(fechaStr: string, hora: string | null, motivo: string | null) {
+  try {
+    const restriccion = await prisma.horarioRestringido.create({
+      data: {
+        fechaStr,
+        hora,
+        motivo: motivo || 'Actividad Parroquial'
+      }
+    });
+    return { success: true, data: restriccion };
+  } catch (error: any) {
+    console.error("Error al agregar restricción:", error);
+    if (error.code === 'P2002') {
+      return { success: false, error: "Ya existe un bloqueo registrado para esta fecha y hora." };
+    }
+    return { success: false, error: "No se pudo registrar el bloqueo." };
+  }
+}
+
+// Eliminar una restricción de horario
+export async function eliminarRestriccion(fechaStr: string, hora: string | null) {
+  try {
+    await prisma.horarioRestringido.delete({
+      where: {
+        fechaStr_hora: {
+          fechaStr,
+          hora: hora || "" // En schema.prisma, el campo @unique requiere valor o null. 
+          // Wait! Si hora es null en base de datos, el where compuesto con unique es { fechaStr, hora: null }.
+          // En Prisma, podemos pasar `hora: null` en Prisma query y lo resolverá correctamente.
+          // Let's pass: hora: hora === null ? null : hora
+        }
+      }
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error al eliminar restricción:", error);
+    return { success: false, error: "No se pudo eliminar el bloqueo." };
+  }
+}
+
+// Eliminar restricción por ID (más seguro)
+export async function eliminarRestriccionPorId(id: string) {
+  try {
+    await prisma.horarioRestringido.delete({
+      where: { id }
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error al eliminar restricción por ID:", error);
+    return { success: false, error: "No se pudo eliminar el bloqueo." };
+  }
+}
+
+
+

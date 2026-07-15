@@ -111,15 +111,6 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-[#fafaf9] text-slate-800 font-sans antialiased selection:bg-amber-100 selection:text-amber-900">
       
-      {/* Alert Banner / Avisos Parroquiales */}
-      <div className="bg-gradient-to-r from-indigo-900 via-indigo-950 to-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide border-b border-indigo-800 flex items-center justify-center gap-2">
-        <span className="inline-flex items-center justify-center bg-indigo-500/35 text-indigo-200 px-2 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider">
-          Aviso
-        </span>
-        <span>
-          ¡Inscripciones abiertas para la catequesis familiar y preparación para la Confirmación 2026!
-        </span>
-      </div>
 
       {/* Floating Header / Capsule Navigation Bar */}
       <div className="sticky top-0 z-50 w-full flex justify-center pt-4 px-4 pointer-events-none -mb-20">
@@ -178,15 +169,23 @@ export default function Home() {
             >
               Solicitar Misa
             </Link>
+            <Link
+              href="/admin/login"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all border border-white/15 hover:scale-105 active:scale-95 duration-200"
+              title="Acceso Sacerdote"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+              </svg>
+            </Link>
           </div>
         </header>
       </div>
 
-      {/* Hero Section Banner (Full width image, free of text overlays) */}
       <div className="relative w-full h-[280px] sm:h-[380px] lg:h-[480px] overflow-hidden bg-slate-900 border-b border-slate-100">
         <Image
-          src="/church_hero_bg.jpg"
-          alt="Interior de la Parroquia Nuestra Señora del Patrocinio"
+          src="/church_patroness_hero.jpg"
+          alt="Nuestra Señora del Patrocinio y fachada de la Parroquia"
           fill
           className="object-cover object-center scale-102 select-none"
           priority
@@ -203,10 +202,8 @@ export default function Home() {
             />
           </svg>
           <div className="absolute inset-0 pl-5 pr-12 flex items-center gap-2 pointer-events-auto">
-            {/* Small orange hollow circle matching reference */}
-            <span className="w-1.5 h-1.5 rounded-full border border-amber-600 bg-transparent shrink-0" />
             <span className="text-[10px] font-bold uppercase tracking-widest text-[#5c3e35] pt-0.5">
-              Bienvenidos a nuestra parroquia
+              bajo tu patrocinio acógenos madre
             </span>
           </div>
         </div>
@@ -222,6 +219,71 @@ export default function Home() {
               <h1 className="font-serif text-4xl sm:text-5xl lg:text-6.5xl font-light text-[#5c3e35] leading-[1.1] tracking-tight">
                 Parroquia Nuestra Señora del Patrocinio
               </h1>
+              
+              {/* Tarjetita de Horarios Estilo Post Social con Flotación */}
+              <div className="mt-8 relative max-w-sm bg-gradient-to-b from-white to-[#FAF8F5]/95 border border-white/80 rounded-3xl p-6 shadow-xl shadow-[#9E9A85]/15 overflow-hidden animate-float-card">
+                {/* Imagen de Fondo de Nuestra Señora de Fátima dentro de la tarjeta */}
+                <div 
+                  className="absolute inset-0 bg-no-repeat bg-cover bg-center pointer-events-none opacity-[0.26]" 
+                  style={{ backgroundImage: "url('/church_fatima.png')" }}
+                />
+                
+                <div className="relative z-10 flex flex-col items-center text-center">
+                  {/* Cita */}
+                  <span className="text-[10px] italic text-[#8C6B2F] font-serif mb-3 select-none">
+                    "Cristo nos reúne en torno a su mesa. Participa de la Santa Misa."
+                  </span>
+                  
+                  {/* Logotipo Oficial en Formato Icono SVG Circular */}
+                  <div className="w-16 h-16 rounded-full bg-slate-950/65 border border-white/20 p-2.5 shadow-md mb-3 flex items-center justify-center select-none pointer-events-none">
+                    <LogoIglesia className="w-11 h-11 text-white" />
+                  </div>
+                  
+                  <span className="block text-slate-800 text-xs font-bold font-serif mb-4 select-none">
+                    Horarios de la Santa Misa
+                  </span>
+                  
+                  {/* Tarjetita blanca interna traslúcida */}
+                  <div className="w-full bg-white/70 backdrop-blur-xs border border-[#EADCB9]/45 rounded-2xl p-4 space-y-4">
+                    <div>
+                      <span className="block text-[9px] font-bold uppercase tracking-widest text-[#a35b80]">
+                        Lunes a Sábado
+                      </span>
+                      <span className="block text-sm sm:text-base font-bold text-slate-800 font-mono mt-1">
+                        7:00 AM &mdash; 6:00 PM
+                      </span>
+                    </div>
+                    
+                    <div className="border-t border-[#EADCB9]/40 pt-3">
+                      <span className="block text-[9px] font-bold uppercase tracking-widest text-[#a35b80] mb-2">
+                        Domingos
+                      </span>
+                      <div className="flex justify-center gap-2">
+                        <span className="bg-white border border-[#EADCB9]/70 px-2.5 py-1 rounded-full text-xs font-bold font-mono text-slate-800 shadow-3xs">
+                          8:00 AM
+                        </span>
+                        <span className="bg-white border border-[#EADCB9]/70 px-2.5 py-1 rounded-full text-xs font-bold font-mono text-slate-800 shadow-3xs">
+                          11:00 AM
+                        </span>
+                        <span className="bg-[#a35b80] text-white px-2.5 py-1 rounded-full text-xs font-bold font-mono shadow-3xs">
+                          7:00 PM
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <style>{`
+                @keyframes gentleFloat {
+                  0% { transform: translateY(0px); }
+                  50% { transform: translateY(-8px); }
+                  100% { transform: translateY(0px); }
+                }
+                .animate-float-card {
+                  animation: gentleFloat 6s ease-in-out infinite;
+                }
+              `}</style>
             </div>
 
             {/* Right Column: Brief welcoming text and action button */}
@@ -243,9 +305,9 @@ export default function Home() {
       </section>
 
       {/* Services Section (Premium Card Carousel with Staggered Scroll Reveal) */}
-      <section id="servicios" ref={servicesSectionRef} className="py-24 sm:py-32 bg-indigo-950 text-white relative overflow-hidden">
+      <section id="servicios" ref={servicesSectionRef} className="py-24 sm:py-32 bg-gradient-to-r from-[#80385e] via-[#a35b80] to-[#964a75] text-white relative overflow-hidden">
         {/* Soft background glow to match the theme */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#a35b80]/20 rounded-full blur-[140px] pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-16 sm:mb-20">
@@ -260,13 +322,13 @@ export default function Home() {
           {/* Horizontal Carousel of services */}
           <div className="relative -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
             {/* Blurred/Faded Gradient Edges Mask */}
-            <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-indigo-950 via-indigo-950/40 to-transparent pointer-events-none z-20" />
-            <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-indigo-950 via-indigo-950/40 to-transparent pointer-events-none z-20" />
+            <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-[#80385e] via-[#80385e]/40 to-transparent pointer-events-none z-20" />
+            <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-[#964a75] via-[#964a75]/40 to-transparent pointer-events-none z-20" />
 
             {/* Navigation Arrow Buttons */}
             <button 
               onClick={scrollLeft}
-              className="absolute left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-slate-900/60 hover:bg-white text-white hover:text-indigo-950 border border-slate-700/60 flex items-center justify-center backdrop-blur-md transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer pointer-events-auto hidden sm:flex"
+              className="absolute left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-slate-900/60 hover:bg-white text-white hover:text-[#80385e] border border-slate-700/60 flex items-center justify-center backdrop-blur-md transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer pointer-events-auto hidden sm:flex"
               aria-label="Anterior"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -275,7 +337,7 @@ export default function Home() {
             </button>
             <button 
               onClick={scrollRight}
-              className="absolute right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-slate-900/60 hover:bg-white text-white hover:text-indigo-950 border border-slate-700/60 flex items-center justify-center backdrop-blur-md transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer pointer-events-auto hidden sm:flex"
+              className="absolute right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-slate-900/60 hover:bg-white text-white hover:text-[#80385e] border border-slate-700/60 flex items-center justify-center backdrop-blur-md transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer pointer-events-auto hidden sm:flex"
               aria-label="Siguiente"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -293,13 +355,13 @@ export default function Home() {
                 className={`reveal-card ${isServicesVisible ? 'active' : ''} group/card relative w-[290px] sm:w-[340px] md:w-[360px] flex-shrink-0 snap-start pt-4`}
               >
                 {/* Smoky Glowing Aura */}
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/25 via-amber-500/15 to-indigo-600/25 rounded-3xl blur-3xl opacity-30 group-hover/card:opacity-90 group-hover/card:scale-105 transition-all duration-300 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#a35b80]/25 via-amber-500/15 to-[#80385e]/25 rounded-3xl blur-3xl opacity-30 group-hover/card:opacity-90 group-hover/card:scale-105 transition-all duration-300 pointer-events-none" />
 
                 {/* Main Card container */}
                 <div className="relative flex flex-col h-full bg-slate-950/75 backdrop-blur-md border border-white/[0.05] rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 ease-out group-hover/carousel:opacity-50 group-hover/carousel:scale-[0.96] group-hover/card:!opacity-100 group-hover/card:!scale-[1.04] group-hover/card:!-translate-y-4 group-hover/card:border-white/[0.15] group-hover/card:shadow-[0_0_40px_8px_rgba(255,255,255,0.06)]">
                   <div className="relative h-44 sm:h-48 w-full overflow-hidden border-b border-slate-800/80">
                     <Image
-                      src="/church_mass.jpg"
+                      src="/church_altar.jpg"
                       alt="Intenciones de Misa altar"
                       fill
                       className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none"
@@ -311,13 +373,13 @@ export default function Home() {
                         Celebraciones
                       </span>
                       <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3">
-                        Misas y Sacramentos
+                        Misas
                       </h3>
                       <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
                         Separa la fecha de tu misa comunitaria, ya sea para intenciones tradicionales (salud, difuntos) o celebraciones de bautizos y otros sacramentos. Registra tu ofrenda vía Yape.
                       </p>
                     </div>
-                    <Link href="/misas/nueva" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-indigo-950 bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
+                    <Link href="/misas/nueva" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
                       Reservar Misa
                     </Link>
                   </div>
@@ -330,7 +392,7 @@ export default function Home() {
                 style={{ transitionDelay: '100ms' }}
               >
                 {/* Smoky Glowing Aura */}
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/25 via-amber-500/15 to-indigo-600/25 rounded-3xl blur-3xl opacity-30 group-hover/card:opacity-90 group-hover/card:scale-105 transition-all duration-300 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#a35b80]/25 via-amber-500/15 to-[#80385e]/25 rounded-3xl blur-3xl opacity-30 group-hover/card:opacity-90 group-hover/card:scale-105 transition-all duration-300 pointer-events-none" />
 
                 {/* Main Card container */}
                 <div className="relative flex flex-col h-full bg-slate-950/75 backdrop-blur-md border border-white/[0.05] rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 ease-out group-hover/carousel:opacity-50 group-hover/carousel:scale-[0.96] group-hover/card:!opacity-100 group-hover/card:!scale-[1.04] group-hover/card:!-translate-y-4 group-hover/card:border-white/[0.15] group-hover/card:shadow-[0_0_40px_8px_rgba(255,255,255,0.06)]">
@@ -344,7 +406,7 @@ export default function Home() {
                   </div>
                   <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-6">
                     <div>
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-indigo-300 mb-2 block">
+                      <span className="text-[9px] font-bold uppercase tracking-widest text-[#EADCB9] mb-2 block">
                         Sacramentos
                       </span>
                       <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3">
@@ -354,7 +416,7 @@ export default function Home() {
                         Revisa la lista completa de documentos obligatorios (DNI, acta de nacimiento) y charlas de preparación necesarias para padres y padrinos antes de celebrar un bautizo.
                       </p>
                     </div>
-                    <Link href="/bautizos" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-indigo-950 bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
+                    <Link href="/bautizos" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
                       Ver Requisitos
                     </Link>
                   </div>
@@ -367,13 +429,13 @@ export default function Home() {
                 style={{ transitionDelay: '200ms' }}
               >
                 {/* Smoky Glowing Aura */}
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/25 via-amber-500/15 to-indigo-600/25 rounded-3xl blur-3xl opacity-30 group-hover/card:opacity-90 group-hover/card:scale-105 transition-all duration-300 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#a35b80]/25 via-amber-500/15 to-[#80385e]/25 rounded-3xl blur-3xl opacity-30 group-hover/card:opacity-90 group-hover/card:scale-105 transition-all duration-300 pointer-events-none" />
 
                 {/* Main Card container */}
                 <div className="relative flex flex-col h-full bg-slate-950/75 backdrop-blur-md border border-white/[0.05] rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 ease-out group-hover/carousel:opacity-50 group-hover/carousel:scale-[0.96] group-hover/card:!opacity-100 group-hover/card:!scale-[1.04] group-hover/card:!-translate-y-4 group-hover/card:border-white/[0.15] group-hover/card:shadow-[0_0_40px_8px_rgba(255,255,255,0.06)]">
                   <div className="relative h-44 sm:h-48 w-full overflow-hidden border-b border-slate-800/80">
                     <Image
-                      src="/church_schedules.jpg"
+                      src="/church_interior_wide.jpg"
                       alt="Interior de la iglesia"
                       fill
                       className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none"
@@ -391,7 +453,7 @@ export default function Home() {
                         Consulta los horarios detallados de celebraciones dominicales y semanales, confesiones en el templo, charlas para padres y padrinos, y la disponibilidad del despacho.
                       </p>
                     </div>
-                    <Link href="#horarios" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-indigo-950 bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
+                    <Link href="#horarios" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
                       Ver Horarios
                     </Link>
                   </div>
@@ -404,7 +466,7 @@ export default function Home() {
                 style={{ transitionDelay: '300ms' }}
               >
                 {/* Smoky Glowing Aura */}
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/25 via-amber-500/15 to-indigo-600/25 rounded-3xl blur-3xl opacity-30 group-hover/card:opacity-90 group-hover/card:scale-105 transition-all duration-300 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#a35b80]/25 via-amber-500/15 to-[#80385e]/25 rounded-3xl blur-3xl opacity-30 group-hover/card:opacity-90 group-hover/card:scale-105 transition-all duration-300 pointer-events-none" />
 
                 {/* Main Card container */}
                 <div className="relative flex flex-col h-full bg-slate-950/75 backdrop-blur-md border border-white/[0.05] rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 ease-out group-hover/carousel:opacity-50 group-hover/carousel:scale-[0.96] group-hover/card:!opacity-100 group-hover/card:!scale-[1.04] group-hover/card:!-translate-y-4 group-hover/card:border-white/[0.15] group-hover/card:shadow-[0_0_40px_8px_rgba(255,255,255,0.06)]">
@@ -418,7 +480,7 @@ export default function Home() {
                   </div>
                   <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-6">
                     <div>
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-indigo-300 mb-2 block">
+                      <span className="text-[9px] font-bold uppercase tracking-widest text-[#EADCB9] mb-2 block">
                         Catequesis
                       </span>
                       <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3">
@@ -428,7 +490,7 @@ export default function Home() {
                         Infórmate sobre las fechas de inscripción para la preparación sacramental de niños, jóvenes y adultos (Primera Comunión, Confirmación y Catequesis Familiar).
                       </p>
                     </div>
-                    <Link href="#faq" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-indigo-950 bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
+                    <Link href="#faq" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
                       Más Información
                     </Link>
                   </div>
@@ -441,7 +503,7 @@ export default function Home() {
                 style={{ transitionDelay: '400ms' }}
               >
                 {/* Smoky Glowing Aura */}
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/25 via-amber-500/15 to-indigo-600/25 rounded-3xl blur-3xl opacity-30 group-hover/card:opacity-90 group-hover/card:scale-105 transition-all duration-300 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#a35b80]/25 via-amber-500/15 to-[#80385e]/25 rounded-3xl blur-3xl opacity-30 group-hover/card:opacity-90 group-hover/card:scale-105 transition-all duration-300 pointer-events-none" />
 
                 {/* Main Card container */}
                 <div className="relative flex flex-col h-full bg-slate-950/75 backdrop-blur-md border border-white/[0.05] rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 ease-out group-hover/carousel:opacity-50 group-hover/carousel:scale-[0.96] group-hover/card:!opacity-100 group-hover/card:!scale-[1.04] group-hover/card:!-translate-y-4 group-hover/card:border-white/[0.15] group-hover/card:shadow-[0_0_40px_8px_rgba(255,255,255,0.06)]">
@@ -465,7 +527,7 @@ export default function Home() {
                         Coordina visitas pastorales para la comunión a domicilio de personas enfermas o ancianas, y solicita la unción de los enfermos en situaciones de necesidad espiritual.
                       </p>
                     </div>
-                    <Link href="#contacto" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-indigo-950 bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
+                    <Link href="#contacto" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
                       Solicitar Visita
                     </Link>
                   </div>
@@ -478,7 +540,7 @@ export default function Home() {
                 style={{ transitionDelay: '500ms' }}
               >
                 {/* Smoky Glowing Aura */}
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/25 via-amber-500/15 to-indigo-600/25 rounded-3xl blur-3xl opacity-30 group-hover/card:opacity-90 group-hover/card:scale-105 transition-all duration-300 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#a35b80]/25 via-amber-500/15 to-[#80385e]/25 rounded-3xl blur-3xl opacity-30 group-hover/card:opacity-90 group-hover/card:scale-105 transition-all duration-300 pointer-events-none" />
 
                 {/* Main Card container */}
                 <div className="relative flex flex-col h-full bg-slate-950/75 backdrop-blur-md border border-white/[0.05] rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 ease-out group-hover/carousel:opacity-50 group-hover/carousel:scale-[0.96] group-hover/card:!opacity-100 group-hover/card:!scale-[1.04] group-hover/card:!-translate-y-4 group-hover/card:border-white/[0.15] group-hover/card:shadow-[0_0_40px_8px_rgba(255,255,255,0.06)]">
@@ -492,7 +554,7 @@ export default function Home() {
                   </div>
                   <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-6">
                     <div>
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-indigo-300 mb-2 block">
+                      <span className="text-[9px] font-bold uppercase tracking-widest text-[#EADCB9] mb-2 block">
                         Ofrendas
                       </span>
                       <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3">
@@ -502,7 +564,7 @@ export default function Home() {
                         Apoya el sostenimiento de nuestro templo parroquial y las obras de caridad de Cáritas local a través de diezmos, ofrendas dominicales o donaciones virtuales.
                       </p>
                     </div>
-                    <Link href="#contacto" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-indigo-950 bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
+                    <Link href="#contacto" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
                       Cómo Ayudar
                     </Link>
                   </div>
