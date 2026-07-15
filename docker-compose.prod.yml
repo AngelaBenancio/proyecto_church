@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  # 1. Base de Datos PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: church_db
+    restart: always
+    ports:
+      # Expuesto solo localmente para seguridad
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: user_admin
+      POSTGRES_PASSWORD: unaclavesegura_church # ¡REEMPLAZA con una contraseña robusta en producción!
+      POSTGRES_DB: sistema_church
+    volumes:
+      - church_postgres_data:/var/lib/postgresql/data
+    networks:
+      - church_privada
+
+  # 2. Aplicación Next.js (Servicio unificado Frontend + Backend)
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: church_web
+    restart: always
+    environment:
+      # Conexión local a la base de datos dentro de la red privada de Docker
+      DATABASE_URL: "postgresql://user_admin:unaclavesegura_church@db:5432/sistema_church?schema=public"
+      # Clave de API de Resend para el envío automático de correos (Tickets)
+      RESEND_API_KEY: "tu_api_key_de_resend_aqui" # ¡REEMPLAZA con tu clave real de Resend!
+    depends_on:
+      - db
+    # Comando de inicio: Primero ejecuta las migraciones de base de datos en Postgres y luego inicia la aplicación
+    command: sh -c "npx prisma migrate deploy && npm run start"
+    networks:
+      - church_privada
+      - root_default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=root_default"
+      # Enrutamiento de Traefik: Configurado para el subdominio de producción
+      - "traefik.http.routers.church_web.rule=Host(patrocinio.fluops.com)"
+      - "traefik.http.routers.church_web.entrypoints=websecure"
+      - "traefik.http.routers.church_web.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.church_web.loadbalancer.server.port=3000"
+
+volumes:
+  church_postgres_data:
+
+networks:
+  church_privada:
+    driver: bridge
+  root_default:
+    external: true
