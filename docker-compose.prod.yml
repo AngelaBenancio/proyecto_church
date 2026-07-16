@@ -11,7 +11,7 @@ services:
       - "127.0.0.1:5433:5432"
     environment:
       POSTGRES_USER: user_admin
-      POSTGRES_PASSWORD: unaclavesegura_church # ¡REEMPLAZA con una contraseña robusta en producción!
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: sistema_church
     volumes:
       - church_postgres_data:/var/lib/postgresql/data
@@ -26,10 +26,10 @@ services:
     container_name: church_web
     restart: always
     environment:
-      # Conexión local a la base de datos dentro de la red privada de Docker
-      DATABASE_URL: "postgresql://user_admin:unaclavesegura_church@db:5432/sistema_church?schema=public"
+      # Conexión interna de red de Docker a Postgres utilizando la variable
+      DATABASE_URL: "postgresql://user_admin:${DB_PASSWORD}@db:5432/sistema_church?schema=public"
       # Clave de API de Resend para el envío automático de correos (Tickets)
-      RESEND_API_KEY: "tu_api_key_de_resend_aqui" # ¡REEMPLAZA con tu clave real de Resend!
+      RESEND_API_KEY: ${RESEND_API_KEY}
     depends_on:
       - db
     # Comando de inicio: Primero ejecuta las migraciones de base de datos en Postgres y luego inicia la aplicación
