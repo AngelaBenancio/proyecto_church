@@ -41,7 +41,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=root_default"
       # Enrutamiento de Traefik: Configurado para el subdominio de producción
-      - "traefik.http.routers.church_web.rule=Host(patrocinio.fluops.com)"
+      - "traefik.http.routers.church_web.rule=Host(`patrocinio.fluops.com`)"
       - "traefik.http.routers.church_web.entrypoints=websecure"
       - "traefik.http.routers.church_web.tls.certresolver=mytlschallenge"
       - "traefik.http.services.church_web.loadbalancer.server.port=3000"

@@ -7,7 +7,7 @@ const COOKIE_NAME = 'admin_session';
 
 export interface LoginResponse {
   success: boolean;
-  role?: 'admin' | 'sacerdote';
+  role?: 'superadmin' | 'admin' | 'sacerdote';
   error?: string;
 }
 
@@ -26,9 +26,14 @@ export async function loginAdmin(formData: FormData): Promise<LoginResponse> {
     const envSacerdoteUsername = process.env.SACERDOTE_USERNAME || 'sacerdote';
     const envSacerdotePassword = process.env.SACERDOTE_PASSWORD || 'clave_segura_sacerdote_2026';
 
-    let role: 'admin' | 'sacerdote';
+    const envSuperAdminUsername = process.env.SUPERADMIN_USERNAME || 'superadmin';
+    const envSuperAdminPassword = process.env.SUPERADMIN_PASSWORD || 'clave_segura_superadmin_2026';
 
-    if (username === envAdminUsername && password === envAdminPassword) {
+    let role: 'superadmin' | 'admin' | 'sacerdote';
+
+    if (username === envSuperAdminUsername && password === envSuperAdminPassword) {
+      role = 'superadmin';
+    } else if (username === envAdminUsername && password === envAdminPassword) {
       role = 'admin';
     } else if (username === envSacerdoteUsername && password === envSacerdotePassword) {
       role = 'sacerdote';

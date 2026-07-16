@@ -19,7 +19,9 @@ export default function AdminLoginPage() {
     startTransition(async () => {
       const res = await loginAdmin(formData);
       if (res.success) {
-        if (res.role === 'sacerdote') {
+        if (res.role === 'superadmin') {
+          router.push('/admin/super');
+        } else if (res.role === 'sacerdote') {
           router.push('/admin/agenda');
         } else {
           router.push('/admin/dashboard');

@@ -6,11 +6,11 @@ const COOKIE_NAME = 'admin_session';
 
 export interface SessionPayload {
   username: string;
-  role: 'admin' | 'sacerdote';
+  role: 'superadmin' | 'admin' | 'sacerdote';
   expiresAt: number;
 }
 
-export function createSessionToken(username: string, role: 'admin' | 'sacerdote'): string {
+export function createSessionToken(username: string, role: 'superadmin' | 'admin' | 'sacerdote'): string {
   const payload: SessionPayload = {
     username,
     role,
@@ -63,7 +63,12 @@ export async function getSessionPayload(): Promise<SessionPayload | null> {
 
 export async function isAdminAuthenticated(): Promise<boolean> {
   const payload = await getSessionPayload();
-  return payload !== null && payload.role === 'admin';
+  return payload !== null && (payload.role === 'admin' || payload.role === 'superadmin');
+}
+
+export async function isSuperAdminAuthenticated(): Promise<boolean> {
+  const payload = await getSessionPayload();
+  return payload !== null && payload.role === 'superadmin';
 }
 
 export async function isSacerdoteAuthenticated(): Promise<boolean> {

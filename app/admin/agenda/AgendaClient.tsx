@@ -4,7 +4,7 @@ import { useState, useMemo, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { logoutAdminAction } from '../../actions/authActions';
-import { agregarRestriccion, eliminarRestriccionPorId } from '../../actions/misaActions';
+import { agregarRestriccion, eliminarRestriccionPorId, actualizarConfiguracion, agregarHorarioMisa, eliminarHorarioMisa } from '../../actions/misaActions';
 
 interface Intencion {
   id: string;
@@ -43,10 +43,17 @@ interface HorarioRestringido {
   updatedAt: Date;
 }
 
+interface SystemConfig {
+  habilitarComunion: boolean;
+  habilitarConfirmacion: boolean;
+  horariosMisa: string[];
+}
+
 interface AgendaClientProps {
   initialIntenciones: Intencion[];
   initialFeligreses: Feligres[];
   initialRestricciones: HorarioRestringido[];
+  initialConfig: SystemConfig;
   role: 'admin' | 'sacerdote';
 }
 
@@ -54,6 +61,7 @@ export default function AgendaClient({
   initialIntenciones, 
   initialFeligreses, 
   initialRestricciones, 
+  initialConfig,
   role 
 }: AgendaClientProps) {
   const router = useRouter();
@@ -71,6 +79,75 @@ export default function AgendaClient({
   const [restricciones, setRestricciones] = useState<HorarioRestringido[]>(initialRestricciones);
   const [selectedCalendarDate, setSelectedCalendarDate] = useState<string | null>(null);
   const [restrictionMotivo, setRestrictionMotivo] = useState('');
+
+  // Estados de configuración dinámica
+  const [config, setConfig] = useState<SystemConfig>(initialConfig);
+  const [newScheduleTime, setNewScheduleTime] = useState("");
+  const [scheduleError, setScheduleError] = useState<string | null>(null);
+
+  // Manejador para activar/desactivar sacramentos
+  const handleToggleSacrament = async (sacramentKey: 'habilitar_comunion' | 'habilitar_confirmacion', currentValue: boolean) => {
+    const newValue = !currentValue;
+    const key = sacramentKey;
+    const value = newValue ? "true" : "false";
+
+    startTransition(async () => {
+      const res = await actualizarConfiguracion(key, value);
+      if (res.success) {
+        setConfig(prev => ({
+          ...prev,
+          habilitarComunion: sacramentKey === 'habilitar_comunion' ? newValue : prev.habilitarComunion,
+          habilitarConfirmacion: sacramentKey === 'habilitar_confirmacion' ? newValue : prev.habilitarConfirmacion,
+        }));
+        router.refresh();
+      } else {
+        alert(res.error || "No se pudo guardar la configuración.");
+      }
+    });
+  };
+
+  // Manejadores para horarios de misa
+  const handleAddSchedule = () => {
+    if (!newScheduleTime) return;
+    
+    let [hoursStr, minutesStr] = newScheduleTime.split(':');
+    let hours = parseInt(hoursStr);
+    let modifier = "AM";
+    if (hours >= 12) {
+      modifier = "PM";
+      if (hours > 12) hours -= 12;
+    } else if (hours === 0) {
+      hours = 12;
+    }
+    const formattedHour = String(hours).padStart(2, '0');
+    const timeFormatted = `${formattedHour}:${minutesStr} ${modifier}`;
+
+    startTransition(async () => {
+      const res = await agregarHorarioMisa(timeFormatted);
+      if (res.success && res.horariosMisa) {
+        setConfig(prev => ({ ...prev, horariosMisa: res.horariosMisa }));
+        setNewScheduleTime("");
+        setScheduleError(null);
+        router.refresh();
+      } else {
+        setScheduleError(res.error || "Ocurrió un error al agregar el horario.");
+      }
+    });
+  };
+
+  const handleRemoveSchedule = (horario: string) => {
+    if (!confirm(`¿Está seguro de que desea eliminar el horario ${horario}?`)) return;
+
+    startTransition(async () => {
+      const res = await eliminarHorarioMisa(horario);
+      if (res.success && res.horariosMisa) {
+        setConfig(prev => ({ ...prev, horariosMisa: res.horariosMisa }));
+        router.refresh();
+      } else {
+        alert(res.error || "Ocurrió un error al eliminar el horario.");
+      }
+    });
+  };
 
   // Estados del calendario interactivo
   const [currentMonth, setCurrentMonth] = useState(() => new Date().getMonth());
@@ -266,7 +343,7 @@ export default function AgendaClient({
     return activeRestrictionsForSelectedDate.some(r => r.hora === null);
   }, [activeRestrictionsForSelectedDate]);
 
-  const HORARIOS_DISPONIBLES = ["07:00 AM", "06:00 PM", "07:00 PM"];
+  const HORARIOS_DISPONIBLES = config.horariosMisa;
 
   return (
     <div className="min-h-screen flex bg-[#FAF9F6] text-[#3D3A35] font-sans antialiased">
@@ -840,40 +917,164 @@ export default function AgendaClient({
           </div>
         )}
 
-        {/* 3. CONFIGURACIÓN (DETALLES DE CUENTA) */}
+        {/* 3. CONFIGURACIÓN (DETALLES DE CUENTA Y AJUSTES DE SACRAMENTOS/HORARIOS) */}
         {activeMenu === 'settings' && (
-          <div className="flex-1">
+          <div className="flex-1 animate-fade-in">
             <div className="mb-6">
               <span className="text-[10px] font-bold uppercase tracking-widest text-[#B89851]">Ajustes</span>
-              <h2 className="text-xl font-serif font-bold text-[#5C4E3C] leading-tight">
-                Configuración del Sistema
-              </h2>
             </div>
 
-            <div className="bg-white border border-[#EBEAE5] rounded-3xl p-6 shadow-sm max-w-xl">
-              <h3 className="font-serif font-bold text-[#5C4E3C] text-base mb-4 border-b border-[#FAF9F6] pb-2">
-                Datos de la Sesión
-              </h3>
-              <div className="space-y-4 text-xs font-sans">
-                <div>
-                  <span className="block font-bold text-slate-400 uppercase tracking-widest text-[9px]">Usuario Activo:</span>
-                  <span className="font-bold text-slate-700 text-sm">{role === 'sacerdote' ? 'Sacerdote / Padre' : 'Administrador'}</span>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl">
+              {/* Columna Izquierda: Ajustes de Sacramentos e Información de Sesión */}
+              <div className="space-y-6">
+                {/* Panel de Sacramentos */}
+                <div className="bg-white border border-[#EBEAE5] rounded-3xl p-6 shadow-sm">
+                  <h3 className="font-serif font-bold text-[#5C4E3C] text-base mb-4 border-b border-[#FAF9F6] pb-2 flex items-center gap-2">
+                    Control de Sacramentos en Reservas
+                  </h3>
+                  <p className="text-slate-500 text-[11px] leading-relaxed mb-6">
+                    Habilite o deshabilite la disponibilidad de los sacramentos de Comunión y Confirmación para las reservas de misa públicas. Útil para coordinar períodos especiales o matrimonios de adultos que necesiten estos sacramentos de manera excepcional.
+                  </p>
+
+                  <div className="space-y-4">
+                    {/* Comunión Toggle */}
+                    <div className="flex items-center justify-between p-4 bg-[#FAF9F6] border border-[#EBEAE5] rounded-2xl transition-all hover:shadow-xs">
+                      <div>
+                        <span className="font-bold text-[#5C4E3C] text-xs block">Primera Comunión</span>
+                        <span className="text-[10px] text-slate-400">Mostrar en el formulario de reservas públicas</span>
+                      </div>
+                      <button
+                        onClick={() => handleToggleSacrament('habilitar_comunion', config.habilitarComunion)}
+                        disabled={isPending}
+                        className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all duration-300 ${config.habilitarComunion ? 'bg-[#B5336D]' : 'bg-slate-300'}`}
+                      >
+                        <div
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-all duration-300 ${config.habilitarComunion ? 'translate-x-6' : 'translate-x-0'}`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Confirmación Toggle */}
+                    <div className="flex items-center justify-between p-4 bg-[#FAF9F6] border border-[#EBEAE5] rounded-2xl transition-all hover:shadow-xs">
+                      <div>
+                        <span className="font-bold text-[#5C4E3C] text-xs block">Confirmación</span>
+                        <span className="text-[10px] text-slate-400">Mostrar en el formulario de reservas públicas</span>
+                      </div>
+                      <button
+                        onClick={() => handleToggleSacrament('habilitar_confirmacion', config.habilitarConfirmacion)}
+                        disabled={isPending}
+                        className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all duration-300 ${config.habilitarConfirmacion ? 'bg-[#B5336D]' : 'bg-slate-300'}`}
+                      >
+                        <div
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-all duration-300 ${config.habilitarConfirmacion ? 'translate-x-6' : 'translate-x-0'}`}
+                        />
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <span className="block font-bold text-slate-400 uppercase tracking-widest text-[9px]">Nivel de Acceso:</span>
-                  <span className="font-mono text-slate-600 uppercase bg-[#F5EFEB] px-2 py-0.5 rounded border border-[#EBEAE5]">{role}</span>
+
+                {/* Datos de Sesión */}
+                <div className="bg-white border border-[#EBEAE5] rounded-3xl p-6 shadow-sm">
+                  <h3 className="font-serif font-bold text-[#5C4E3C] text-base mb-4 border-b border-[#FAF9F6] pb-2">
+                    Datos de la Sesión
+                  </h3>
+                  <div className="space-y-4 text-xs font-sans">
+                    <div>
+                      <span className="block font-bold text-slate-400 uppercase tracking-widest text-[9px]">Usuario Activo:</span>
+                      <span className="font-bold text-slate-700 text-sm">{role === 'sacerdote' ? 'Sacerdote / Padre' : 'Administrador'}</span>
+                    </div>
+                    <div>
+                      <span className="block font-bold text-slate-400 uppercase tracking-widest text-[9px]">Nivel de Acceso:</span>
+                      <span className="font-mono text-slate-600 uppercase bg-[#F5EFEB] px-2 py-0.5 rounded border border-[#EBEAE5]">{role}</span>
+                    </div>
+                    <div>
+                      <span className="block font-bold text-slate-400 uppercase tracking-widest text-[9px]">Parroquia:</span>
+                      <span className="text-slate-700">Parroquia Nuestra Señora del Patrocinio</span>
+                    </div>
+                    <div className="pt-4 border-t border-[#FAF9F6]">
+                      <button
+                        onClick={handleLogout}
+                        className="py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-98"
+                      >
+                        Cerrar Sesión Activa
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <span className="block font-bold text-slate-400 uppercase tracking-widest text-[9px]">Parroquia:</span>
-                  <span className="text-slate-700">Parroquia Nuestra Señora del Patrocinio</span>
+              </div>
+
+              {/* Columna Derecha: Gestión de Horarios de Misa */}
+              <div className="bg-white border border-[#EBEAE5] rounded-3xl p-6 shadow-sm flex flex-col">
+                <h3 className="font-serif font-bold text-[#5C4E3C] text-base mb-4 border-b border-[#FAF9F6] pb-2 flex items-center gap-2">
+                  Gestión de Horarios de Misa
+                </h3>
+                <p className="text-slate-500 text-[11px] leading-relaxed mb-6">
+                  Añada o elimine horarios disponibles para las intenciones de misa diarias. Los horarios configurados aquí se verán reflejados inmediatamente en la sección de reservas en línea.
+                </p>
+
+                {/* Formulario para añadir horario */}
+                <div className="bg-[#FAF9F6] border border-[#EBEAE5] rounded-2xl p-4 mb-6">
+                  <span className="block font-bold text-[#5C4E3C] text-xs mb-2">Añadir Nuevo Horario</span>
+                  <div className="flex gap-2 items-center">
+                    <div className="flex-1">
+                      <input
+                        type="time"
+                        value={newScheduleTime}
+                        onChange={(e) => {
+                          setNewScheduleTime(e.target.value);
+                          setScheduleError(null);
+                        }}
+                        className="w-full px-3 py-2 border border-[#EBEAE5] bg-white rounded-xl text-xs text-[#3D3A35] focus:outline-none focus:ring-1 focus:ring-[#B5336D]/50"
+                      />
+                    </div>
+                    <button
+                      onClick={handleAddSchedule}
+                      disabled={isPending || !newScheduleTime}
+                      className="py-2 px-4 bg-[#B5336D] hover:bg-[#972658] disabled:bg-slate-300 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-98 shrink-0"
+                    >
+                      Añadir
+                    </button>
+                  </div>
+                  {scheduleError && (
+                    <span className="text-[10px] text-red-600 block mt-2 font-medium">{scheduleError}</span>
+                  )}
                 </div>
-                <div className="pt-4 border-t border-[#FAF9F6]">
-                  <button
-                    onClick={handleLogout}
-                    className="py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-98"
-                  >
-                    Cerrar Sesión Activa
-                  </button>
+
+                {/* Listado de horarios actuales */}
+                <div className="flex-1">
+                  <span className="block font-bold text-slate-400 uppercase tracking-widest text-[9px] mb-2">
+                    Horarios Disponibles ({config.horariosMisa.length})
+                  </span>
+
+                  {config.horariosMisa.length === 0 ? (
+                    <div className="text-center py-8 text-slate-400 italic text-xs border border-dashed border-[#EBEAE5] rounded-2xl bg-slate-50">
+                      No hay horarios configurados en el sistema.
+                    </div>
+                  ) : (
+                    <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                      {config.horariosMisa.map((horario) => (
+                        <div
+                          key={horario}
+                          className="flex items-center justify-between p-3 border border-[#EBEAE5] rounded-xl bg-white hover:border-[#B5336D]/30 transition-all"
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="text-slate-400 text-xs">🔔</span>
+                            <span className="font-mono text-sm font-bold text-slate-700">{horario}</span>
+                          </div>
+                          <button
+                            onClick={() => handleRemoveSchedule(horario)}
+                            disabled={isPending}
+                            className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all active:scale-95"
+                            title="Eliminar Horario"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

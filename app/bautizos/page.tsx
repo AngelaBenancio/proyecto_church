@@ -262,8 +262,8 @@ export default function RequisitosSacramentosPage() {
           {[
             { id: "bautizo", label: "Bautizo 🕊️" },
             { id: "matrimonio", label: "Matrimonio 💍" },
-            { id: "comunion", label: "Comunión 🥖" },
-            { id: "confirmacion", label: "Confirmación 🔥" }
+            { id: "comunion", label: "Comunión" },
+            { id: "confirmacion", label: "Confirmación" }
           ].map((tab) => {
             const isActive = activeTab === tab.id;
             return (

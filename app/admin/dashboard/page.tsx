@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getSessionPayload } from '../../lib/auth';
-import { obtenerTodasLasIntenciones } from '../../actions/misaActions';
+import { obtenerTodasLasIntenciones, obtenerConfiguraciones } from '../../actions/misaActions';
 import DashboardClient from './DashboardClient';
 
 // Esta ruta debe ser dinámica porque lee cookies y consulta la base de datos en tiempo de solicitud
@@ -18,10 +18,11 @@ export default async function AdminDashboardPage() {
   }
 
   const intenciones = await obtenerTodasLasIntenciones();
+  const config = await obtenerConfiguraciones();
 
   return (
     <div className="min-h-screen bg-slate-50/50">
-      <DashboardClient initialIntenciones={intenciones} />
+      <DashboardClient initialIntenciones={intenciones} initialConfig={config} />
     </div>
   );
 }

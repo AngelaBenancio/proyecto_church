@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { crearIntencionMisa, obtenerIntencionesPorMes } from "../../actions/misaActions";
+import { crearIntencionMisa, obtenerIntencionesPorMes, obtenerConfiguraciones } from "../../actions/misaActions";
 
 const HORARIOS_MISA = ["07:00 AM", "06:00 PM", "07:00 PM"];
 const TIPOS_INTENCION = [
@@ -20,6 +20,35 @@ const TIPOS_INTENCION = [
 export default function NuevaMisaPage() {
   // Asistente (Wizard): Estado del paso actual (1 a 4)
   const [step, setStep] = useState(1);
+
+  // Estado de configuración de sacramentos y horarios
+  const [config, setConfig] = useState({
+    habilitarComunion: false,
+    habilitarConfirmacion: false,
+    horariosMisa: ["07:00 AM", "06:00 PM", "07:00 PM"]
+  });
+
+  // Cargar configuraciones del sistema
+  useEffect(() => {
+    async function loadConfig() {
+      try {
+        const res = await obtenerConfiguraciones();
+        if (res) {
+          setConfig(res);
+        }
+      } catch (err) {
+        console.error("Error al cargar configuraciones de la parroquia:", err);
+      }
+    }
+    loadConfig();
+  }, []);
+
+  // Filtrar intenciones según configuración
+  const tiposIntencionFiltrados = TIPOS_INTENCION.filter(tipo => {
+    if (tipo.id === "COMUNION" && !config.habilitarComunion) return false;
+    if (tipo.id === "CONFIRMACION" && !config.habilitarConfirmacion) return false;
+    return true;
+  });
 
   // Estados de carga y éxito
   const [loading, setLoading] = useState(false);
@@ -76,12 +105,14 @@ export default function NuevaMisaPage() {
       const anioStr = currentYear;
       const mesStr = String(currentMonth + 1).padStart(2, "0");
 
+      const defaultHrs = config.horariosMisa.length > 0 ? config.horariosMisa : ["07:00 AM", "06:00 PM", "07:00 PM"];
+
       // Simular fechas: 05 (lleno), 12 (semi-lleno con 1 hora ocupada), 18 (semi-lleno con 2 horas ocupadas), 25 (lleno)
       const simData: Record<string, string[]> = {
-        [`${anioStr}-${mesStr}-05`]: ["07:00 AM", "06:00 PM", "07:00 PM"], // Lleno
-        [`${anioStr}-${mesStr}-12`]: ["07:00 AM"], // 1 ocupado (Semi-lleno)
-        [`${anioStr}-${mesStr}-18`]: ["06:00 PM", "07:00 PM"], // 2 ocupado (Semi-lleno)
-        [`${anioStr}-${mesStr}-25`]: ["07:00 AM", "06:00 PM", "07:00 PM"], // Lleno
+        [`${anioStr}-${mesStr}-05`]: [...defaultHrs], // Lleno
+        [`${anioStr}-${mesStr}-12`]: defaultHrs.slice(0, 1), // 1 ocupado (Semi-lleno)
+        [`${anioStr}-${mesStr}-18`]: defaultHrs.slice(1, 3), // 2 ocupado (Semi-lleno)
+        [`${anioStr}-${mesStr}-25`]: [...defaultHrs], // Lleno
       };
 
       // Fusionar datos reales y simulados
@@ -89,7 +120,7 @@ export default function NuevaMisaPage() {
       setIntencionesPorFecha(mergedData);
     }
     cargarIntenciones();
-  }, [currentYear, currentMonth]);
+  }, [currentYear, currentMonth, config.horariosMisa]);
 
   // Simulación de carga de archivos (Paso 3)
   const simularCargaArchivo = (
@@ -733,7 +764,7 @@ export default function NuevaMisaPage() {
                           const esSeleccionada = esFechaSeleccionada(day);
                           const formattedDate = day.toISOString().split("T")[0];
                           const horasOcupadas = intencionesPorFecha[formattedDate] || [];
-                          const esDiaLleno = horasOcupadas.length >= HORARIOS_MISA.length;
+                          const esDiaLleno = horasOcupadas.length >= config.horariosMisa.length;
 
                           // Días del pasado: burbuja gris atenuada inhabilitada
                           if (esPasado) {
@@ -843,7 +874,7 @@ export default function NuevaMisaPage() {
                       </div>
                       
                       <div className="grid grid-cols-1 gap-2">
-                        {HORARIOS_MISA.map((hora) => {
+                         {config.horariosMisa.map((hora) => {
                           const esSeleccionado = selectedHour === hora;
                           const formattedSelectedDate = selectedDate ? selectedDate.toISOString().split("T")[0] : "";
                           const horasOcupadas = intencionesPorFecha[formattedSelectedDate] || [];
@@ -886,7 +917,7 @@ export default function NuevaMisaPage() {
                       </h3>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {TIPOS_INTENCION.map((tipo) => {
+                        {tiposIntencionFiltrados.map((tipo) => {
                           const esSeleccionado = tipo.isSacrament
                             ? selectedSacraments.includes(tipo.id)
                             : (tipoIntencion === tipo.id && selectedSacraments.length === 0);

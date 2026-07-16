@@ -154,7 +154,8 @@ export async function obtenerIntencionesPorMes(anio: number, mes: number): Promi
     });
 
     // Listado de todos los horarios disponibles por defecto en el sistema
-    const todosHorarios = ["07:00 AM", "06:00 PM", "07:00 PM"];
+    const config = await obtenerConfiguraciones();
+    const todosHorarios = config.horariosMisa;
 
     restricciones.forEach((res) => {
       if (!ocupacionPorFecha[res.fechaStr]) {
@@ -310,6 +311,196 @@ export async function eliminarRestriccionPorId(id: string) {
   } catch (error) {
     console.error("Error al eliminar restricción por ID:", error);
     return { success: false, error: "No se pudo eliminar el bloqueo." };
+  }
+}
+
+// Obtener configuraciones del sistema (sacramentos y horarios de misa)
+export async function obtenerConfiguraciones() {
+  try {
+    const settings = await prisma.systemSetting.findMany();
+    const settingsMap = new Map(settings.map(s => [s.key, s.value]));
+
+    const habilitarComunion = settingsMap.get("habilitar_comunion") === "true";
+    const habilitarConfirmacion = settingsMap.get("habilitar_confirmacion") === "true";
+    
+    const horariosMisaStr = settingsMap.get("horarios_misa");
+    const horariosMisa = horariosMisaStr
+      ? horariosMisaStr.split(",").map(h => h.trim()).filter(Boolean)
+      : ["07:00 AM", "06:00 PM", "07:00 PM"];
+
+    return {
+      habilitarComunion,
+      habilitarConfirmacion,
+      horariosMisa
+    };
+  } catch (error) {
+    console.error("Error al obtener configuraciones:", error);
+    return {
+      habilitarComunion: false,
+      habilitarConfirmacion: false,
+      horariosMisa: ["07:00 AM", "06:00 PM", "07:00 PM"]
+    };
+  }
+}
+
+// Actualizar o crear una configuración específica
+export async function actualizarConfiguracion(key: string, value: string) {
+  try {
+    await prisma.systemSetting.upsert({
+      where: { key },
+      update: { value },
+      create: { key, value }
+    });
+    return { success: true };
+  } catch (error) {
+    console.error(`Error al actualizar configuración ${key}:`, error);
+    return { success: false, error: "No se pudo guardar la configuración." };
+  }
+}
+
+// Añadir un nuevo horario de misa a la lista
+export async function agregarHorarioMisa(nuevoHorario: string) {
+  try {
+    const config = await obtenerConfiguraciones();
+    
+    // Validar formato simple HH:MM AM/PM
+    const regex = /^(0[1-9]|1[0-2]):[0-5][0-9]\s(AM|PM)$/i;
+    if (!regex.test(nuevoHorario.trim())) {
+      return { success: false, error: "El formato del horario debe ser HH:MM AM/PM (ej. 08:00 AM)." };
+    }
+
+    const horarioFormateado = nuevoHorario.trim().toUpperCase();
+
+    if (config.horariosMisa.includes(horarioFormateado)) {
+      return { success: false, error: "Este horario ya existe." };
+    }
+
+    const nuevosHorarios = [...config.horariosMisa, horarioFormateado];
+    
+    // Ordenar horarios cronológicamente
+    nuevosHorarios.sort((a, b) => {
+      const toMinutes = (timeStr: string) => {
+        const [time, modifier] = timeStr.split(' ');
+        let [hours, minutes] = time.split(':').map(Number);
+        if (modifier === 'PM' && hours < 12) hours += 12;
+        if (modifier === 'AM' && hours === 12) hours = 0;
+        return hours * 60 + minutes;
+      };
+      return toMinutes(a) - toMinutes(b);
+    });
+
+    const res = await actualizarConfiguracion("horarios_misa", nuevosHorarios.join(","));
+    if (res.success) {
+      return { success: true, horariosMisa: nuevosHorarios };
+    }
+    return { success: false, error: res.error };
+  } catch (error) {
+    console.error("Error al agregar horario de misa:", error);
+    return { success: false, error: "No se pudo agregar el horario." };
+  }
+}
+
+// Eliminar un horario de misa de la lista
+export async function eliminarHorarioMisa(horarioEliminar: string) {
+  try {
+    const config = await obtenerConfiguraciones();
+    const horarioFormateado = horarioEliminar.trim().toUpperCase();
+
+    if (!config.horariosMisa.includes(horarioFormateado)) {
+      return { success: false, error: "El horario a eliminar no existe." };
+    }
+
+    const nuevosHorarios = config.horariosMisa.filter(h => h !== horarioFormateado);
+    const res = await actualizarConfiguracion("horarios_misa", nuevosHorarios.join(","));
+    
+    if (res.success) {
+      return { success: true, horariosMisa: nuevosHorarios };
+    }
+    return { success: false, error: res.error };
+  } catch (error) {
+    console.error("Error al eliminar horario de misa:", error);
+    return { success: false, error: "No se pudo eliminar el horario." };
+  }
+}
+
+// Agregar un nuevo feligrés (Super Admin)
+export async function agregarFeligres(nombre: string, email: string, telefono: string, direccion?: string) {
+  try {
+    const feligresExistente = await prisma.feligres.findUnique({
+      where: { email }
+    });
+    if (feligresExistente) {
+      return { success: false, error: "Ya existe un feligrés registrado con este correo electrónico." };
+    }
+
+    const nuevoFeligres = await prisma.feligres.create({
+      data: {
+        nombre,
+        email,
+        telefono,
+        direccion: direccion || null
+      }
+    });
+
+    return {
+      success: true,
+      data: {
+        ...nuevoFeligres,
+        createdAtStr: nuevoFeligres.createdAt.toISOString().split('T')[0]
+      }
+    };
+  } catch (error) {
+    console.error("Error al agregar feligrés:", error);
+    return { success: false, error: "No se pudo registrar el feligrés." };
+  }
+}
+
+// Eliminar un feligrés (Super Admin)
+export async function eliminarFeligres(id: string) {
+  try {
+    await prisma.feligres.delete({
+      where: { id }
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error al eliminar feligrés:", error);
+    return { success: false, error: "No se pudo eliminar el feligrés." };
+  }
+}
+
+// Actualizar datos de un feligrés (Super Admin)
+export async function actualizarFeligres(id: string, nombre: string, email: string, telefono: string, direccion?: string) {
+  try {
+    const feligresEmailExistente = await prisma.feligres.findFirst({
+      where: {
+        email,
+        NOT: { id }
+      }
+    });
+    if (feligresEmailExistente) {
+      return { success: false, error: "Ya existe otro feligrés registrado con este correo electrónico." };
+    }
+
+    const feligresActualizado = await prisma.feligres.update({
+      where: { id },
+      data: {
+        nombre,
+        email,
+        telefono,
+        direccion: direccion || null
+      }
+    });
+
+    return {
+      success: true,
+      data: {
+        ...feligresActualizado,
+        createdAtStr: feligresActualizado.createdAt.toISOString().split('T')[0]
+      }
+    };
+  } catch (error) {
+    console.error("Error al actualizar feligrés:", error);
+    return { success: false, error: "No se pudo actualizar la información del feligrés." };
   }
 }
 

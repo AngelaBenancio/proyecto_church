@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getSessionPayload } from '../../lib/auth';
-import { obtenerTodasLasIntenciones, obtenerTodosLosFeligreses, obtenerTodasLasRestricciones } from '../../actions/misaActions';
+import { obtenerTodasLasIntenciones, obtenerTodosLosFeligreses, obtenerTodasLasRestricciones, obtenerConfiguraciones } from '../../actions/misaActions';
 import AgendaClient from './AgendaClient';
 
 export const dynamic = 'force-dynamic';
@@ -26,12 +26,16 @@ export default async function PriestAgendaPage() {
   // Obtener restricciones de horarios
   const restricciones = await obtenerTodasLasRestricciones();
 
+  // Obtener configuraciones del sistema
+  const config = await obtenerConfiguraciones();
+
   return (
     <div className="min-h-screen bg-slate-50/50">
       <AgendaClient
         initialIntenciones={intencionesAprobadas}
         initialFeligreses={feligreses}
         initialRestricciones={restricciones}
+        initialConfig={config}
         role={payload.role}
       />
     </div>
