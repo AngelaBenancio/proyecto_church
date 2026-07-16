@@ -13,6 +13,10 @@ export default async function AdminDashboardPage() {
     redirect('/admin/login');
   }
 
+  if (payload.role === 'superadmin') {
+    redirect('/admin/super');
+  }
+
   if (payload.role === 'sacerdote') {
     redirect('/admin/agenda');
   }

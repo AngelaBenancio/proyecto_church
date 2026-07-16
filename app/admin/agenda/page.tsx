@@ -36,7 +36,7 @@ export default async function PriestAgendaPage() {
         initialFeligreses={feligreses}
         initialRestricciones={restricciones}
         initialConfig={config}
-        role={payload.role}
+        role={payload.role === 'superadmin' ? 'admin' : payload.role}
       />
     </div>
   );
