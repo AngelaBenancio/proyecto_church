@@ -7,8 +7,8 @@ services:
     container_name: church_db
     restart: always
     ports:
-      # Expuesto solo localmente para seguridad
-      - "127.0.0.1:5432:5432"
+      # Expuesto solo localmente en puerto 5433 para evitar conflictos con otras DBs
+      - "127.0.0.1:5433:5432"
     environment:
       POSTGRES_USER: user_admin
       POSTGRES_PASSWORD: unaclavesegura_church # ¡REEMPLAZA con una contraseña robusta en producción!
