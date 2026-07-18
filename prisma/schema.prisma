@@ -69,6 +69,41 @@ model HorarioRestringido {
   @@unique([fechaStr, hora])
 }
 
+model ServicioLiturgico {
+  id                     String   @id // e.g. "DIFUNTO", "HONRAS", "SALUD", "CUMPLEANOS", "ACCION_GRACIAS", "BAUTIZO", "MATRIMONIO", "COMUNION", "CONFIRMACION"
+  nombre                 String   // e.g. "Misa de Honras" o "Primera Comunión"
+  categoria              String   // "INTENCION" o "SACRAMENTO"
+  montoSugerido          Decimal  @db.Decimal(10, 2) @default(10.00)
+  descripcion            String?  @db.Text
+  activo                 Boolean  @default(true)
+  
+  // Banderas de configuración dinámica de formularios
+  requiereFestejado      Boolean  @default(false) // Nombre del festejado/difunto
+  labelFestejado         String?  // Ej. "Nombre del difunto" o "Nombre del comulgante"
+  requiereFallecido      Boolean  @default(false) // Agrega leyenda "Q.E.P.D."
+  requiereConyuge        Boolean  @default(false) // Campo novio/a (Matrimonio)
+  requierePadresPadrinos Boolean  @default(false) // Campos de padres y padrinos (Bautizo)
+  
+  // Lista de códigos de documentos requeridos separados por coma (e.g. "DNI_NINO,ACTA_NACIMIENTO")
+  documentosRequeridos   String?  
+  
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+model HorarioDisponible {
+  id               String    @id @default(uuid())
+  hora             String    // Formato "HH:MM" (ej. "07:00", "18:00")
+  diaSemana        Int?      // 0 = Domingo, 1 = Lunes... o null si es fecha especial
+  fechaEspecifica  DateTime? // Si es habilitado solo para un día concreto (misa de honras especial)
+  activo           Boolean   @default(true)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@unique([hora, diaSemana, fechaEspecifica])
+}
+
+
 model SystemSetting {
   key       String   @id
   value     String

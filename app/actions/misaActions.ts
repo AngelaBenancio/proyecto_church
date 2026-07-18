@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from "../lib/prisma";
 
 export interface MisaActionResponse {
@@ -351,6 +352,11 @@ export async function actualizarConfiguracion(key: string, value: string) {
       update: { value },
       create: { key, value }
     });
+    revalidatePath("/misas/nueva");
+    revalidatePath("/admin/dashboard");
+    revalidatePath("/admin/agenda");
+    revalidatePath("/admin/super");
+    revalidatePath("/");
     return { success: true };
   } catch (error) {
     console.error(`Error al actualizar configuración ${key}:`, error);
@@ -501,6 +507,155 @@ export async function actualizarFeligres(id: string, nombre: string, email: stri
   } catch (error) {
     console.error("Error al actualizar feligrés:", error);
     return { success: false, error: "No se pudo actualizar la información del feligrés." };
+  }
+}
+
+// 1. Obtener Servicios Litúrgicos con banderas de formulario y precios
+export async function obtenerServiciosLiturgicos() {
+  try {
+    const servicios = await prisma.servicioLiturgico.findMany({
+      orderBy: { createdAt: "asc" }
+    });
+    return {
+      success: true,
+      data: servicios.map(s => ({
+        id: s.id,
+        label: s.nombre,
+        nombre: s.nombre,
+        categoria: s.categoria,
+        defaultPrice: s.montoSugerido.toString(),
+        montoSugerido: Number(s.montoSugerido),
+        description: s.descripcion || "",
+        activo: s.activo,
+        requiereFestejado: s.requiereFestejado,
+        labelFestejado: s.labelFestejado || "Nombre",
+        requiereFallecido: s.requiereFallecido,
+        requiereConyuge: s.requiereConyuge,
+        requierePadresPadrinos: s.requierePadresPadrinos,
+        documentosRequeridos: s.documentosRequeridos,
+        isSacrament: s.categoria === "SACRAMENTO"
+      }))
+    };
+  } catch (error) {
+    console.error("Error al obtener servicios liturgicos:", error);
+    return { success: false, error: "No se pudieron obtener los servicios." };
+  }
+}
+
+// 2. Actualizar precio, descripción o estado de un servicio
+export async function actualizarServicioLiturgico(
+  id: string,
+  nuevoMonto: number,
+  descripcion?: string,
+  activo?: boolean
+) {
+  try {
+    const s = await prisma.servicioLiturgico.update({
+      where: { id },
+      data: {
+        montoSugerido: nuevoMonto,
+        descripcion: descripcion !== undefined ? descripcion : undefined,
+        activo: activo !== undefined ? activo : undefined,
+      }
+    });
+    revalidatePath("/misas/nueva");
+    revalidatePath("/admin/dashboard");
+    revalidatePath("/admin/agenda");
+    revalidatePath("/admin/super");
+    revalidatePath("/");
+    return { success: true, data: s };
+  } catch (error) {
+    console.error("Error al actualizar servicio:", error);
+    return { success: false, error: "No se pudo actualizar el servicio." };
+  }
+}
+
+// 3. Obtener horarios disponibles para una fecha específica (incluyendo especiales y filtrando restringidos)
+export async function obtenerHorariosDisponibles(fechaStr: string) {
+  try {
+    const date = new Date(fechaStr);
+    if (isNaN(date.getTime())) {
+      return { success: false, error: "Fecha inválida" };
+    }
+    const dayOfWeek = date.getDay(); // 0 = Domingo, 1 = Lunes, etc.
+
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    // Obtener horarios recurrentes de ese día de la semana y horarios especiales para esa fecha
+    const horarios = await prisma.horarioDisponible.findMany({
+      where: {
+        activo: true,
+        OR: [
+          { diaSemana: dayOfWeek },
+          {
+            fechaEspecifica: {
+              gte: startOfDay,
+              lte: endOfDay
+            }
+          }
+        ]
+      },
+      orderBy: { hora: "asc" }
+    });
+
+    // Obtener horarios restringidos (bloqueados) para esta fecha
+    const restringidos = await prisma.horarioRestringido.findMany({
+      where: {
+        fechaStr
+      }
+    });
+
+    // Si hay un bloqueo completo del día (hora es null en HorarioRestringido)
+    const diaCompletoBloqueado = restringidos.some(r => r.hora === null);
+    if (diaCompletoBloqueado) {
+      return { success: true, data: [] };
+    }
+
+    const horasBloqueadas = restringidos.map(r => r.hora);
+
+    // Filtrar los horarios disponibles removiendo las horas bloqueadas
+    const horariosFinales = horarios
+      .map(h => h.hora)
+      .filter(hora => !horasBloqueadas.includes(hora));
+
+    const uniqHorarios = Array.from(new Set(horariosFinales));
+
+    return { success: true, data: uniqHorarios };
+  } catch (error) {
+    console.error("Error al obtener horarios disponibles:", error);
+    return { success: false, error: "No se pudieron cargar los horarios." };
+  }
+}
+
+// 4. Agregar un horario especial de misa para un día concreto
+export async function agregarHorarioEspecial(hora: string, fechaStr: string) {
+  try {
+    const regex = /^(0[1-9]|1[0-2]):[0-5][0-9]\s(AM|PM)$/i;
+    if (!regex.test(hora.trim())) {
+      return { success: false, error: "El formato debe ser HH:MM AM/PM" };
+    }
+    const fechaEspecifica = new Date(fechaStr);
+    if (isNaN(fechaEspecifica.getTime())) {
+      return { success: false, error: "Fecha inválida" };
+    }
+
+    const horaFormateada = hora.trim().toUpperCase();
+
+    await prisma.horarioDisponible.create({
+      data: {
+        hora: horaFormateada,
+        fechaEspecifica,
+        activo: true
+      }
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error al agregar horario especial:", error);
+    return { success: false, error: "No se pudo agregar el horario especial." };
   }
 }
 

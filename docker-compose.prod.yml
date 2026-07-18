@@ -32,8 +32,8 @@ services:
       RESEND_API_KEY: ${RESEND_API_KEY}
     depends_on:
       - db
-    # Comando de inicio: Primero ejecuta las migraciones de base de datos en Postgres y luego inicia la aplicación
-    command: sh -c "npx prisma migrate deploy && npm run start"
+    # Comando de inicio: Ejecuta migraciones, carga inicial de catálogo y arranca Next.js
+    command: sh -c "npx prisma migrate deploy && npx prisma db seed && npm run start"
     networks:
       - church_privada
       - root_default

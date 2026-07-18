@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { crearIntencionMisa, obtenerIntencionesPorMes, obtenerConfiguraciones } from "../../actions/misaActions";
+import { crearIntencionMisa, obtenerIntencionesPorMes, obtenerConfiguraciones, obtenerServiciosLiturgicos, obtenerHorariosDisponibles } from "../../actions/misaActions";
 
 const HORARIOS_MISA = ["07:00 AM", "06:00 PM", "07:00 PM"];
 const TIPOS_INTENCION = [
@@ -28,6 +28,9 @@ export default function NuevaMisaPage() {
     horariosMisa: ["07:00 AM", "06:00 PM", "07:00 PM"]
   });
 
+  const [serviciosDb, setServiciosDb] = useState<any[]>([]);
+  const [horariosDisponibles, setHorariosDisponibles] = useState<string[]>(["07:00 AM", "06:00 PM", "07:00 PM"]);
+
   // Cargar configuraciones del sistema
   useEffect(() => {
     async function loadConfig() {
@@ -43,10 +46,28 @@ export default function NuevaMisaPage() {
     loadConfig();
   }, []);
 
+  // Cargar Catálogo de Servicios desde la Base de Datos
+  useEffect(() => {
+    async function loadServicios() {
+      try {
+        const res = await obtenerServiciosLiturgicos();
+        if (res.success && res.data) {
+          setServiciosDb(res.data);
+        }
+      } catch (error) {
+        console.error("Error al cargar catálogo de servicios de la BD:", error);
+      }
+    }
+    loadServicios();
+  }, []);
+
+  const listadoServicios = serviciosDb.length > 0 ? serviciosDb : TIPOS_INTENCION;
+
   // Filtrar intenciones según configuración
-  const tiposIntencionFiltrados = TIPOS_INTENCION.filter(tipo => {
+  const tiposIntencionFiltrados = listadoServicios.filter(tipo => {
     if (tipo.id === "COMUNION" && !config.habilitarComunion) return false;
     if (tipo.id === "CONFIRMACION" && !config.habilitarConfirmacion) return false;
+    if (tipo.activo === false) return false;
     return true;
   });
 
@@ -122,6 +143,32 @@ export default function NuevaMisaPage() {
     cargarIntenciones();
   }, [currentYear, currentMonth, config.horariosMisa]);
 
+  // Cargar dinámicamente los horarios disponibles según la fecha seleccionada
+  useEffect(() => {
+    async function loadHorarios() {
+      if (!selectedDate) {
+        setHorariosDisponibles([]);
+        return;
+      }
+      try {
+        const anio = selectedDate.getFullYear();
+        const mes = String(selectedDate.getMonth() + 1).padStart(2, "0");
+        const dia = String(selectedDate.getDate()).padStart(2, "0");
+        const fechaStr = `${anio}-${mes}-${dia}`;
+        const res = await obtenerHorariosDisponibles(fechaStr);
+        if (res.success && res.data) {
+          setHorariosDisponibles(res.data);
+        } else {
+          setHorariosDisponibles(config.horariosMisa);
+        }
+      } catch (err) {
+        console.error("Error al cargar horarios del servidor:", err);
+        setHorariosDisponibles(config.horariosMisa);
+      }
+    }
+    loadHorarios();
+  }, [selectedDate, config.horariosMisa]);
+
   // Simulación de carga de archivos (Paso 3)
   const simularCargaArchivo = (
     setter: React.Dispatch<React.SetStateAction<{ name: string; progress: number; isValid: boolean } | null>>,
@@ -146,7 +193,7 @@ export default function NuevaMisaPage() {
     
     let sum = 0;
     sacramentos.forEach(id => {
-      const sac = TIPOS_INTENCION.find(t => t.id === id);
+      const sac = listadoServicios.find(t => t.id === id);
       if (sac) sum += parseFloat(sac.defaultPrice);
     });
     
@@ -241,14 +288,27 @@ export default function NuevaMisaPage() {
       nombreSegundaPersona.trim().length >= 3 &&
       /^\d{8}$/.test(dniSegundaPersona));
 
-  // Validación de campos condicionales sacramentales (Paso 2)
+  // Banderas de requisitos dinámicos basados en la base de datos
+  const requiereCamposPadresPadrinos = selectedSacraments.some(id => listadoServicios.find(s => s.id === id)?.requierePadresPadrinos);
+  const requiereCamposConyuge = selectedSacraments.some(id => listadoServicios.find(s => s.id === id)?.requiereConyuge);
+
+  // Banderas de documentos requeridos
+  const requiereDniNino = selectedSacraments.some(id => listadoServicios.find(s => s.id === id)?.documentosRequeridos?.includes("DNI_NINO"));
+  const requiereActaNacimiento = selectedSacraments.some(id => listadoServicios.find(s => s.id === id)?.documentosRequeridos?.includes("ACTA_NACIMIENTO"));
+  const requiereDniContrayente1 = selectedSacraments.some(id => listadoServicios.find(s => s.id === id)?.documentosRequeridos?.includes("DNI_CONTRAYENTE_1"));
+  const requiereDniContrayente2 = selectedSacraments.some(id => listadoServicios.find(s => s.id === id)?.documentosRequeridos?.includes("DNI_CONTRAYENTE_2"));
+  const requiereActaBautismo = selectedSacraments.some(id => listadoServicios.find(s => s.id === id)?.documentosRequeridos?.includes("ACTA_BAUTISMO"));
+  const requiereDniComulgante = selectedSacraments.some(id => listadoServicios.find(s => s.id === id)?.documentosRequeridos?.includes("DNI_COMULGANTE"));
+  const requiereDniConfirmando = selectedSacraments.some(id => listadoServicios.find(s => s.id === id)?.documentosRequeridos?.includes("DNI_CONFIRMANDO"));
+
+  // Variables de UI para secciones de renderizado
   const tieneBautizoSeleccionado = selectedSacraments.includes("BAUTIZO");
   const tieneMatrimonioSeleccionado = selectedSacraments.includes("MATRIMONIO");
   const tieneConfirmacionSeleccionado = selectedSacraments.includes("CONFIRMACION");
   const tieneComunionSeleccionado = selectedSacraments.includes("COMUNION");
-  
-  const isCamposBautizoValidos = !tieneBautizoSeleccionado || (padresNombres.trim().length >= 5 && padrinosNombres.trim().length >= 5);
-  const isCamposMatrimonioValidos = !tieneMatrimonioSeleccionado || conyugeNombre.trim().length >= 3;
+
+  const isCamposBautizoValidos = !requiereCamposPadresPadrinos || (padresNombres.trim().length >= 5 && padrinosNombres.trim().length >= 5);
+  const isCamposMatrimonioValidos = !requiereCamposConyuge || conyugeNombre.trim().length >= 3;
 
   // Estados de validación por paso
   const isStep1Valido = isFechaValida && isHourValida;
@@ -264,10 +324,13 @@ export default function NuevaMisaPage() {
 
   const isStep3Valido =
     selectedSacraments.length === 0 ||
-    ((!tieneBautizoSeleccionado || (fileDniNino?.isValid && fileActaNacimiento?.isValid)) &&
-      (!tieneMatrimonioSeleccionado || (fileDniContrayente1?.isValid && fileDniContrayente2?.isValid && fileActaBautismo?.isValid)) &&
-      (!tieneConfirmacionSeleccionado || (fileDniConfirmando?.isValid && fileActaBautismo?.isValid)) &&
-      (!tieneComunionSeleccionado || (fileDniComulgante?.isValid && fileActaBautismo?.isValid)));
+    ((!requiereDniNino || fileDniNino?.isValid) &&
+     (!requiereActaNacimiento || fileActaNacimiento?.isValid) &&
+     (!requiereDniContrayente1 || fileDniContrayente1?.isValid) &&
+     (!requiereDniContrayente2 || fileDniContrayente2?.isValid) &&
+     (!requiereActaBautismo || fileActaBautismo?.isValid) &&
+     (!requiereDniComulgante || fileDniComulgante?.isValid) &&
+     (!requiereDniConfirmando || fileDniConfirmando?.isValid));
 
   const isStep4Valido = isYapeValido && isMontoValido;
 
@@ -347,7 +410,7 @@ export default function NuevaMisaPage() {
 
       if (selectedSacraments.length > 0) {
         finalTipoIntencion = selectedSacraments
-          .map((id) => TIPOS_INTENCION.find((t) => t.id === id)?.label || id)
+          .map((id) => listadoServicios.find((t) => t.id === id)?.label || id)
           .join(", ");
       }
 
@@ -636,8 +699,8 @@ export default function NuevaMisaPage() {
                   {" "}
                   <span className="text-[10px] text-[#666666] block font-normal mt-0.5">
                     ({selectedSacraments.length > 0
-                      ? selectedSacraments.map(id => TIPOS_INTENCION.find(t => t.id === id)?.label || id).join(", ")
-                      : TIPOS_INTENCION.find(t => t.id === tipoIntencion)?.label || tipoIntencion})
+                      ? selectedSacraments.map(id => listadoServicios.find(t => t.id === id)?.label || id).join(", ")
+                      : listadoServicios.find(t => t.id === tipoIntencion)?.label || tipoIntencion})
                   </span>
                 </span>
 
@@ -795,16 +858,17 @@ export default function NuevaMisaPage() {
                             );
                           }
 
-                          // Burbuja Lleno / Ocupado total: Fondo Rosa Suave
+                          // Burbuja Lleno / Ocupado total: Sólido Carmesí Ocupado (#bd3a42)
                           if (esDiaLleno) {
                             return (
                               <div key={formattedDate} className="aspect-square flex items-center justify-center p-0.5 sm:p-1 md:p-1.5 relative">
                                 <button
                                   type="button"
                                   disabled
-                                  className="w-full max-w-[48px] aspect-square text-xs sm:text-sm md:text-base rounded-full bg-[#a35b80]/15 border border-[#a35b80]/20 text-[#a35b80]/50 flex items-center justify-center font-semibold cursor-not-allowed select-none shrink-0 relative opacity-90 shadow-3xs"
+                                  className="w-full max-w-[48px] aspect-square text-xs sm:text-sm md:text-base rounded-full bg-[#bd3a42] border-2 border-[#a82931] text-white flex flex-col items-center justify-center font-bold cursor-not-allowed select-none shrink-0 relative opacity-95 shadow-md"
                                 >
-                                  <span className="line-through">{day.getDate()}</span>
+                                  <span className="line-through text-white/90">{day.getDate()}</span>
+                                  <span className="text-[7px] font-black uppercase tracking-widest text-white/90 mt-0.5 block scale-90">Lleno</span>
                                 </button>
                               </div>
                             );
@@ -857,7 +921,7 @@ export default function NuevaMisaPage() {
                           <span>Parcial</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="w-3.5 h-3.5 rounded-full bg-[#a35b80]/15 border border-[#a35b80]/20 shadow-3xs" />
+                          <span className="w-3.5 h-3.5 rounded-full bg-[#bd3a42] border-2 border-[#a82931] shadow-3xs" />
                           <span>Lleno</span>
                         </div>
                       </div>
@@ -874,7 +938,7 @@ export default function NuevaMisaPage() {
                       </div>
                       
                       <div className="grid grid-cols-1 gap-2">
-                         {config.horariosMisa.map((hora) => {
+                         {horariosDisponibles.map((hora) => {
                           const esSeleccionado = selectedHour === hora;
                           const formattedSelectedDate = selectedDate ? selectedDate.toISOString().split("T")[0] : "";
                           const horasOcupadas = intencionesPorFecha[formattedSelectedDate] || [];
@@ -1174,7 +1238,7 @@ export default function NuevaMisaPage() {
                     </div>
 
                     {/* Datos condicionales de Bautizos (Padres/Padrinos) */}
-                    {selectedSacraments.includes("BAUTIZO") && (
+                    {requiereCamposPadresPadrinos && (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#FAF8F3] border border-[#EADCB9]/40 rounded-2xl p-4">
                         <div>
                           <label htmlFor="padres" className="block text-[10px] font-bold uppercase tracking-wider text-[#8C6B2F] mb-1.5">
@@ -1214,7 +1278,7 @@ export default function NuevaMisaPage() {
                     )}
 
                     {/* Datos condicionales de Matrimonio (Cónyuge) */}
-                    {selectedSacraments.includes("MATRIMONIO") && (
+                    {requiereCamposConyuge && (
                       <div className="bg-[#FAF8F3] border border-[#EADCB9]/40 rounded-2xl p-4">
                         <label htmlFor="conyuge" className="block text-[10px] font-bold uppercase tracking-wider text-[#8C6B2F] mb-1.5">
                           Nombre del Cónyuge / Segundo Contrayente *
@@ -1598,12 +1662,8 @@ export default function NuevaMisaPage() {
                           <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider">Tipo de Celebración</span>
                           <span className="block font-serif font-medium text-[#2B2B2B] mt-0.5">
                             {selectedSacraments.length > 0 
-                              ? selectedSacraments.map(id => TIPOS_INTENCION.find(t => t.id === id)?.label || id).join(", ")
-                              : tipoIntencion === "DIFUNTO" ? "Misa de Difunto (Q.E.P.D.)"
-                              : tipoIntencion === "SALUD" ? "Misa por la Salud"
-                              : tipoIntencion === "CUMPLEANOS" ? "Misa de Cumpleaños"
-                              : tipoIntencion === "ACCION_GRACIAS" ? "Acción de Gracias"
-                              : "Misa de Intención Comunitaria"
+                              ? selectedSacraments.map(id => listadoServicios.find(t => t.id === id)?.label || id).join(", ")
+                              : listadoServicios.find(t => t.id === tipoIntencion)?.label || tipoIntencion
                             }
                           </span>
                         </div>

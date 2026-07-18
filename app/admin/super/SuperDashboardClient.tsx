@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useMemo } from 'react';
+import { useState, useEffect, useTransition, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
@@ -12,7 +12,9 @@ import {
   eliminarRestriccionPorId,
   agregarFeligres,
   eliminarFeligres,
-  actualizarFeligres
+  actualizarFeligres,
+  obtenerServiciosLiturgicos,
+  actualizarServicioLiturgico
 } from '../../actions/misaActions';
 import { logoutAdminAction } from '../../actions/authActions';
 
@@ -94,6 +96,42 @@ export default function SuperDashboardClient({
   const [feligresTelefono, setFeligresTelefono] = useState("");
   const [feligresDireccion, setFeligresDireccion] = useState("");
   const [feligresError, setFeligresError] = useState<string | null>(null);
+
+  // Gestión Dinámica de Servicios/Precios (Base de Datos)
+  const [servicios, setServicios] = useState<any[]>([]);
+  const [editingServicio, setEditingServicio] = useState<any | null>(null);
+  const [servicioMonto, setServicioMonto] = useState("");
+  const [servicioDesc, setServicioDesc] = useState("");
+  const [servicioActivo, setServicioActivo] = useState(true);
+  const [servicioError, setServicioError] = useState<string | null>(null);
+
+  const cargarServicios = async () => {
+    const res = await obtenerServiciosLiturgicos();
+    if (res.success && res.data) {
+      setServicios(res.data);
+    }
+  };
+
+  const handleSaveServicio = async () => {
+    if (!editingServicio) return;
+    const precio = parseFloat(servicioMonto);
+    if (isNaN(precio) || precio < 0) {
+      setServicioError("Por favor ingrese un precio válido mayor o igual a 0.");
+      return;
+    }
+    setServicioError(null);
+    const res = await actualizarServicioLiturgico(editingServicio.id, precio, servicioDesc, servicioActivo);
+    if (res.success) {
+      await cargarServicios();
+      setEditingServicio(null);
+    } else {
+      setServicioError(res.error || "No se pudo actualizar el servicio.");
+    }
+  };
+
+  useEffect(() => {
+    cargarServicios();
+  }, []);
 
   // Filtros de Solicitudes
   const [activeTab, setActiveTab] = useState<'hoy' | 'manana' | 'proximas' | 'todas'>('todas');
@@ -1204,6 +1242,168 @@ export default function SuperDashboardClient({
                 </div>
               </div>
             </div>
+
+            {/* Gestión de Tarifas de Ofrendas y Requisitos */}
+            <div className="bg-white border border-[#EBEAE5] rounded-3xl p-6 shadow-sm">
+              <h3 className="font-serif font-bold text-[#5C4E3C] text-base mb-2 border-b border-[#FAF9F6] pb-2">
+                Tarifario de Ofrendas y Requisitos de Servicios
+              </h3>
+              <p className="text-slate-500 text-[11px] leading-relaxed mb-6">
+                Configure los montos sugeridos de las ofrendas para intenciones de misas y sacramentos. También puede ajustar las descripciones y requisitos de cada celebración.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {servicios.map((servicio) => (
+                  <div
+                    key={servicio.id}
+                    className="border border-[#EBEAE5] rounded-2xl p-4 bg-[#FAF9F6] hover:border-amber-600/30 transition-all flex flex-col justify-between shadow-2xs"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-2 pb-1 border-b border-slate-100">
+                        <span className="font-bold text-[#5C4E3C] text-xs truncate max-w-[140px]" title={servicio.nombre}>
+                          {servicio.nombre}
+                        </span>
+                        <span className={`text-[8px] px-2 py-0.5 rounded-full font-bold uppercase shrink-0 ${
+                          servicio.categoria === "SACRAMENTO"
+                            ? "bg-amber-100 text-amber-800"
+                            : "bg-slate-100 text-slate-800"
+                        }`}>
+                          {servicio.categoria}
+                        </span>
+                      </div>
+                      <p className="text-slate-500 text-[10px] line-clamp-2 leading-relaxed mb-3 h-8">
+                        {servicio.description || "Sin descripción cargada."}
+                      </p>
+                      
+                      {/* Detalles de Configuración / Banderas */}
+                      <div className="space-y-1 text-[9px] text-slate-400 font-semibold mb-4 border-t border-slate-100 pt-2">
+                        <div className="flex justify-between">
+                          <span>Monto Sugerido:</span>
+                          <span className="text-slate-700 font-bold">S/. {servicio.montoSugerido.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Requiere Festejado:</span>
+                          <span className="text-slate-600">{servicio.requiereFestejado ? "Sí" : "No"}</span>
+                        </div>
+                        {servicio.requierePadresPadrinos && (
+                          <div className="flex justify-between">
+                            <span>Padres/Padrinos:</span>
+                            <span className="text-slate-600">Sí</span>
+                          </div>
+                        )}
+                        {servicio.documentosRequeridos && (
+                          <div className="flex justify-between">
+                            <span>Documentos:</span>
+                            <span className="text-slate-500 text-right truncate max-w-[120px]">{servicio.documentosRequeridos}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        setEditingServicio(servicio);
+                        setServicioMonto(servicio.montoSugerido.toString());
+                        setServicioDesc(servicio.description);
+                        setServicioActivo(servicio.activo);
+                        setServicioError(null);
+                      }}
+                      className="w-full py-2 bg-white border border-[#EBEAE5] text-[#5C4E3C] hover:bg-slate-50 text-[10px] font-bold rounded-xl transition-all cursor-pointer shadow-3xs active:scale-98"
+                    >
+                      ✏️ Editar Servicio
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Modal para Editar Servicio */}
+            {editingServicio && (
+              <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
+                <div className="bg-white rounded-3xl border border-[#EBEAE5] p-6 max-w-md w-full shadow-2xl space-y-4 animate-scale-up">
+                  <div className="flex justify-between items-center border-b border-[#FAF9F6] pb-3">
+                    <div>
+                      <h4 className="font-serif font-bold text-[#5C4E3C] text-base">
+                        Editar Servicio Parroquial
+                      </h4>
+                      <span className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">
+                        {editingServicio.nombre}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setEditingServicio(null)}
+                      className="text-slate-400 hover:text-slate-600 font-bold text-lg cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  {servicioError && (
+                    <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl font-medium">
+                      ⚠️ {servicioError}
+                    </div>
+                  )}
+
+                  <div className="space-y-3 text-xs">
+                    <div>
+                      <label className="block text-[10px] font-bold text-[#5C4E3C] uppercase tracking-wider mb-1.5">
+                        Monto Ofrenda Sugerida (S/.) *
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        required
+                        value={servicioMonto}
+                        onChange={(e) => setServicioMonto(e.target.value)}
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-amber-600 text-slate-800 font-bold"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-[#5C4E3C] uppercase tracking-wider mb-1.5">
+                        Descripción o Requisitos
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={servicioDesc}
+                        onChange={(e) => setServicioDesc(e.target.value)}
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-amber-600 text-slate-700 text-xs resize-none"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                      <div>
+                        <span className="font-bold text-[#5C4E3C] text-xs block">Estado de Servicio</span>
+                        <span className="text-[10px] text-slate-400">Permitir reservas de este servicio</span>
+                      </div>
+                      <button
+                        onClick={() => setServicioActivo(!servicioActivo)}
+                        className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all duration-300 ${servicioActivo ? 'bg-amber-600' : 'bg-slate-300'}`}
+                      >
+                        <div
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-all duration-300 ${servicioActivo ? 'translate-x-6' : 'translate-x-0'}`}
+                        />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      onClick={() => setEditingServicio(null)}
+                      className="flex-1 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-xl text-xs transition-all cursor-pointer shadow-3xs"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={handleSaveServicio}
+                      className="flex-1 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs transition-all cursor-pointer shadow-3xs"
+                    >
+                      Guardar Cambios
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
