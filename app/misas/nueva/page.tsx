@@ -774,24 +774,50 @@ export default function NuevaMisaPage() {
               <div className="space-y-8 animate-fadeIn">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   
-                  {/* Calendario en su propia tarjeta con Imagen de Fondo Directa (Sin Overlay) */}
+                  {/* Calendario en su propia tarjeta con Fondo Sólido */}
                   <div 
-                    className="lg:col-span-7 bg-gradient-to-b from-white to-[#FAF8F5]/90 border border-white/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-[#9E9A85]/15 relative overflow-hidden"
-                    style={{
-                      backgroundImage: "linear-gradient(rgba(255, 255, 255, 0.84), rgba(250, 248, 245, 0.88)), url('/church_patron.png')",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      backgroundRepeat: "no-repeat"
-                    }}
+                    className="lg:col-span-7 bg-[#FFFDF9] border border-[#EADCB9]/40 rounded-3xl p-6 sm:p-8 shadow-sm relative overflow-hidden"
                   >
                     <div className="relative z-10">
-                      <div className="flex items-center justify-between mb-6 border-b border-[#E0E0E0]/60 pb-3">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-serif text-lg font-medium text-[#2B2B2B]">1. Seleccione la Fecha</h3>
+                      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 border-b border-[#E0E0E0]/60 pb-3 gap-4 md:gap-0">
+                        <div className="flex items-center justify-between w-full md:w-auto">
+                          <h3 className="font-serif text-lg sm:text-xl font-medium text-[#2B2B2B] whitespace-nowrap">1. Seleccione la Fecha</h3>
+                          
+                          {/* SVG para Móvil (Visible solo en pantallas pequeñas) */}
+                          <div className="md:hidden flex justify-center">
+                            <svg className="w-10 h-10 text-[#9A8F82] opacity-70 drop-shadow-sm transition-all" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M10 90 L90 90" />
+                              <path d="M40 40 L50 15 L60 40 L60 90 L40 90 Z" />
+                              <path d="M50 3 L50 12 M46 7 L54 7" />
+                              <path d="M20 90 L20 60 L40 50 M80 90 L80 60 L60 50" />
+                              <path d="M43 90 L43 70 A7 7 0 0 1 57 70 L57 90" />
+                              <circle cx="50" cy="50" r="5" />
+                              <circle cx="50" cy="50" r="1.5" />
+                              <path d="M26 80 L26 70 A4 4 0 0 1 34 70 L34 80 Z" />
+                              <path d="M66 80 L66 70 A4 4 0 0 1 74 70 L74 80 Z" />
+                              <path d="M35 53 L20 60 M65 53 L80 60" />
+                            </svg>
+                          </div>
+                        </div>
+                        
+                        {/* SVG Centrado (Solo Escritorio) */}
+                        <div className="hidden md:flex flex-1 justify-center mx-4">
+                          <svg className="w-12 h-12 lg:w-16 lg:h-16 text-[#9A8F82] opacity-70 drop-shadow-sm transition-all" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M10 90 L90 90" />
+                            <path d="M40 40 L50 15 L60 40 L60 90 L40 90 Z" />
+                            <path d="M50 3 L50 12 M46 7 L54 7" />
+                            <path d="M20 90 L20 60 L40 50 M80 90 L80 60 L60 50" />
+                            <path d="M43 90 L43 70 A7 7 0 0 1 57 70 L57 90" />
+                            <circle cx="50" cy="50" r="5" />
+                            <circle cx="50" cy="50" r="1.5" />
+                            <path d="M26 80 L26 70 A4 4 0 0 1 34 70 L34 80 Z" />
+                            <path d="M66 80 L66 70 A4 4 0 0 1 74 70 L74 80 Z" />
+                            <path d="M35 53 L20 60 M65 53 L80 60" />
+                          </svg>
                         </div>
                         
                         {/* Controles del Mes con Estética Límpida */}
-                        <div className="flex items-center gap-1.5 bg-[#FAF8F3]/80 border border-[#EADCB9]/40 p-1 rounded-xl shadow-2xs">
+                        <div className="flex items-center justify-between md:justify-start gap-1.5 bg-[#FAF8F3]/80 border border-[#EADCB9]/40 p-1 rounded-xl shadow-2xs shrink-0 w-full md:w-auto">
                           <button
                             type="button"
                             onClick={mesAnterior}
@@ -812,6 +838,8 @@ export default function NuevaMisaPage() {
                           </button>
                         </div>
                       </div>
+
+
 
                       {/* Cuadrícula de Fechas */}
                       <div className="grid grid-cols-7 gap-1 text-center text-xs font-bold text-[#8C6B2F] uppercase mb-4 tracking-wider">
@@ -932,12 +960,12 @@ export default function NuevaMisaPage() {
                   <div className="lg:col-span-5 flex flex-col gap-6">
                     
                     {/* Tarjeta de Horario */}
-                    <div className="bg-gradient-to-b from-white to-[#FAF8F5]/90 border border-white/80 rounded-2xl p-4 sm:p-5 shadow-xl shadow-[#9E9A85]/15">
-                      <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#E0E0E0]/60">
-                        <h3 className="font-serif text-base font-bold text-[#2B2B2B]">2. Horario</h3>
+                    <div className="bg-[#FFFDF9] border border-[#EADCB9]/40 rounded-3xl p-6 sm:p-8 shadow-sm">
+                      <div className="flex items-center gap-2 mb-6 border-b border-[#E0E0E0]/60 pb-3">
+                        <h3 className="font-serif text-lg font-medium text-[#2B2B2B]">2. Horario</h3>
                       </div>
                       
-                      <div className="grid grid-cols-1 gap-2">
+                      <div className="flex flex-col gap-4">
                          {horariosDisponibles.map((hora) => {
                           const esSeleccionado = selectedHour === hora;
                           const formattedSelectedDate = selectedDate ? selectedDate.toISOString().split("T")[0] : "";
@@ -951,23 +979,25 @@ export default function NuevaMisaPage() {
                               onClick={() => setSelectedHour(hora)}
                               disabled={esHoraOcupada || !selectedDate}
                               className={`
-                                px-3 rounded-xl border text-left transition-all cursor-pointer flex items-center h-10 shadow-3xs
-                                ${esHoraOcupada
-                                  ? "bg-[#D3CEBA]/10 text-[#666666]/30 border-[#E0E0E0]/60 cursor-not-allowed line-through"
-                                  : !selectedDate
-                                    ? "bg-[#D3CEBA]/5 text-[#666666]/40 border-[#E0E0E0]/40 cursor-not-allowed"
-                                    : esSeleccionado
-                                      ? "bg-white border-2 border-[#a35b80] text-[#a35b80] ring-4 ring-[#a35b80]/10"
-                                      : "bg-white text-[#2B2B2B] border-[#E0E0E0] hover:border-[#E69526]/50"
-                                }
+                                group flex items-center justify-between py-1 transition-all w-full text-left
+                                ${esHoraOcupada ? "opacity-50 cursor-not-allowed" : !selectedDate ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
                               `}
                             >
-                              <div className="flex justify-between items-center w-full">
-                                <span className={`text-xs font-bold ${esSeleccionado ? "text-[#a35b80]" : "text-[#2B2B2B]"}`}>{hora}</span>
-                                {esHoraOcupada && (
-                                  <span className="text-[7.5px] text-red-500 font-bold uppercase tracking-wider">Ocupada</span>
-                                )}
-                              </div>
+                              <span className={`font-serif text-[11px] tracking-wider uppercase ${esSeleccionado ? "text-[#80385e] font-bold" : "text-[#5C554B]"}`}>
+                                {hora}
+                              </span>
+                              <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 mx-3 relative top-[-4px]" />
+                              <span className={`
+                                px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all shrink-0
+                                ${esHoraOcupada 
+                                  ? "bg-[#D3CEBA]/30 text-red-700/60 line-through" 
+                                  : esSeleccionado 
+                                    ? "bg-[#80385e] text-white shadow-sm" 
+                                    : "bg-[#EADCB9]/40 text-[#5C554B] group-hover:bg-[#EADCB9]/70"
+                                }
+                              `}>
+                                {esHoraOcupada ? "Ocupado" : "Seleccionar"}
+                              </span>
                             </button>
                           );
                         })}
@@ -975,12 +1005,12 @@ export default function NuevaMisaPage() {
                     </div>
 
                     {/* Tarjeta de Tipo de Celebración (Movida a la derecha) */}
-                    <div className="bg-gradient-to-b from-white to-[#FAF8F5]/90 border border-white/80 rounded-2xl p-4 sm:p-5 shadow-xl shadow-[#9E9A85]/15">
-                      <h3 className="font-serif text-base font-bold text-[#2B2B2B] border-b border-[#E0E0E0]/60 pb-2 mb-3">
-                        3. Tipo de Celebración
-                      </h3>
+                    <div className="bg-[#FFFDF9] border border-[#EADCB9]/40 rounded-3xl p-6 sm:p-8 shadow-sm">
+                      <div className="flex items-center gap-2 mb-6 border-b border-[#E0E0E0]/60 pb-3">
+                        <h3 className="font-serif text-lg font-medium text-[#2B2B2B]">3. Tipo de Celebración</h3>
+                      </div>
                       
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div className="flex flex-col gap-5">
                         {tiposIntencionFiltrados.map((tipo) => {
                           const esSeleccionado = tipo.isSacrament
                             ? selectedSacraments.includes(tipo.id)
@@ -1028,27 +1058,25 @@ export default function NuevaMisaPage() {
                                   }
                                 }
                               }}
-                              className={`
-                                p-2 px-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between h-11 shadow-3xs
-                                ${esSeleccionado
-                                  ? "bg-[#a35b80]/5 border-[#a35b80] shadow-xs"
-                                  : "bg-[#FFFFFF] hover:bg-[#D3CEBA]/30 text-[#2B2B2B] border-[#E0E0E0] hover:border-[#E69526]/30"
-                                }
-                              `}
+                              className="group flex items-start sm:items-center justify-between transition-all cursor-pointer w-full text-left"
                             >
-                              <div className="flex items-center justify-between w-full">
-                                <span className="text-[11px] font-bold text-[#2B2B2B] leading-tight">{tipo.label}</span>
-                                {tipo.isSacrament && (
-                                  <span className={`w-3 h-3 rounded border flex items-center justify-center text-[7.5px] transition-colors shrink-0 ${
-                                    esSeleccionado 
-                                      ? "bg-[#a35b80] border-[#a35b80] text-white font-bold" 
-                                      : "border-[#E0E0E0] bg-[#FFFFFF]"
-                                  }`}>
-                                    {esSeleccionado && "✓"}
-                                  </span>
-                                )}
+                              <div className="flex-1 pr-2">
+                                <span className={`font-serif text-[10px] sm:text-[11px] tracking-wider uppercase block leading-tight mt-0.5 ${esSeleccionado ? "text-[#80385e] font-bold" : "text-[#5C554B]"}`}>
+                                  {tipo.label}
+                                </span>
                               </div>
-                              <span className="text-[7.5px] text-[#666666] font-light leading-none mt-0.5 block truncate">{tipo.description}</span>
+                              <div className="hidden sm:block flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 mx-3 relative top-[-6px]" />
+                              <div className="shrink-0 pt-1 sm:pt-0">
+                                <span className={`
+                                  px-3 py-1.5 rounded-full text-[9px] font-bold tracking-widest transition-all block text-center
+                                  ${esSeleccionado 
+                                    ? "bg-[#80385e] text-white shadow-sm" 
+                                    : "bg-[#EADCB9]/40 text-[#5C554B] group-hover:bg-[#EADCB9]/70"
+                                  }
+                                `}>
+                                  S/. {tipo.defaultPrice}
+                                </span>
+                              </div>
                             </button>
                           );
                         })}
@@ -1061,14 +1089,14 @@ export default function NuevaMisaPage() {
                       onClick={handleNextStep}
                       disabled={!isStep1Valido}
                       className={`
-                        w-full py-4 text-xs font-bold uppercase tracking-wider rounded-2xl text-white transition-all shadow-md active:scale-99 flex items-center justify-center gap-2 cursor-pointer
+                        w-full sm:w-auto self-start px-8 py-3.5 mt-2 text-xs font-bold uppercase tracking-wider rounded-full transition-all flex items-center justify-center gap-2 border-[1.5px] cursor-pointer
                         ${isStep1Valido
-                          ? "bg-gradient-to-r from-[#a35b80] to-[#8c456b] hover:from-[#8c456b] hover:to-[#6e3152] shadow-md hover:shadow-lg shadow-[#a35b80]/20"
-                          : "bg-[#E0E0E0] text-[#666666]/40 cursor-not-allowed"
+                          ? "border-[#2B2B2B] text-[#2B2B2B] hover:bg-[#D3CEBA]/30 active:scale-95"
+                          : "border-[#E0E0E0] text-[#666666]/40 cursor-not-allowed"
                         }
                       `}
                     >
-                      Continuar &rarr;
+                      Continuar
                     </button>
                   </div>
                 </div>
@@ -1307,7 +1335,7 @@ export default function NuevaMisaPage() {
                         id="mensaje"
                         value={mensaje}
                         onChange={(e) => setMensaje(e.target.value)}
-                        placeholder="Ej. Intención por primer mes de fallecido o detalles específicos"
+                        placeholder="Ej. por sus 16 años, primer mes de fallecido, u otros detalles"
                         rows={3}
                         className="w-full text-xs px-4 py-3 bg-[#FFFFFF] border border-[#E1DBCB] rounded-xl focus:outline-none focus:border-[#E69526] text-[#2B2B2B] transition-all resize-none"
                       />
@@ -1648,111 +1676,204 @@ export default function NuevaMisaPage() {
                 {step === 4 && (
                   <div className="space-y-6">
                     <h3 className="font-serif text-lg font-medium text-[#2B2B2B] border-b border-[#E0E0E0] pb-3">
-                      Ofrenda de la Celebración y Pago Vía Yape
+                      Ofrenda de Celebración
                     </h3>
 
-                    {/* Tarjeta de Resumen Detallado */}
-                    <div className="bg-gradient-to-b from-[#FAF8F5] to-white border border-[#EADCB9]/60 rounded-2xl p-5 shadow-2xs space-y-4">
-                      <div className="flex items-center gap-2 border-b border-[#EADCB9]/30 pb-2 mb-1">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#a35b80]">Resumen de la Solicitud</span>
-                      </div>
+                    {/* Tarjeta de Resumen Detallado (Estilo Elegante Spa/Iglesia) */}
+                    <div className="bg-[#FCFAF8] border border-[#F2EFE9] rounded-[2rem] p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] max-w-2xl relative">
                       
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                        <div>
-                          <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider">Tipo de Celebración</span>
-                          <span className="block font-serif font-medium text-[#2B2B2B] mt-0.5">
-                            {selectedSacraments.length > 0 
-                              ? selectedSacraments.map(id => listadoServicios.find(t => t.id === id)?.label || id).join(", ")
-                              : listadoServicios.find(t => t.id === tipoIntencion)?.label || tipoIntencion
-                            }
-                          </span>
+                      {/* Cabecera con título e ilustración */}
+                      <div className="flex justify-between items-start mb-6">
+                        <div className="pt-2">
+                          <h3 className="font-serif text-2xl tracking-[0.2em] text-[#3A332B] uppercase leading-tight">
+                            Resumen<br/>
+                            <span className="font-light text-[#5C5346]">Solicitud</span>
+                          </h3>
                         </div>
+                        <div className="shrink-0 opacity-80">
+                          {/* Ilustración de Iglesia en líneas finas */}
+                          <svg viewBox="0 0 100 100" fill="none" stroke="#9A8C78" strokeWidth="0.7" className="w-24 h-24 -mt-4 -mr-4">
+                            <path d="M50 8 v12 M46 12 h8" strokeLinecap="round" />
+                            <path d="M50 20 L30 40 v50 h40 V40 z" strokeLinejoin="round" />
+                            <path d="M30 40 L20 50 v40 h10 M70 40 L80 50 v40 h-10" strokeLinejoin="round" />
+                            <path d="M42 90 V75 a8 8 0 0 1 16 0 V90" />
+                            <circle cx="50" cy="52" r="5" />
+                            <path d="M24 65 h4 v15 h-4 z M72 65 h4 v15 h-4 z" />
+                            {/* Detalles de vitrales simples */}
+                            <path d="M46 60 h8 M46 64 h8 M46 68 h8" strokeWidth="0.4" strokeDasharray="1 1" />
+                          </svg>
+                        </div>
+                      </div>
+
+                      {/* Línea divisoria */}
+                      <div className="w-full h-px bg-[#EADCB9]/50 mb-6" />
+
+                      {/* Descripción */}
+                      <p className="text-[11px] text-[#8C7A6B] font-light leading-relaxed mb-8 pr-4 max-w-[90%] sm:max-w-[80%]">
+                        Verifica los detalles de tu celebración.
+                      </p>
+
+                      {/* Lista de Detalles */}
+                      <div className="space-y-6">
                         
-                        {nombreIntencion && (
-                          <div>
-                            <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider">Intención para / Festejado</span>
-                            <span className="block font-serif font-medium text-[#80385e] mt-0.5">
-                              {nombreIntencion}
-                              {conyugeNombre && ` y ${conyugeNombre}`}
-                              {nombreSegundaPersona && isMismaPersona === false && ` y ${nombreSegundaPersona}`}
+                        {/* Ítem 1: Celebración */}
+                        <div className="flex items-end gap-3">
+                          <div className="flex flex-col">
+                            <span className="font-serif text-[12px] sm:text-[13px] text-[#3A332B] uppercase tracking-wider">
+                              {selectedSacraments.length > 0 
+                                ? selectedSacraments.map(id => listadoServicios.find(t => t.id === id)?.label || id).join(", ")
+                                : listadoServicios.find(t => t.id === tipoIntencion)?.label || tipoIntencion
+                              }
                             </span>
+                            <span className="text-[9px] sm:text-[10px] text-[#9A8C78] font-light tracking-wide">Celebración</span>
+                          </div>
+                          
+                          <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 relative top-[-6px]" />
+                          
+                          <div className="shrink-0 pb-0.5">
+                            <span className="bg-[#F0EBE1] text-[#7A6B58] text-[9px] sm:text-[10px] font-bold px-3 py-1.5 rounded-full tracking-wider whitespace-nowrap">
+                              S/ {montoOfrenda}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Ítem 2: Intención (Si existe) */}
+                        {nombreIntencion && (
+                          <div className="flex items-end gap-3">
+                            <div className="flex flex-col">
+                              <span className="font-serif text-[12px] sm:text-[13px] text-[#3A332B] uppercase tracking-wider line-clamp-1">
+                                {nombreIntencion}
+                                {conyugeNombre && ` y ${conyugeNombre}`}
+                                {nombreSegundaPersona && isMismaPersona === false && ` y ${nombreSegundaPersona}`}
+                              </span>
+                              <span className="text-[9px] sm:text-[10px] text-[#9A8C78] font-light tracking-wide">Festejado / Intención</span>
+                            </div>
+                            
+                            <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 relative top-[-6px]" />
+                            
+                            <div className="shrink-0 pb-0.5">
+                              <span className="bg-[#EAE5DA] text-[#6B5A47] text-[9px] sm:text-[10px] font-bold px-3 py-1.5 rounded-full tracking-wider whitespace-nowrap">
+                                {tipoIntencion === 'DIFUNTO' ? 'EN MEMORIA' 
+                                 : ['BAUTIZO', 'COMUNION', 'CONFIRMACION', 'MATRIMONIO', 'CUMPLEANOS'].includes(tipoIntencion) ? 'FESTEJADO' 
+                                 : 'INTENCIÓN'}
+                              </span>
+                            </div>
                           </div>
                         )}
 
-                        <div>
-                          <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider">Fecha Litúrgica</span>
-                          <span className="block font-mono font-bold text-[#2B2B2B] mt-0.5">
-                            {selectedDate ? selectedDate.toLocaleDateString('es-PE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : ''}
-                          </span>
+                        {/* Ítem 3: Fecha y Hora */}
+                        <div className="flex items-end gap-3">
+                          <div className="flex flex-col">
+                            <span className="font-serif text-[12px] sm:text-[13px] text-[#3A332B] uppercase tracking-wider">
+                              {selectedDate ? selectedDate.toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric' }) : ''}
+                            </span>
+                            <span className="text-[9px] sm:text-[10px] text-[#9A8C78] font-light tracking-wide">Fecha Litúrgica</span>
+                          </div>
+                          
+                          <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 relative top-[-6px]" />
+                          
+                          <div className="shrink-0 pb-0.5">
+                            <span className="bg-[#E4E9E1] text-[#5A6B55] text-[9px] sm:text-[10px] font-bold px-3 py-1.5 rounded-full tracking-wider whitespace-nowrap">
+                              {selectedHour}
+                            </span>
+                          </div>
                         </div>
 
-                        <div>
-                          <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider">Hora Agendada</span>
-                          <span className="block font-mono font-bold text-[#2B2B2B] mt-0.5">
-                            {selectedHour}
-                          </span>
+                        {/* Ítem 4: Solicitante */}
+                        <div className="flex items-end gap-3">
+                          <div className="flex flex-col w-[50%] sm:w-auto">
+                            <span className="font-serif text-[12px] sm:text-[13px] text-[#3A332B] uppercase tracking-wider truncate max-w-[200px] sm:max-w-[250px]">
+                              {nombreSolicitante}
+                            </span>
+                            <span className="text-[9px] sm:text-[10px] text-[#9A8C78] font-light tracking-wide truncate">Contacto: {emailSolicitante}</span>
+                          </div>
+                          
+                          <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 relative top-[-6px]" />
+                          
+                          <div className="shrink-0 pb-0.5">
+                            <span className="bg-[#EBE2E3] text-[#78595D] text-[9px] sm:text-[10px] font-bold px-3 py-1.5 rounded-full tracking-wider whitespace-nowrap">
+                              {telefonoSolicitante}
+                            </span>
+                          </div>
                         </div>
 
-                        <div>
-                          <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider">Solicitante</span>
-                          <span className="block font-medium text-[#2B2B2B] mt-0.5">
-                            {nombreSolicitante} ({telefonoSolicitante})
-                          </span>
-                        </div>
+                        {/* Ítem 5: Observación (Si existe) */}
+                        {mensaje && (
+                          <div className="flex items-end gap-3 mt-4">
+                            <div className="flex flex-col w-[70%] sm:w-[80%]">
+                              <span className="font-serif text-[12px] sm:text-[13px] text-[#3A332B] uppercase tracking-wider line-clamp-2" title={mensaje}>
+                                {mensaje}
+                              </span>
+                              <span className="text-[9px] sm:text-[10px] text-[#9A8C78] font-light tracking-wide">Observación Especial</span>
+                            </div>
+                            
+                            <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 relative top-[-6px]" />
+                            
+                            <div className="shrink-0 pb-0.5">
+                              <span className="bg-[#E4E4E9] text-[#555B6B] text-[9px] sm:text-[10px] font-bold px-3 py-1.5 rounded-full tracking-wider whitespace-nowrap">
+                                DETALLE
+                              </span>
+                            </div>
+                          </div>
+                        )}
 
-                        <div>
-                          <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider">Correo Electrónico</span>
-                          <span className="block font-medium text-[#2B2B2B] mt-0.5 break-all">
-                            {emailSolicitante}
-                          </span>
-                        </div>
                       </div>
 
-                      {/* Documentos Cargados */}
+                      {/* Documentos Cargados (Opcional) */}
                       {(fileDniNino || fileActaNacimiento || fileDniContrayente1 || fileDniContrayente2 || fileActaBautismo || fileDniComulgante || fileDniConfirmando) && (
-                        <div className="border-t border-[#EADCB9]/30 pt-3">
-                          <span className="block text-[9px] font-bold text-[#8C6B2F] uppercase tracking-wider mb-1.5">Documentos Adjuntos</span>
+                        <div className="mt-8 border-t border-[#EADCB9]/40 pt-5">
+                          <span className="block text-[10px] font-bold text-[#8C7A6B] uppercase tracking-widest mb-3">Documentos Adjuntos</span>
                           <div className="flex flex-wrap gap-2">
-                            {fileDniNino && <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 text-[10px] px-2 py-0.5 rounded-md font-medium">✓ DNI Niño: {fileDniNino.name}</span>}
-                            {fileActaNacimiento && <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 text-[10px] px-2 py-0.5 rounded-md font-medium">✓ Acta Nacimiento: {fileActaNacimiento.name}</span>}
-                            {fileDniContrayente1 && <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 text-[10px] px-2 py-0.5 rounded-md font-medium">✓ DNI Novio 1: {fileDniContrayente1.name}</span>}
-                            {fileDniContrayente2 && <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 text-[10px] px-2 py-0.5 rounded-md font-medium">✓ DNI Novio 2: {fileDniContrayente2.name}</span>}
-                            {fileActaBautismo && <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 text-[10px] px-2 py-0.5 rounded-md font-medium">✓ Acta Bautismo: {fileActaBautismo.name}</span>}
-                            {fileDniComulgante && <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 text-[10px] px-2 py-0.5 rounded-md font-medium">✓ DNI Comulgante: {fileDniComulgante.name}</span>}
-                            {fileDniConfirmando && <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 text-[10px] px-2 py-0.5 rounded-md font-medium">✓ DNI Confirmando: {fileDniConfirmando.name}</span>}
+                            {fileDniNino && <span className="bg-white text-[#7A6B58] border border-[#EADCB9] text-[9px] px-2.5 py-1 rounded-full uppercase tracking-wider">✓ DNI Niño</span>}
+                            {fileActaNacimiento && <span className="bg-white text-[#7A6B58] border border-[#EADCB9] text-[9px] px-2.5 py-1 rounded-full uppercase tracking-wider">✓ Acta Nacimiento</span>}
+                            {fileDniContrayente1 && <span className="bg-white text-[#7A6B58] border border-[#EADCB9] text-[9px] px-2.5 py-1 rounded-full uppercase tracking-wider">✓ DNI Novio 1</span>}
+                            {fileDniContrayente2 && <span className="bg-white text-[#7A6B58] border border-[#EADCB9] text-[9px] px-2.5 py-1 rounded-full uppercase tracking-wider">✓ DNI Novio 2</span>}
+                            {fileActaBautismo && <span className="bg-white text-[#7A6B58] border border-[#EADCB9] text-[9px] px-2.5 py-1 rounded-full uppercase tracking-wider">✓ Acta Bautismo</span>}
+                            {fileDniComulgante && <span className="bg-white text-[#7A6B58] border border-[#EADCB9] text-[9px] px-2.5 py-1 rounded-full uppercase tracking-wider">✓ DNI Comulgante</span>}
+                            {fileDniConfirmando && <span className="bg-white text-[#7A6B58] border border-[#EADCB9] text-[9px] px-2.5 py-1 rounded-full uppercase tracking-wider">✓ DNI Confirmando</span>}
                           </div>
                         </div>
                       )}
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-6 items-center bg-[#FAF8F3] border border-[#EADCB9]/40 rounded-2xl p-6 shadow-2xs">
-                      <div className="flex-1 space-y-3">
+                    <div className="flex flex-col sm:flex-row gap-8 items-center bg-[#FCFAF8] border border-[#F2EFE9] rounded-[2rem] p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mt-8">
+                      <div className="flex-1 space-y-4">
                         <div>
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#8C6B2F]">Aporte Sugerido</span>
-                          <div className="text-3xl font-serif font-semibold text-[#a35b80] mt-0.5">
-                            S/. {montoOfrenda}
+                          <span className="font-serif text-[11px] font-bold uppercase tracking-[0.2em] text-[#9A8C78]">Aporte</span>
+                          <div className="text-4xl font-serif font-semibold text-[#3A332B] mt-1 tracking-tight">
+                            S/ {montoOfrenda}
                           </div>
                           {selectedSacraments.length >= 2 && (
-                            <span className="text-[9px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200/50 px-2 py-0.5 rounded-md mt-1.5 inline-block">
-                              Descuento por Combo Aplicado
+                            <span className="text-[9px] text-[#5A6B55] font-bold bg-[#E4E9E1] px-3 py-1.5 rounded-full mt-3 inline-block tracking-widest uppercase">
+                              Descuento de Combo Aplicado
                             </span>
                           )}
                         </div>
 
-                        <ul className="text-xs text-[#666666] font-light space-y-1.5 list-disc pl-4">
-                          <li>Escanee el código QR con su aplicativo de Yape.</li>
-                          <li>O yapee directo al nro de teléfono: <strong className="text-[#2B2B2B] font-bold">987 654 321</strong>.</li>
-                          <li>Destinatario: <span className="italic font-medium">Parroquia Patrocinio</span>.</li>
-                          <li>Ingrese los <strong className="text-[#2B2B2B] font-bold">últimos 3 dígitos</strong> del número de operación en el formulario.</li>
+                        <div className="w-12 h-px bg-[#EADCB9]/80" />
+
+                        <ul className="text-[11px] text-[#8C7A6B] font-light space-y-2.5 list-none">
+                          <li className="flex items-start gap-2">
+                            <span className="text-[#D3CEBA] text-[14px] leading-none mt-0.5">•</span>
+                            <span>Escanea el código QR desde tu aplicación Yape.</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-[#D3CEBA] text-[14px] leading-none mt-0.5">•</span>
+                            <span>O yapea al número <strong className="text-[#3A332B] font-medium tracking-wide">987 654 321</strong> (Parroquia Patrocinio).</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-[#D3CEBA] text-[14px] leading-none mt-0.5">•</span>
+                            <span>Ingresa los <strong className="text-[#3A332B] font-medium tracking-wide">últimos 3 dígitos</strong> de la operación debajo.</span>
+                          </li>
                         </ul>
                       </div>
 
-                      {/* QR Mockup */}
-                      <div className="w-32 h-32 border border-[#EADCB9]/30 bg-[#FFFFFF] rounded-2xl flex flex-col items-center justify-center p-3 select-none relative shrink-0 shadow-sm">
-                        <div className="absolute top-1.5 right-1.5 w-3 h-3 rounded-full bg-purple-600 flex items-center justify-center text-[7px] text-white font-bold">
+                      {/* QR Minimalista Elegante */}
+                      <div className="w-36 h-36 sm:w-44 sm:h-44 border border-[#F2EFE9] bg-white rounded-[2rem] flex flex-col items-center justify-center p-5 relative shrink-0 shadow-sm group hover:shadow-md transition-all">
+                        <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full bg-[#742384] shadow-md flex items-center justify-center text-[16px] text-white font-bold tracking-tighter border-[3px] border-white z-10">
                           Y
                         </div>
-                        <svg className="w-24 h-24 text-[#2B2B2B]" viewBox="0 0 100 100" fill="currentColor">
+                        <svg className="w-20 h-20 sm:w-24 sm:h-24 text-[#3A332B] opacity-80 group-hover:opacity-100 transition-opacity" viewBox="0 0 100 100" fill="currentColor">
                           <rect x="0" y="0" width="25" height="25" />
                           <rect x="5" y="5" width="15" height="15" fill="white" />
                           <rect x="75" y="0" width="25" height="25" />
@@ -1767,7 +1888,7 @@ export default function NuevaMisaPage() {
                           <rect x="45" y="80" width="15" height="15" />
                           <rect x="15" y="40" width="10" height="10" />
                         </svg>
-                        <span className="text-[7px] font-bold uppercase tracking-wider text-purple-600 mt-1">Escanear Yape</span>
+                        <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.25em] text-[#8C7A6B] mt-3">Escanear</span>
                       </div>
                     </div>
 
@@ -1777,15 +1898,15 @@ export default function NuevaMisaPage() {
                           Monto de Ofrenda (S/.) *
                         </label>
                         <div className="relative">
-                          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-[#666666]">S/.</span>
+                          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-[#8C7A6B] font-medium">S/.</span>
                           <input
                             id="monto"
                             type="text"
                             required
+                            readOnly
                             value={montoOfrenda}
-                            onChange={handleMontoChange}
                             placeholder="10.00"
-                            className="w-full text-xs pl-9 pr-4 py-3 bg-[#FFFFFF] border border-[#E1DBCB] rounded-xl focus:outline-none focus:border-[#E69526] focus:ring-4 focus:ring-[#E69526]/10 text-[#2B2B2B]"
+                            className="w-full text-xs pl-9 pr-4 py-3 bg-[#F5F2EA] border border-[#E1DBCB]/70 rounded-xl text-[#7A6B58] font-bold cursor-not-allowed select-none"
                           />
                         </div>
                       </div>

@@ -31,7 +31,7 @@ const SACRAMENTOS_DATA: Record<string, SacramentInfo> = {
     description: "El bautismo es la puerta de la vida espiritual y el acceso a los demás sacramentos. Conozca las pautas y documentos requeridos.",
     price: "50.00",
     talkInfo: {
-      title: "🗓️ Charlas Pre-Bautismales",
+      title: "Charlas Pre-Bautismales",
       description: "Padres y padrinos deben asistir obligatoriamente a la charla de formación.",
       frequency: "Tercer Sábado de cada mes",
       schedule: "05:00 PM - Salón Parroquial (Presencial)",
@@ -39,7 +39,7 @@ const SACRAMENTOS_DATA: Record<string, SacramentInfo> = {
     },
     requirements: [
       {
-        title: "1. Del Bautizado (Niño/a)",
+        title: "1. Del Bautizado",
         icon: (
           <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -87,7 +87,7 @@ const SACRAMENTOS_DATA: Record<string, SacramentInfo> = {
     description: "La alianza matrimonial por la que un varón y una mujer constituyen una íntima comunidad de vida y amor. Prepare su expediente con anticipación.",
     price: "80.00",
     talkInfo: {
-      title: "🗓️ Charlas Prematrimoniales",
+      title: "Charlas Prematrimoniales",
       description: "Ambos novios deben asistir obligatoriamente a las charlas de preparación conyugal.",
       frequency: "Primer Fin de Semana del mes",
       schedule: "06:00 PM - Salón Parroquial (Sábado y Domingo)",
@@ -142,7 +142,7 @@ const SACRAMENTOS_DATA: Record<string, SacramentInfo> = {
     description: "La primera recepción de la Eucaristía, alimento espiritual de la Iglesia. Requiere preparación catequética y espiritual familiar.",
     price: "30.00",
     talkInfo: {
-      title: "🗓️ Catequesis Eucarística",
+      title: "Catequesis Eucarística",
       description: "Sesiones semanales formativas dirigidas a niños y charlas periódicas de apoyo a padres.",
       frequency: "Todos los Domingos (Durante el período escolar)",
       schedule: "09:00 AM - Aulas de Catequesis",
@@ -183,7 +183,7 @@ const SACRAMENTOS_DATA: Record<string, SacramentInfo> = {
     description: "Fortalece la gracia bautismal y nos une más íntimamente a la Iglesia. Nos capacita para ser testigos de la fe.",
     price: "50.00",
     talkInfo: {
-      title: "🗓️ Formación de Confirmación",
+      title: "Formación de Confirmación",
       description: "Preparación doctrinal e iniciación apostólica en grupos de jóvenes.",
       frequency: "Todos los Sábados",
       schedule: "04:00 PM - Salón Juvenil",
@@ -228,26 +228,19 @@ export default function RequisitosSacramentosPage() {
   return (
     <main className="min-h-screen bg-[#fafaf9] text-slate-900 pb-24 font-sans selection:bg-amber-100">
       {/* Header Fino de Navegación */}
-      <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-md border-b border-stone-200/60 py-4 px-4 sm:px-8">
+      <header className="sticky top-0 z-40 bg-gradient-to-r from-[#80385e] via-[#a35b80] to-[#964a75] shadow-md py-4 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link 
             href="/" 
-            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-stone-600 hover:text-stone-900 transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white/80 hover:text-white transition-colors"
           >
             <span className="text-sm font-semibold">&larr;</span> Volver al Inicio
           </Link>
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Trámites Parroquiales</span>
-          </div>
         </div>
       </header>
 
       {/* Hero Header */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-6 text-center">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-amber-700 mb-2.5 block">
-          Guía de Preparación
-        </span>
         <h1 className="font-serif text-3xl sm:text-5xl font-light text-stone-800 tracking-tight leading-tight">
           Requisitos de los Sacramentos
         </h1>
@@ -273,8 +266,8 @@ export default function RequisitosSacramentosPage() {
                 className={`
                   flex-1 text-[11px] font-bold uppercase tracking-wider py-2.5 px-2 text-center rounded-xl transition-all cursor-pointer select-none
                   ${isActive 
-                    ? "bg-amber-600 text-white shadow-sm" 
-                    : "text-stone-600 hover:text-stone-900 hover:bg-white/40"
+                    ? "bg-[#80385e] text-white shadow-sm" 
+                    : "text-[#7A6B58] hover:text-[#80385e] hover:bg-white/40"
                   }
                 `}
               >
@@ -289,39 +282,93 @@ export default function RequisitosSacramentosPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
         
         {/* Columna Izquierda: Requisitos Detallados */}
-        <div className="lg:col-span-8 space-y-6">
-          <div className="bg-amber-50/50 border border-amber-200/60 rounded-3xl p-6 sm:p-8 mb-2">
-            <h2 className="font-serif text-xl sm:text-2xl font-light text-amber-900 mb-1">
-              {sac.title}
-            </h2>
-            <p className="text-[11px] uppercase tracking-widest text-amber-700 font-bold mb-3">
-              {sac.subtitle}
-            </p>
-            <p className="text-xs sm:text-sm text-stone-600 font-light leading-relaxed">
-              {sac.description}
-            </p>
-          </div>
-
-          {sac.requirements.map((sec, idx) => (
-            <div key={idx} className="bg-white border border-stone-200/80 rounded-3xl p-6 sm:p-8 shadow-sm">
-              <div className="flex items-center gap-3 mb-5 border-b border-stone-100 pb-3">
-                <div className="p-2 bg-amber-50 rounded-xl">
-                  {sec.icon}
-                </div>
-                <h3 className="font-serif text-lg sm:text-xl font-medium text-stone-800">
-                  {sec.title}
-                </h3>
+        <div className="lg:col-span-8">
+          <div className="bg-[#FCFAF8] border border-[#F2EFE9] rounded-[2rem] p-6 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative">
+            
+            {/* Header del Sacramento (Titulo + LineArt) */}
+            <div className="flex justify-between items-start mb-6">
+              <div className="flex-1">
+                <h2 className="font-serif text-2xl sm:text-3xl text-[#3A332B] uppercase tracking-widest leading-tight">
+                  REQUISITOS <br /> {activeTab === 'bautizo' ? 'DE BAUTIZO' : activeTab === 'matrimonio' ? 'DE MATRIMONIO' : activeTab === 'comunion' ? 'DE COMUNIÓN' : 'DE CONFIRMACIÓN'}
+                </h2>
               </div>
-              <ul className="space-y-3.5">
-                {sec.items.map((item, itemIdx) => (
-                  <li key={itemIdx} className="flex items-start gap-3 text-xs sm:text-sm text-stone-600 font-light leading-relaxed">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0 mt-2" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="shrink-0 ml-4 opacity-70">
+                {/* SVG Ilustración Line Art */}
+                {activeTab === 'bautizo' && (
+                  <svg className="w-16 h-16 sm:w-20 sm:h-20 text-[#8C7A6B]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    {/* Pila bautismal minimalista */}
+                    <path d="M20 35 L80 35 C80 55 65 65 50 65 C35 65 20 55 20 35 Z" />
+                    <path d="M42 65 L40 85 M58 65 L60 85" />
+                    <path d="M30 85 L70 85 L75 95 L25 95 Z" />
+                    <path d="M50 15 L50 25 M45 20 L55 20" />
+                    <path d="M35 35 Q 50 50 65 35" strokeDasharray="2 4" />
+                  </svg>
+                )}
+                {activeTab === 'matrimonio' && (
+                  <svg className="w-16 h-16 sm:w-20 sm:h-20 text-[#8C7A6B]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    {/* Anillos entrelazados minimalista */}
+                    <circle cx="40" cy="50" r="20" />
+                    <circle cx="60" cy="50" r="20" />
+                    <path d="M40 30 L45 20 L55 20 L60 30" strokeLinejoin="round" />
+                    <circle cx="50" cy="22" r="2" fill="currentColor" stroke="none" />
+                  </svg>
+                )}
+                {activeTab === 'comunion' && (
+                  <svg className="w-16 h-16 sm:w-20 sm:h-20 text-[#8C7A6B]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    {/* Cáliz y hostia elegantes */}
+                    {/* Hostia radiante */}
+                    <circle cx="50" cy="30" r="16" />
+                    <path d="M45 30 L55 30 M50 25 L50 35" />
+                    {/* Copa curvada */}
+                    <path d="M28 45 L72 45 C72 65 58 75 50 75 C42 75 28 65 28 45 Z" />
+                    {/* Tallo del cáliz */}
+                    <path d="M50 75 L50 92" />
+                    {/* Nudo */}
+                    <circle cx="50" cy="82" r="3" fill="currentColor" stroke="none" />
+                    {/* Base elegante */}
+                    <path d="M35 95 L65 95 C 65 95 60 92 50 92 C 40 92 35 95 35 95 Z" fill="currentColor" stroke="none" />
+                  </svg>
+                )}
+                {activeTab === 'confirmacion' && (
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
+                    <img src="/images/gold-dove.png" alt="Paloma de Confirmación" className="w-full h-full object-contain" />
+                  </div>
+                )}
+              </div>
             </div>
-          ))}
+
+            <div className="w-full h-px bg-[#EADCB9]/60 mb-10" />
+
+            <div className="space-y-8">
+              {sac.requirements.map((sec, idx) => (
+                <div key={idx} className="group">
+                  {/* Título de la sección como el Spa Menu */}
+                  <div className="flex items-end gap-3 mb-4">
+                    <h3 className="font-serif text-[13px] sm:text-[14px] text-[#3A332B] uppercase tracking-widest whitespace-nowrap">
+                      {sec.title}
+                    </h3>
+                    <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 relative top-[-6px]" />
+                    <div className="shrink-0 pb-0.5">
+                       <span className="bg-[#E4E9E1] text-[#5A6B55] text-[9px] font-bold px-3 py-1.5 rounded-full tracking-wider">
+                         OBLIGATORIO
+                       </span>
+                    </div>
+                  </div>
+                  
+                  {/* Lista de items */}
+                  <ul className="space-y-3.5 pl-1">
+                    {sec.items.map((item, itemIdx) => (
+                      <li key={itemIdx} className="flex items-start gap-3 text-xs sm:text-[13px] text-[#7A6B58] font-light leading-relaxed">
+                        <span className="text-[#D3CEBA] text-[16px] leading-none mt-0.5">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            
+          </div>
         </div>
 
         {/* Columna Derecha: Charlas e Información de Reserva */}
@@ -354,33 +401,26 @@ export default function RequisitosSacramentosPage() {
             </div>
           </div>
 
-          {/* Tarjeta de Ofrenda */}
-          <div className="bg-white border border-stone-200/80 rounded-3xl p-6 shadow-sm">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-stone-700 mb-1 border-b border-stone-100 pb-2">
-              💰 Ofrenda Parroquial
-            </h3>
-            <p className="text-[11px] text-stone-500 font-light mt-2.5 leading-relaxed">
-              La celebración comunitaria de este sacramento tiene una ofrenda voluntaria sugerida de <strong className="text-stone-700 font-bold">S/. {sac.price}</strong> para el sostenimiento del templo.
-            </p>
-            <p className="text-[11px] text-stone-500 font-light mt-2 leading-relaxed">
-              El pago se realiza mediante **Yape** de forma unificada en el último paso al reservar la fecha en línea.
-            </p>
-          </div>
-
           {/* Llamado a la Acción de Reservación Centralizada */}
-          <div className="bg-gradient-to-br from-amber-600 to-amber-700 text-white rounded-3xl p-6 shadow-md border border-amber-700">
-            <span className="text-[9px] font-bold uppercase tracking-widest text-amber-200 block mb-1">
+          <div className="bg-gradient-to-r from-[#80385e] via-[#a35b80] to-[#964a75] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-[#964a75] relative overflow-hidden">
+            <div className="absolute top-0 right-0 -mr-8 -mt-8 opacity-10">
+              <svg width="120" height="120" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 4h-3V2h-2v2h-4V2H8v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z" />
+              </svg>
+            </div>
+            
+            <span className="text-[9px] font-bold uppercase tracking-widest text-[#f5d0e3] block mb-2 relative z-10">
               ¿Listo para agendar?
             </span>
-            <h3 className="font-serif text-lg font-light tracking-tight mb-3">
-              Separar Fecha de Misa
+            <h3 className="font-serif text-xl sm:text-2xl font-light tracking-wide mb-3 text-white relative z-10">
+              Separar Fecha
             </h3>
-            <p className="text-xs text-amber-100 font-light leading-relaxed mb-6">
+            <p className="text-xs text-[#ebd5e1] font-light leading-relaxed mb-6 relative z-10 pr-4">
               Una vez que cuente con todos los requisitos listos, proceda al formulario de reservas para agendar el día y la hora de su celebración.
             </p>
             <Link
               href="/misas/nueva"
-              className="w-full inline-flex items-center justify-center px-4 py-3.5 text-xs font-bold uppercase tracking-wider text-amber-950 bg-white hover:bg-stone-50 active:scale-98 transition-all rounded-xl shadow duration-200"
+              className="w-full inline-flex items-center justify-center px-4 py-4 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-50 active:scale-95 transition-all rounded-xl shadow-lg shadow-black/20 relative z-10"
             >
               Reservar {sac.title.replace("Sacramento del ", "")} &rarr;
             </Link>

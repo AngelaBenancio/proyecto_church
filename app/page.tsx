@@ -75,6 +75,8 @@ function LogoIglesia({ className = "w-5 h-5" }: { className?: string }) {
 
 export default function Home() {
   const [isServicesVisible, setIsServicesVisible] = useState(false);
+  const [typedText, setTypedText] = useState("");
+  const fullText = "Bajo tu amparo nos acogemos madre";
   const servicesSectionRef = useRef<HTMLElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -106,7 +108,20 @@ export default function Home() {
       observer.observe(servicesSectionRef.current);
     }
 
-    return () => observer.disconnect();
+    // Typewriter effect
+    let i = 0;
+    const timer = setInterval(() => {
+      setTypedText(fullText.slice(0, i));
+      i++;
+      if (i > fullText.length) {
+        clearInterval(timer);
+      }
+    }, 70);
+
+    return () => {
+      observer.disconnect();
+      clearInterval(timer);
+    };
   }, []);
   return (
     <div className="flex flex-col min-h-screen bg-[#fafaf9] text-slate-800 font-sans antialiased selection:bg-amber-100 selection:text-amber-900">
@@ -202,8 +217,8 @@ export default function Home() {
             />
           </svg>
           <div className="absolute inset-0 pl-5 pr-12 flex items-center gap-2 pointer-events-auto">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#5c3e35] pt-0.5">
-              bajo tu patrocinio acógenos madre
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#5c3e35] pt-0.5 font-serif border-r-[1.5px] border-[#5c3e35] pr-1 animate-pulse">
+              {typedText}
             </span>
           </div>
         </div>
@@ -216,7 +231,7 @@ export default function Home() {
             
             {/* Left Column: Huge elegant serif title */}
             <div className="lg:col-span-7">
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6.5xl font-light text-[#5c3e35] leading-[1.1] tracking-tight">
+              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6.5xl font-light text-[#8C7A6B] leading-[1.1] tracking-tight">
                 Parroquia Nuestra Señora del Patrocinio
               </h1>
               
@@ -293,7 +308,7 @@ export default function Home() {
               </p>
               <Link 
                 href="#servicios" 
-                className="inline-flex items-center gap-2 px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-white bg-amber-600 hover:bg-amber-700 transition-all rounded-xl shadow-sm hover:shadow active:scale-95 duration-200"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-white bg-[#80385e] hover:bg-[#964a75] transition-all rounded-full shadow-sm hover:scale-105 active:scale-95 duration-200"
               >
                 Ver Servicios
                 <span className="text-sm font-semibold">&rarr;</span>
@@ -305,16 +320,14 @@ export default function Home() {
       </section>
 
       {/* Services Section (Premium Card Carousel with Staggered Scroll Reveal) */}
-      <section id="servicios" ref={servicesSectionRef} className="py-24 sm:py-32 bg-gradient-to-r from-[#80385e] via-[#a35b80] to-[#964a75] text-white relative overflow-hidden">
+      <section id="servicios" ref={servicesSectionRef} className="py-16 sm:py-20 bg-gradient-to-r from-[#80385e] via-[#a35b80] to-[#964a75] text-white relative overflow-hidden">
         {/* Soft background glow to match the theme */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#a35b80]/20 rounded-full blur-[140px] pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-16 sm:mb-20">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-3">
-              Atención Pastoral
-            </h2>
-            <p className="font-serif text-3xl sm:text-4xl font-light tracking-tight text-white leading-tight">
+          <div className="max-w-3xl mb-8 sm:mb-10">
+
+            <p className="font-serif text-2xl sm:text-3xl lg:text-4xl font-light text-[#EADCB9] leading-[1.1] tracking-tight">
               Servicios y sacramentos a disposición de nuestra comunidad
             </p>
           </div>
@@ -367,19 +380,31 @@ export default function Home() {
                       className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none"
                     />
                   </div>
-                  <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-6">
+                  <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-4">
+                    <div className="flex justify-center mb-1">
+                      <svg className="w-12 h-12 text-white/40 drop-shadow-md" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10 90 L90 90" />
+                        <path d="M40 40 L50 15 L60 40 L60 90 L40 90 Z" />
+                        <path d="M50 3 L50 12 M46 7 L54 7" />
+                        <path d="M20 90 L20 60 L40 50 M80 90 L80 60 L60 50" />
+                        <path d="M43 90 L43 70 A7 7 0 0 1 57 70 L57 90" />
+                        <circle cx="50" cy="50" r="5" />
+                        <circle cx="50" cy="50" r="1.5" />
+                        <path d="M26 80 L26 70 A4 4 0 0 1 34 70 L34 80 Z" />
+                        <path d="M66 80 L66 70 A4 4 0 0 1 74 70 L74 80 Z" />
+                        <path d="M35 53 L20 60 M65 53 L80 60" />
+                      </svg>
+                    </div>
                     <div>
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-amber-400 mb-2 block">
-                        Celebraciones
-                      </span>
-                      <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3">
+
+                      <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3 text-center">
                         Misas
                       </h3>
-                      <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
+                      <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed text-center">
                         Separa la fecha de tu misa comunitaria, ya sea para intenciones tradicionales (salud, difuntos) o celebraciones de bautizos y otros sacramentos. Registra tu ofrenda vía Yape.
                       </p>
                     </div>
-                    <Link href="/misas/nueva" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
+                    <Link href="/misas/nueva" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
                       Reservar Misa
                     </Link>
                   </div>
@@ -404,19 +429,31 @@ export default function Home() {
                       className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none"
                     />
                   </div>
-                  <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-6">
+                  <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-4">
+                    <div className="flex justify-center mb-1">
+                      <svg className="w-12 h-12 text-white/40 drop-shadow-md" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10 90 L90 90" />
+                        <path d="M40 40 L50 15 L60 40 L60 90 L40 90 Z" />
+                        <path d="M50 3 L50 12 M46 7 L54 7" />
+                        <path d="M20 90 L20 60 L40 50 M80 90 L80 60 L60 50" />
+                        <path d="M43 90 L43 70 A7 7 0 0 1 57 70 L57 90" />
+                        <circle cx="50" cy="50" r="5" />
+                        <circle cx="50" cy="50" r="1.5" />
+                        <path d="M26 80 L26 70 A4 4 0 0 1 34 70 L34 80 Z" />
+                        <path d="M66 80 L66 70 A4 4 0 0 1 74 70 L74 80 Z" />
+                        <path d="M35 53 L20 60 M65 53 L80 60" />
+                      </svg>
+                    </div>
                     <div>
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-[#EADCB9] mb-2 block">
-                        Sacramentos
-                      </span>
-                      <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3">
+
+                      <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3 text-center">
                         Requisitos de Sacramentos
                       </h3>
-                      <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
+                      <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed text-center">
                         Revisa la lista completa de documentos obligatorios (DNI, acta de nacimiento) y charlas de preparación necesarias para padres y padrinos antes de celebrar un bautizo.
                       </p>
                     </div>
-                    <Link href="/bautizos" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
+                    <Link href="/bautizos" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
                       Ver Requisitos
                     </Link>
                   </div>
@@ -441,19 +478,31 @@ export default function Home() {
                       className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none"
                     />
                   </div>
-                  <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-6">
+                  <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-4">
+                    <div className="flex justify-center mb-1">
+                      <svg className="w-12 h-12 text-white/40 drop-shadow-md" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10 90 L90 90" />
+                        <path d="M40 40 L50 15 L60 40 L60 90 L40 90 Z" />
+                        <path d="M50 3 L50 12 M46 7 L54 7" />
+                        <path d="M20 90 L20 60 L40 50 M80 90 L80 60 L60 50" />
+                        <path d="M43 90 L43 70 A7 7 0 0 1 57 70 L57 90" />
+                        <circle cx="50" cy="50" r="5" />
+                        <circle cx="50" cy="50" r="1.5" />
+                        <path d="M26 80 L26 70 A4 4 0 0 1 34 70 L34 80 Z" />
+                        <path d="M66 80 L66 70 A4 4 0 0 1 74 70 L74 80 Z" />
+                        <path d="M35 53 L20 60 M65 53 L80 60" />
+                      </svg>
+                    </div>
                     <div>
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-amber-400 mb-2 block">
-                        Liturgia
-                      </span>
-                      <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3">
+
+                      <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3 text-center">
                         Horarios y Despacho
                       </h3>
-                      <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
+                      <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed text-center">
                         Consulta los horarios detallados de celebraciones dominicales y semanales, confesiones en el templo, charlas para padres y padrinos, y la disponibilidad del despacho.
                       </p>
                     </div>
-                    <Link href="#horarios" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
+                    <Link href="#horarios" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
                       Ver Horarios
                     </Link>
                   </div>
@@ -478,19 +527,31 @@ export default function Home() {
                       className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none opacity-85"
                     />
                   </div>
-                  <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-6">
+                  <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-4">
+                    <div className="flex justify-center mb-1">
+                      <svg className="w-12 h-12 text-white/40 drop-shadow-md" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10 90 L90 90" />
+                        <path d="M40 40 L50 15 L60 40 L60 90 L40 90 Z" />
+                        <path d="M50 3 L50 12 M46 7 L54 7" />
+                        <path d="M20 90 L20 60 L40 50 M80 90 L80 60 L60 50" />
+                        <path d="M43 90 L43 70 A7 7 0 0 1 57 70 L57 90" />
+                        <circle cx="50" cy="50" r="5" />
+                        <circle cx="50" cy="50" r="1.5" />
+                        <path d="M26 80 L26 70 A4 4 0 0 1 34 70 L34 80 Z" />
+                        <path d="M66 80 L66 70 A4 4 0 0 1 74 70 L74 80 Z" />
+                        <path d="M35 53 L20 60 M65 53 L80 60" />
+                      </svg>
+                    </div>
                     <div>
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-[#EADCB9] mb-2 block">
-                        Catequesis
-                      </span>
-                      <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3">
+
+                      <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3 text-center">
                         Comunidad y Catequesis
                       </h3>
-                      <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
+                      <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed text-center">
                         Infórmate sobre las fechas de inscripción para la preparación sacramental de niños, jóvenes y adultos (Primera Comunión, Confirmación y Catequesis Familiar).
                       </p>
                     </div>
-                    <Link href="#faq" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
+                    <Link href="#faq" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
                       Más Información
                     </Link>
                   </div>
@@ -515,19 +576,31 @@ export default function Home() {
                       className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none brightness-90"
                     />
                   </div>
-                  <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-6">
+                  <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-4">
+                    <div className="flex justify-center mb-1">
+                      <svg className="w-12 h-12 text-white/40 drop-shadow-md" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10 90 L90 90" />
+                        <path d="M40 40 L50 15 L60 40 L60 90 L40 90 Z" />
+                        <path d="M50 3 L50 12 M46 7 L54 7" />
+                        <path d="M20 90 L20 60 L40 50 M80 90 L80 60 L60 50" />
+                        <path d="M43 90 L43 70 A7 7 0 0 1 57 70 L57 90" />
+                        <circle cx="50" cy="50" r="5" />
+                        <circle cx="50" cy="50" r="1.5" />
+                        <path d="M26 80 L26 70 A4 4 0 0 1 34 70 L34 80 Z" />
+                        <path d="M66 80 L66 70 A4 4 0 0 1 74 70 L74 80 Z" />
+                        <path d="M35 53 L20 60 M65 53 L80 60" />
+                      </svg>
+                    </div>
                     <div>
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-amber-400 mb-2 block">
-                        Unción
-                      </span>
-                      <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3">
+
+                      <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3 text-center">
                         Atención a Enfermos
                       </h3>
-                      <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
+                      <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed text-center">
                         Coordina visitas pastorales para la comunión a domicilio de personas enfermas o ancianas, y solicita la unción de los enfermos en situaciones de necesidad espiritual.
                       </p>
                     </div>
-                    <Link href="#contacto" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
+                    <Link href="#contacto" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
                       Solicitar Visita
                     </Link>
                   </div>
@@ -552,19 +625,31 @@ export default function Home() {
                       className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none brightness-90"
                     />
                   </div>
-                  <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-6">
+                  <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-4">
+                    <div className="flex justify-center mb-1">
+                      <svg className="w-12 h-12 text-white/40 drop-shadow-md" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10 90 L90 90" />
+                        <path d="M40 40 L50 15 L60 40 L60 90 L40 90 Z" />
+                        <path d="M50 3 L50 12 M46 7 L54 7" />
+                        <path d="M20 90 L20 60 L40 50 M80 90 L80 60 L60 50" />
+                        <path d="M43 90 L43 70 A7 7 0 0 1 57 70 L57 90" />
+                        <circle cx="50" cy="50" r="5" />
+                        <circle cx="50" cy="50" r="1.5" />
+                        <path d="M26 80 L26 70 A4 4 0 0 1 34 70 L34 80 Z" />
+                        <path d="M66 80 L66 70 A4 4 0 0 1 74 70 L74 80 Z" />
+                        <path d="M35 53 L20 60 M65 53 L80 60" />
+                      </svg>
+                    </div>
                     <div>
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-[#EADCB9] mb-2 block">
-                        Ofrendas
-                      </span>
-                      <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3">
+
+                      <h3 className="font-serif text-lg sm:text-xl font-light text-white tracking-tight leading-snug mb-3 text-center">
                         Apoyo y Ofrendas
                       </h3>
-                      <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
+                      <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed text-center">
                         Apoya el sostenimiento de nuestro templo parroquial y las obras de caridad de Cáritas local a través de diezmos, ofrendas dominicales o donaciones virtuales.
                       </p>
                     </div>
-                    <Link href="#contacto" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200">
+                    <Link href="#contacto" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
                       Cómo Ayudar
                     </Link>
                   </div>
@@ -576,173 +661,157 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Information & Schedules Section */}
-      <section id="horarios" className="py-20 sm:py-28 bg-[#f5f5f4] border-t border-b border-slate-200/50">
+      {/* Information & Schedules Section (Estilo Spa Menu) */}
+      <section id="horarios" className="py-20 sm:py-28 bg-[#FFFDF9] border-t border-b border-[#EADCB9]/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-indigo-600">
-              Cronograma de Actividades
+            <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight text-[#2B2B2B] uppercase">
+              Horarios y Atención
             </h2>
-            <p className="mt-3 font-serif text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
-              Horarios Litúrgicos y de Atención
+            <p className="mt-4 text-[#8C7A6B] font-light max-w-2xl mx-auto text-sm sm:text-base">
+              Conoce nuestros horarios de celebraciones eucarísticas, atención de secretaría parroquial y disponibilidad para confesiones. Estamos para servirte y acompañarte.
             </p>
-            <div className="mt-4 h-1.5 w-12 bg-amber-500 rounded-full mx-auto" />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
-            {/* Horarios de Misa */}
-            <div className="bg-white rounded-3xl p-8 border border-slate-200/40 shadow-sm flex flex-col justify-between">
+            {/* Card 1: Santas Misas */}
+            <div className="bg-[#FFFDF9] rounded-3xl p-8 border border-[#EADCB9]/40 shadow-sm flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-3.5 mb-6">
-                  <div className="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100/55">
-                    <svg
-                      className="w-5.5 h-5.5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={1.8}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="font-serif text-xl font-bold text-slate-900">
+                <div className="flex items-start justify-between mb-6 border-b border-[#E0E0E0]/60 pb-4">
+                  <h3 className="font-serif text-lg sm:text-xl font-medium text-[#2B2B2B] uppercase max-w-[150px] leading-tight">
                     Santas Misas
                   </h3>
+                  <svg className="w-12 h-12 text-[#9A8F82] opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
                 </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center py-2.5 border-b border-slate-100">
-                    <span className="text-slate-700 font-medium">Lunes a Sábado</span>
-                    <span className="text-slate-800 bg-slate-100 px-3.5 py-1.5 rounded-full text-xs font-bold font-mono">
-                      7:00 AM &bull; 6:00 PM
+                <p className="text-xs text-[#8C7A6B] font-light leading-relaxed mb-6">
+                  Participa de nuestras celebraciones eucarísticas diarias y dominicales. Un encuentro fraterno en torno a la mesa del Señor.
+                </p>
+                
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="font-serif text-[11px] tracking-wider uppercase text-[#2B2B2B]">Lunes a Sábado</span>
+                    </div>
+                    <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 mx-3 relative top-[-4px]" />
+                    <span className="bg-[#EADCB9]/40 text-[#5C554B] px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest shrink-0">
+                      7:00 AM • 6:00 PM
                     </span>
                   </div>
-                  <div className="py-2.5">
-                    <span className="block text-slate-700 font-medium mb-2">Domingos</span>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="bg-amber-100/70 text-amber-800 border border-amber-200/50 px-3 py-1 rounded-full text-xs font-bold font-mono">
-                        8:00 AM
-                      </span>
-                      <span className="bg-amber-100/70 text-amber-800 border border-amber-200/50 px-3 py-1 rounded-full text-xs font-bold font-mono">
-                        11:00 AM
-                      </span>
-                      <span className="bg-indigo-600 text-white px-3 py-1 rounded-full text-xs font-bold font-mono">
-                        7:00 PM
-                      </span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="font-serif text-[11px] tracking-wider uppercase text-[#2B2B2B]">Domingo</span>
                     </div>
+                    <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 mx-3 relative top-[-4px]" />
+                    <span className="bg-[#EADCB9]/40 text-[#5C554B] px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest shrink-0">
+                      8 AM • 11 AM • 7 PM
+                    </span>
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-slate-400 mt-6 pt-4 border-t border-slate-100/60 leading-normal font-light">
-                * Las intenciones virtuales se registran para las misas comunitarias dominicales y diarias.
-              </p>
+              
+              <div className="pt-8">
+                <Link href="/misas/nueva" className="inline-flex items-center justify-center px-6 py-2.5 border-[1.5px] border-[#2B2B2B] rounded-full text-[#2B2B2B] text-xs font-bold uppercase tracking-wider hover:bg-[#80385e] hover:text-white hover:border-[#80385e] transition-colors">
+                  Solicitar Misa
+                </Link>
+              </div>
             </div>
 
-            {/* Despacho Parroquial */}
-            <div className="bg-white rounded-3xl p-8 border border-slate-200/40 shadow-sm flex flex-col justify-between">
+            {/* Card 2: Despacho Parroquial */}
+            <div className="bg-[#FFFDF9] rounded-3xl p-8 border border-[#EADCB9]/40 shadow-sm flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-3.5 mb-6">
-                  <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center border border-amber-100/55">
-                    <svg
-                      className="w-5.5 h-5.5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={1.8}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="font-serif text-xl font-bold text-slate-900">
+                <div className="flex items-start justify-between mb-6 border-b border-[#E0E0E0]/60 pb-4">
+                  <h3 className="font-serif text-lg sm:text-xl font-medium text-[#2B2B2B] uppercase max-w-[150px] leading-tight">
                     Despacho Parroquial
                   </h3>
+                  <svg className="w-12 h-12 text-[#9A8F82] opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
                 </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                    <span className="text-slate-700 font-medium">Martes a Sábado</span>
-                    <div className="text-right">
-                      <span className="block text-slate-800 font-bold font-mono text-xs">
-                        9:00 AM - 1:00 PM
-                      </span>
-                      <span className="block text-slate-800 font-bold font-mono text-xs mt-1">
-                        3:00 PM - 7:00 PM
-                      </span>
+                <p className="text-xs text-[#8C7A6B] font-light leading-relaxed mb-6">
+                  Acércate a secretaría para trámites de sacramentos, expedición de partidas, constancias y reservas especiales.
+                </p>
+                
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="font-serif text-[11px] tracking-wider uppercase text-[#2B2B2B]">Mar a Sáb (Mñn)</span>
                     </div>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                    <span className="text-slate-700 font-medium">Domingos</span>
-                    <span className="text-slate-800 font-bold font-mono text-xs">
-                      9:00 AM - 1:00 PM
+                    <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 mx-3 relative top-[-4px]" />
+                    <span className="bg-[#EADCB9]/40 text-[#5C554B] px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest shrink-0">
+                      9 AM - 1 PM
                     </span>
                   </div>
-                  <div className="flex justify-between items-center py-2 text-slate-400">
-                    <span className="font-medium">Lunes</span>
-                    <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400">
-                      Cerrado por descanso
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="font-serif text-[11px] tracking-wider uppercase text-[#2B2B2B]">Mar a Sáb (Tde)</span>
+                    </div>
+                    <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 mx-3 relative top-[-4px]" />
+                    <span className="bg-[#EADCB9]/40 text-[#5C554B] px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest shrink-0">
+                      3 PM - 7 PM
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="font-serif text-[11px] tracking-wider uppercase text-[#2B2B2B]">Domingos</span>
+                    </div>
+                    <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 mx-3 relative top-[-4px]" />
+                    <span className="bg-[#EADCB9]/40 text-[#5C554B] px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest shrink-0">
+                      9 AM - 1 PM
                     </span>
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-slate-400 mt-6 pt-4 border-t border-slate-100/60 leading-normal font-light">
-                * Para entrega de certificados de bautizo en físico, acudir en los horarios de oficina indicados.
-              </p>
+              
+              <div className="pt-8">
+                <Link href="#contacto" className="inline-flex items-center justify-center px-6 py-2.5 border-[1.5px] border-[#2B2B2B] rounded-full text-[#2B2B2B] text-xs font-bold uppercase tracking-wider hover:bg-[#80385e] hover:text-white hover:border-[#80385e] transition-colors">
+                  Ver Ubicación
+                </Link>
+              </div>
             </div>
 
-            {/* Confesiones y Atención Pastoral */}
-            <div className="bg-white rounded-3xl p-8 border border-slate-200/40 shadow-sm flex flex-col justify-between">
+            {/* Card 3: Confesiones */}
+            <div className="bg-[#FFFDF9] rounded-3xl p-8 border border-[#EADCB9]/40 shadow-sm flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-3.5 mb-6">
-                  <div className="w-11 h-11 rounded-xl bg-slate-50 text-slate-600 flex items-center justify-center border border-slate-200/50">
-                    <svg
-                      className="w-5.5 h-5.5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={1.8}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="font-serif text-xl font-bold text-slate-900">
-                    Confesiones y Consejería
+                <div className="flex items-start justify-between mb-6 border-b border-[#E0E0E0]/60 pb-4">
+                  <h3 className="font-serif text-lg sm:text-xl font-medium text-[#2B2B2B] uppercase max-w-[150px] leading-tight">
+                    Confesiones
                   </h3>
-                </div>
-                <p className="text-sm text-slate-600 leading-relaxed font-light mb-6">
-                  Los sacerdotes confiesan regularmente en el templo <strong>30 minutos antes</strong> de cada misa de lunes a domingo. 
-                  Para dirección espiritual o confesiones especiales, solicite una cita telefónica o presencial en secretaría.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-slate-100/60">
-                <Link
-                  href="tel:+51987654321"
-                  className="w-full inline-flex items-center justify-center gap-2.5 px-4 py-3 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/80 text-indigo-700 text-xs font-bold uppercase tracking-wider transition-colors border border-indigo-100/40 active:scale-95"
-                >
-                  <svg
-                    className="w-4 h-4 shrink-0"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                    />
+                  <svg className="w-12 h-12 text-[#9A8F82] opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
-                  Llamar a Secretaría
+                </div>
+                <p className="text-xs text-[#8C7A6B] font-light leading-relaxed mb-6">
+                  Acércate al sacramento de la reconciliación y recibe dirección espiritual. Los sacerdotes confiesan en el templo.
+                </p>
+                
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="font-serif text-[11px] tracking-wider uppercase text-[#2B2B2B]">Lunes a Domingo</span>
+                    </div>
+                    <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 mx-3 relative top-[-4px]" />
+                    <span className="bg-[#EADCB9]/40 text-[#5C554B] px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest shrink-0">
+                      Antes de misa
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="font-serif text-[11px] tracking-wider uppercase text-[#2B2B2B]">Dir. Espiritual</span>
+                    </div>
+                    <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA]/70 mx-3 relative top-[-4px]" />
+                    <span className="bg-[#80385e] text-white px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest shrink-0">
+                      Previa Cita
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="pt-8">
+                <Link href="tel:+51987654321" className="inline-flex items-center justify-center px-6 py-2.5 border-[1.5px] border-[#2B2B2B] rounded-full text-[#2B2B2B] text-xs font-bold uppercase tracking-wider hover:bg-[#80385e] hover:text-white hover:border-[#80385e] transition-colors">
+                  Llamar
                 </Link>
               </div>
             </div>

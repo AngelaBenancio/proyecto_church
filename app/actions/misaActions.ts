@@ -573,7 +573,8 @@ export async function actualizarServicioLiturgico(
 // 3. Obtener horarios disponibles para una fecha específica (incluyendo especiales y filtrando restringidos)
 export async function obtenerHorariosDisponibles(fechaStr: string) {
   try {
-    const date = new Date(fechaStr);
+    const [year, month, day] = fechaStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
     if (isNaN(date.getTime())) {
       return { success: false, error: "Fecha inválida" };
     }
@@ -616,12 +617,30 @@ export async function obtenerHorariosDisponibles(fechaStr: string) {
 
     const horasBloqueadas = restringidos.map(r => r.hora);
 
-    // Filtrar los horarios disponibles removiendo las horas bloqueadas
-    const horariosFinales = horarios
-      .map(h => h.hora)
-      .filter(hora => !horasBloqueadas.includes(hora));
+    let horariosBase = horarios.map(h => h.hora);
+    
+    // Si no hay horarios específicos para el día, usar la configuración global
+    if (horariosBase.length === 0) {
+      const config = await obtenerConfiguraciones();
+      horariosBase = config.horariosMisa;
+    }
 
-    const uniqHorarios = Array.from(new Set(horariosFinales));
+    // Filtrar los horarios disponibles removiendo las horas bloqueadas
+    let horariosFinales = horariosBase.filter(hora => !horasBloqueadas.includes(hora));
+
+    let uniqHorarios = Array.from(new Set(horariosFinales));
+    
+    // Asegurar que estén ordenados cronológicamente
+    uniqHorarios.sort((a, b) => {
+      const toMinutes = (timeStr: string) => {
+        const [time, modifier] = timeStr.split(' ');
+        let [hours, minutes] = time.split(':').map(Number);
+        if (modifier === 'PM' && hours < 12) hours += 12;
+        if (modifier === 'AM' && hours === 12) hours = 0;
+        return hours * 60 + minutes;
+      };
+      return toMinutes(a) - toMinutes(b);
+    });
 
     return { success: true, data: uniqHorarios };
   } catch (error) {
