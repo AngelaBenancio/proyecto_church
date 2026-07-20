@@ -774,10 +774,17 @@ export default function NuevaMisaPage() {
               <div className="space-y-8 animate-fadeIn">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   
-                  {/* Calendario en su propia tarjeta con Fondo Sólido */}
+                  {/* Calendario en su propia tarjeta con Fondo de Imagen */}
                   <div 
                     className="lg:col-span-7 bg-[#FFFDF9] border border-[#EADCB9]/40 rounded-3xl p-6 sm:p-8 shadow-sm relative overflow-hidden"
                   >
+                    {/* Imagen de Fondo (Estatua de Jesús) */}
+                    <div 
+                      className="absolute inset-0 bg-center bg-cover bg-no-repeat transition-opacity duration-500"
+                      style={{ backgroundImage: "url('/church_jesus_calendar.png')", opacity: 0.4 }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#FFFDF9]/50 to-[#FFFDF9]/20" />
+
                     <div className="relative z-10">
                       <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 border-b border-[#E0E0E0]/60 pb-3 gap-4 md:gap-0">
                         <div className="flex items-center justify-between w-full md:w-auto">
