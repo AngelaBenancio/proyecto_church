@@ -30,6 +30,7 @@ services:
       DATABASE_URL: "postgresql://user_admin:${DB_PASSWORD}@db:5432/sistema_church?schema=public"
       # Clave de API de Resend para el envío automático de correos (Tickets)
       RESEND_API_KEY: ${RESEND_API_KEY}
+      PATH: "/app/node_modules/.bin:${PATH}"
     depends_on:
       - db
     # Comando de inicio: Ejecuta migraciones, carga inicial de catálogo y arranca Next.js
