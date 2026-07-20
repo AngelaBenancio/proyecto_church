@@ -128,15 +128,15 @@ export default function Home() {
       
 
       {/* Floating Header / Capsule Navigation Bar */}
-      <div className="sticky top-0 z-50 w-full flex justify-center pt-4 px-4 pointer-events-none -mb-20">
-        <header className="pointer-events-auto w-full max-w-5xl h-16 bg-slate-950/85 backdrop-blur-md border border-slate-800 rounded-full px-6 flex items-center justify-between shadow-xl shadow-black/10">
+      <div className="sticky top-0 z-50 w-full flex justify-center pt-4 px-2 sm:px-4 pointer-events-none -mb-20">
+        <header className="pointer-events-auto w-full max-w-5xl h-14 sm:h-16 bg-slate-950/85 backdrop-blur-md border border-slate-800 rounded-full px-3 sm:px-6 flex items-center justify-between shadow-xl shadow-black/10">
           {/* Logo & Title */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8.5 h-8.5 rounded-full bg-white/10 text-white flex items-center justify-center border border-white/10 group-hover:bg-amber-400 group-hover:text-slate-950 group-hover:border-amber-400 transition-all duration-300">
-              <LogoIglesia className="w-5.5 h-5.5 shrink-0" />
+          <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
+            <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-full bg-white/10 text-white flex items-center justify-center border border-white/10 group-hover:bg-amber-400 group-hover:text-slate-950 group-hover:border-amber-400 transition-all duration-300 shrink-0">
+              <LogoIglesia className="w-4 h-4 sm:w-5.5 sm:h-5.5 shrink-0" />
             </div>
             <div>
-              <span className="font-serif text-sm font-bold tracking-tight text-white leading-none block sm:text-base uppercase tracking-wider">
+              <span className="font-serif text-xs sm:text-sm font-bold tracking-tight text-white leading-none block uppercase tracking-wider">
                 Patrocinio
               </span>
             </div>
@@ -171,7 +171,7 @@ export default function Home() {
           </nav>
 
           {/* Call to Action Button */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <Link
               href="#contacto"
               className="hidden sm:inline-flex text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors py-2 px-3"
@@ -180,16 +180,16 @@ export default function Home() {
             </Link>
             <Link
               href="/misas/nueva"
-              className="inline-flex items-center justify-center px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-950 bg-white hover:bg-slate-100 transition-all rounded-full shadow-sm hover:scale-105 active:scale-95 duration-200"
+              className="inline-flex items-center justify-center px-3 py-1.5 sm:px-5 sm:py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-950 bg-white hover:bg-slate-100 transition-all rounded-full shadow-sm hover:scale-105 active:scale-95 duration-200 whitespace-nowrap"
             >
               Solicitar Misa
             </Link>
             <Link
               href="/admin/login"
-              className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all border border-white/15 hover:scale-105 active:scale-95 duration-200"
+              className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all border border-white/15 hover:scale-105 active:scale-95 duration-200 shrink-0"
               title="Acceso Sacerdote"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-5 h-5">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
               </svg>
             </Link>
@@ -404,7 +404,7 @@ export default function Home() {
                         Separa la fecha de tu misa comunitaria, ya sea para intenciones tradicionales (salud, difuntos) o celebraciones de bautizos y otros sacramentos. Registra tu ofrenda vía Yape.
                       </p>
                     </div>
-                    <Link href="/misas/nueva" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
+                    <Link href="/misas/nueva" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-[#FFFDF9] hover:bg-white transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
                       Reservar Misa
                     </Link>
                   </div>
@@ -453,7 +453,7 @@ export default function Home() {
                         Revisa la lista completa de documentos obligatorios (DNI, acta de nacimiento) y charlas de preparación necesarias para padres y padrinos antes de celebrar un bautizo.
                       </p>
                     </div>
-                    <Link href="/bautizos" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
+                    <Link href="/bautizos" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-[#FFFDF9] hover:bg-white transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
                       Ver Requisitos
                     </Link>
                   </div>
@@ -502,7 +502,7 @@ export default function Home() {
                         Consulta los horarios detallados de celebraciones dominicales y semanales, confesiones en el templo, charlas para padres y padrinos, y la disponibilidad del despacho.
                       </p>
                     </div>
-                    <Link href="#horarios" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
+                    <Link href="#horarios" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-[#FFFDF9] hover:bg-white transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
                       Ver Horarios
                     </Link>
                   </div>
@@ -551,7 +551,7 @@ export default function Home() {
                         Infórmate sobre las fechas de inscripción para la preparación sacramental de niños, jóvenes y adultos (Primera Comunión, Confirmación y Catequesis Familiar).
                       </p>
                     </div>
-                    <Link href="#faq" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
+                    <Link href="#faq" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-[#FFFDF9] hover:bg-white transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
                       Más Información
                     </Link>
                   </div>
@@ -600,7 +600,7 @@ export default function Home() {
                         Coordina visitas pastorales para la comunión a domicilio de personas enfermas o ancianas, y solicita la unción de los enfermos en situaciones de necesidad espiritual.
                       </p>
                     </div>
-                    <Link href="#contacto" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
+                    <Link href="#contacto" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-[#FFFDF9] hover:bg-white transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
                       Solicitar Visita
                     </Link>
                   </div>
@@ -649,7 +649,7 @@ export default function Home() {
                         Apoya el sostenimiento de nuestro templo parroquial y las obras de caridad de Cáritas local a través de diezmos, ofrendas dominicales o donaciones virtuales.
                       </p>
                     </div>
-                    <Link href="#contacto" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-white hover:bg-slate-100 transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
+                    <Link href="#contacto" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-[#FFFDF9] hover:bg-white transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
                       Cómo Ayudar
                     </Link>
                   </div>
@@ -713,7 +713,7 @@ export default function Home() {
               </div>
               
               <div className="pt-8">
-                <Link href="/misas/nueva" className="inline-flex items-center justify-center px-6 py-2.5 border-[1.5px] border-[#2B2B2B] rounded-full text-[#2B2B2B] text-xs font-bold uppercase tracking-wider hover:bg-[#80385e] hover:text-white hover:border-[#80385e] transition-colors">
+                <Link href="/misas/nueva" className="inline-flex items-center justify-center px-6 py-2.5 bg-[#80385e] rounded-full text-white text-xs font-bold uppercase tracking-wider hover:bg-[#964a75] transition-colors shadow-sm">
                   Solicitar Misa
                 </Link>
               </div>
@@ -766,7 +766,7 @@ export default function Home() {
               </div>
               
               <div className="pt-8">
-                <Link href="#contacto" className="inline-flex items-center justify-center px-6 py-2.5 border-[1.5px] border-[#2B2B2B] rounded-full text-[#2B2B2B] text-xs font-bold uppercase tracking-wider hover:bg-[#80385e] hover:text-white hover:border-[#80385e] transition-colors">
+                <Link href="#contacto" className="inline-flex items-center justify-center px-6 py-2.5 bg-[#80385e] rounded-full text-white text-xs font-bold uppercase tracking-wider hover:bg-[#964a75] transition-colors shadow-sm">
                   Ver Ubicación
                 </Link>
               </div>
@@ -810,7 +810,7 @@ export default function Home() {
               </div>
               
               <div className="pt-8">
-                <Link href="tel:+51987654321" className="inline-flex items-center justify-center px-6 py-2.5 border-[1.5px] border-[#2B2B2B] rounded-full text-[#2B2B2B] text-xs font-bold uppercase tracking-wider hover:bg-[#80385e] hover:text-white hover:border-[#80385e] transition-colors">
+                <Link href="tel:+51987654321" className="inline-flex items-center justify-center px-6 py-2.5 bg-[#80385e] rounded-full text-white text-xs font-bold uppercase tracking-wider hover:bg-[#964a75] transition-colors shadow-sm">
                   Llamar
                 </Link>
               </div>
@@ -821,17 +821,13 @@ export default function Home() {
       </section>
 
       {/* FAQ Section (Preguntas Frecuentes - Accordion details) */}
-      <section id="faq" className="py-24 sm:py-32 bg-white">
+      <section id="faq" className="py-20 sm:py-28 bg-[#F9F5EC] border-t border-b border-[#EADCB9]/40">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 sm:mb-20">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-indigo-600">
-              Soporte y Dudas
-            </h2>
-            <p className="mt-3 font-serif text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+            <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight text-[#2B2B2B] uppercase">
               Preguntas Frecuentes
-            </p>
-            <div className="mt-4 h-1.5 w-12 bg-amber-500 rounded-full mx-auto" />
-            <p className="mt-5 text-slate-500 font-light max-w-2xl mx-auto">
+            </h2>
+            <p className="mt-4 text-[#8C7A6B] font-light max-w-2xl mx-auto text-sm sm:text-base">
               Encuentra respuestas rápidas sobre cómo funciona la validación del sistema y los requisitos para sacramentos.
             </p>
           </div>
@@ -839,16 +835,16 @@ export default function Home() {
           <div className="space-y-4">
             
             {/* FAQ 1 */}
-            <details className="group bg-slate-50 rounded-2xl border border-slate-200/50 p-6 [&_summary::-webkit-details-marker]:hidden cursor-pointer transition-all duration-300">
-              <summary className="flex items-center justify-between font-bold text-slate-900 text-base sm:text-lg focus:outline-none">
-                <span>¿Cómo registro el pago de mi ofrenda para una intención de Misa?</span>
-                <span className="ml-4 shrink-0 transition-transform duration-300 group-open:-rotate-180 text-slate-400 group-hover:text-slate-900">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <details className="group bg-[#FFFDF9] rounded-3xl border border-[#EADCB9]/40 shadow-sm p-6 sm:p-8 [&_summary::-webkit-details-marker]:hidden cursor-pointer transition-all duration-300 hover:shadow-md">
+              <summary className="flex items-center justify-between font-serif font-medium text-[#2B2B2B] text-lg sm:text-xl focus:outline-none">
+                <span className="pr-4">¿Cómo registro el pago de mi ofrenda para una intención de Misa?</span>
+                <span className="shrink-0 transition-transform duration-300 group-open:-rotate-180 text-[#9A8F82] opacity-70">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </span>
               </summary>
-              <div className="mt-4 text-sm sm:text-base text-slate-600 font-light leading-relaxed border-t border-slate-200/60 pt-4">
+              <div className="mt-4 text-sm sm:text-base text-[#8C7A6B] font-light leading-relaxed border-t border-[#D3CEBA]/50 pt-6">
                 <p>
                   Al llenar el formulario de <strong>Solicitud de Misa</strong>, el sistema te mostrará el código QR oficial de Yape de la parroquia. 
                   Una vez realices la transferencia, ingresa el <strong>nro de operación (un código de 3 dígitos)</strong> en la casilla correspondiente. 
@@ -858,38 +854,47 @@ export default function Home() {
             </details>
 
             {/* FAQ 2 */}
-            <details className="group bg-slate-50 rounded-2xl border border-slate-200/50 p-6 [&_summary::-webkit-details-marker]:hidden cursor-pointer transition-all duration-300">
-              <summary className="flex items-center justify-between font-bold text-slate-900 text-base sm:text-lg focus:outline-none">
-                <span>¿Qué documentos necesito para realizar un trámite de Bautizo?</span>
-                <span className="ml-4 shrink-0 transition-transform duration-300 group-open:-rotate-180 text-slate-400 group-hover:text-slate-900">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <details className="group bg-[#FFFDF9] rounded-3xl border border-[#EADCB9]/40 shadow-sm p-6 sm:p-8 [&_summary::-webkit-details-marker]:hidden cursor-pointer transition-all duration-300 hover:shadow-md">
+              <summary className="flex items-center justify-between font-serif font-medium text-[#2B2B2B] text-lg sm:text-xl focus:outline-none">
+                <span className="pr-4">¿Qué documentos necesito para realizar un trámite de Bautizo?</span>
+                <span className="shrink-0 transition-transform duration-300 group-open:-rotate-180 text-[#9A8F82] opacity-70">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </span>
               </summary>
-              <div className="mt-4 text-sm sm:text-base text-slate-600 font-light leading-relaxed border-t border-slate-200/60 pt-4">
+              <div className="mt-4 text-sm sm:text-base text-[#8C7A6B] font-light leading-relaxed border-t border-[#D3CEBA]/50 pt-6">
                 <p>
                   Para registrar un Bautismo en línea necesitarás tener a la mano imágenes legibles o PDFs de:
                 </p>
-                <ul className="list-disc pl-5 mt-2 space-y-1.5">
-                  <li>Acta de nacimiento del bautizando.</li>
-                  <li>DNI de los padres.</li>
-                  <li>DNI de los padrinos (y constancia de Confirmación o Matrimonio religioso de los mismos, según las normas de la Iglesia).</li>
+                <ul className="list-none mt-3 space-y-2">
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#80385e] mt-1">•</span>
+                    <span>Acta de nacimiento del bautizando.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#80385e] mt-1">•</span>
+                    <span>DNI de los padres.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#80385e] mt-1">•</span>
+                    <span>DNI de los padrinos (y constancia de Confirmación o Matrimonio religioso de los mismos, según las normas de la Iglesia).</span>
+                  </li>
                 </ul>
               </div>
             </details>
 
             {/* FAQ 3 */}
-            <details className="group bg-slate-50 rounded-2xl border border-slate-200/50 p-6 [&_summary::-webkit-details-marker]:hidden cursor-pointer transition-all duration-300">
-              <summary className="flex items-center justify-between font-bold text-slate-900 text-base sm:text-lg focus:outline-none">
-                <span>¿Cómo sé si mi solicitud de sacramento ha sido aceptada?</span>
-                <span className="ml-4 shrink-0 transition-transform duration-300 group-open:-rotate-180 text-slate-400 group-hover:text-slate-900">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <details className="group bg-[#FFFDF9] rounded-3xl border border-[#EADCB9]/40 shadow-sm p-6 sm:p-8 [&_summary::-webkit-details-marker]:hidden cursor-pointer transition-all duration-300 hover:shadow-md">
+              <summary className="flex items-center justify-between font-serif font-medium text-[#2B2B2B] text-lg sm:text-xl focus:outline-none">
+                <span className="pr-4">¿Cómo sé si mi solicitud de sacramento ha sido aceptada?</span>
+                <span className="shrink-0 transition-transform duration-300 group-open:-rotate-180 text-[#9A8F82] opacity-70">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </span>
               </summary>
-              <div className="mt-4 text-sm sm:text-base text-slate-600 font-light leading-relaxed border-t border-slate-200/60 pt-4">
+              <div className="mt-4 text-sm sm:text-base text-[#8C7A6B] font-light leading-relaxed border-t border-[#D3CEBA]/50 pt-6">
                 <p>
                   Una vez que envíes tu solicitud de bautizo o intención de misa, la secretaría revisa la validez de los datos y documentos subidos. 
                   En un plazo máximo de <strong>24 a 48 horas</strong>, recibirás un mensaje de <strong>confirmación directa vía WhatsApp</strong> al número de celular que registraste. También te llamaremos en caso falte algún dato.
@@ -898,16 +903,16 @@ export default function Home() {
             </details>
 
             {/* FAQ 4 */}
-            <details className="group bg-slate-50 rounded-2xl border border-slate-200/50 p-6 [&_summary::-webkit-details-marker]:hidden cursor-pointer transition-all duration-300">
-              <summary className="flex items-center justify-between font-bold text-slate-900 text-base sm:text-lg focus:outline-none">
-                <span>¿Las charlas pre-bautismales son virtuales o presenciales?</span>
-                <span className="ml-4 shrink-0 transition-transform duration-300 group-open:-rotate-180 text-slate-400 group-hover:text-slate-900">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <details className="group bg-[#FFFDF9] rounded-3xl border border-[#EADCB9]/40 shadow-sm p-6 sm:p-8 [&_summary::-webkit-details-marker]:hidden cursor-pointer transition-all duration-300 hover:shadow-md">
+              <summary className="flex items-center justify-between font-serif font-medium text-[#2B2B2B] text-lg sm:text-xl focus:outline-none">
+                <span className="pr-4">¿Las charlas pre-bautismales son virtuales o presenciales?</span>
+                <span className="shrink-0 transition-transform duration-300 group-open:-rotate-180 text-[#9A8F82] opacity-70">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </span>
               </summary>
-              <div className="mt-4 text-sm sm:text-base text-slate-600 font-light leading-relaxed border-t border-slate-200/60 pt-4">
+              <div className="mt-4 text-sm sm:text-base text-[#8C7A6B] font-light leading-relaxed border-t border-[#D3CEBA]/50 pt-6">
                 <p>
                   Actualmente, las charlas pre-bautismales se dictan de manera <strong>presencial</strong> los segundos y cuartos sábados de cada mes a las 4:00 PM en el salón parroquial. Durante el registro en línea podrás ver las fechas y registrar la asistencia de los padres y padrinos.
                 </p>

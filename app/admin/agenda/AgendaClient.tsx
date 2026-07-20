@@ -522,7 +522,7 @@ export default function AgendaClient({
         <div className="p-4 border-t border-[#EBEAE5]">
           <button
             onClick={handleLogout}
-            className="w-full py-2.5 text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-red-700 bg-[#FAF9F6] hover:bg-red-50 border border-[#EBEAE5] hover:border-red-150 rounded-xl transition-all"
+            className="w-full py-3 text-[10px] font-bold uppercase tracking-widest bg-[#E4CDDA] border-transparent text-[#80385e] hover:bg-[#D8B4C8] rounded-full transition-all shadow-sm"
           >
             Cerrar Sesión
           </button>
@@ -545,7 +545,7 @@ export default function AgendaClient({
 
             <div className="flex items-center gap-2">
               <h1 className="text-lg font-serif font-bold text-[#5C4E3C] tracking-wide uppercase">
-                {activeMenu === 'today' ? 'Reservaciones de Misa' : activeMenu === 'calendar' ? 'Calendario Parroquial' : 'Configuración'}
+                {activeMenu === 'today' ? 'Reservaciones de Misa' : activeMenu === 'calendar' ? '' : 'Configuración'}
               </h1>
             </div>
           </div>
@@ -567,28 +567,18 @@ export default function AgendaClient({
           <div className="flex-1">
             {/* Subheader Tabs */}
             <div className="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-[#EBEAE5] pb-2">
-              <div className="flex flex-wrap gap-4 text-sm font-semibold">
-                <button
-                  onClick={() => setSelectedDate(dates.hoy)}
-                  className={`pb-3 relative transition-colors ${selectedDate === dates.hoy ? 'text-[#B5336D] font-bold' : 'text-[#A5A29B] hover:text-[#3D3A35]'}`}
-                >
-                  Hoy
-                  {selectedDate === dates.hoy && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B5336D]" />}
-                </button>
-                <button
-                  onClick={() => setSelectedDate(dates.manana)}
-                  className={`pb-3 relative transition-colors ${selectedDate === dates.manana ? 'text-[#B5336D] font-bold' : 'text-[#A5A29B] hover:text-[#3D3A35]'}`}
-                >
-                  Mañana
-                  {selectedDate === dates.manana && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B5336D]" />}
-                </button>
-                <button
-                  onClick={() => setSelectedDate(dates.pasado)}
-                  className={`pb-3 relative transition-colors capitalize ${selectedDate === dates.pasado ? 'text-[#B5336D] font-bold' : 'text-[#A5A29B] hover:text-[#3D3A35]'}`}
-                >
-                  {dates.pasadoLabel}
-                  {selectedDate === dates.pasado && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B5336D]" />}
-                </button>
+              <div className="flex flex-wrap items-center gap-4 text-sm font-semibold">
+                <span className="font-sans text-[10px] font-bold text-[#8C7A6B] uppercase tracking-widest border border-[#EBEAE5] bg-[#FAF9F6] px-4 py-1.5 rounded-full shadow-sm">
+                  {getHumanFriendlyDate(selectedDate)}
+                </span>
+                {selectedDate !== dates.hoy && (
+                  <button
+                    onClick={() => setSelectedDate(dates.hoy)}
+                    className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider border border-[#EBEAE5] rounded-full text-[#A5A29B] hover:text-[#3D3A35] hover:bg-[#FAF9F6] transition-colors"
+                  >
+                    Volver a Hoy
+                  </button>
+                )}
               </div>
 
               {/* Controles de descargas y calendario */}
@@ -640,16 +630,33 @@ export default function AgendaClient({
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                   <div>
                     <h2 className="text-xl md:text-2xl font-serif font-bold text-white leading-tight drop-shadow-md">
-                      Parroquia Nuestra Señora del Patrocinio
-                    </h2>
-                    <p className="text-xs text-white/80 font-sans tracking-wide mt-1 drop-shadow-sm uppercase">
                       Agenda y Celebraciones Litúrgicas
-                    </p>
+                    </h2>
                   </div>
                   
-                  <div className="bg-white text-slate-800 text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-lg shrink-0 border border-slate-100">
-                    <span>📅</span>
-                    <span>{getHumanFriendlyDate(selectedDate)}</span>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={() => {
+                        const [y, m, d] = selectedDate.split('-').map(Number);
+                        const dateObj = new Date(y, m - 1, d);
+                        dateObj.setDate(dateObj.getDate() - 1);
+                        setSelectedDate(`${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`);
+                      }}
+                      className="w-10 h-10 flex items-center justify-center bg-white hover:bg-[#F5EFEB] text-[#80385e] rounded-full shadow-lg transition-all border border-slate-100 font-bold"
+                    >
+                      ←
+                    </button>
+                    <button
+                      onClick={() => {
+                        const [y, m, d] = selectedDate.split('-').map(Number);
+                        const dateObj = new Date(y, m - 1, d);
+                        dateObj.setDate(dateObj.getDate() + 1);
+                        setSelectedDate(`${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`);
+                      }}
+                      className="w-10 h-10 flex items-center justify-center bg-white hover:bg-[#F5EFEB] text-[#80385e] rounded-full shadow-lg transition-all border border-slate-100 font-bold"
+                    >
+                      →
+                    </button>
                   </div>
                 </div>
               </div>
@@ -792,80 +799,91 @@ export default function AgendaClient({
 
         {/* 2. VISTA DE CALENDARIO COMPLETO (HABILITAR O INHABILITAR HORAS O DIAS ENTEROS) */}
         {activeMenu === 'calendar' && (
-          <div className="flex-1 animate-fade-in">
+          <div className="flex-1 animate-fade-in bg-[#FFFDF9] p-2 md:p-6 rounded-3xl border border-[#EAE3D9]">
 
+            {/* Cabecera Elegante Estilo Referencia */}
+            <div className="mb-4 flex flex-row items-center justify-between border-b border-[#EAE3D9] pb-4 gap-4">
+              <div className="flex items-center">
+                <h2 className="text-lg md:text-xl font-serif text-[#3D3A35] leading-tight tracking-widest uppercase">
+                  Calendario Parroquial
+                </h2>
+              </div>
+              <div className="text-[#D0C5B5] opacity-80">
+                <svg viewBox="0 0 120 120" className="w-16 h-16 md:w-20 md:h-20" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                  {/* Cross */}
+                  <path d="M60 10 v20 M50 20 h20" />
+                  {/* Steeple */}
+                  <polygon points="60,30 45,55 75,55" />
+                  <rect x="45" y="55" width="30" height="55" />
+                  {/* Rose window */}
+                  <circle cx="60" cy="70" r="5" />
+                  <circle cx="60" cy="70" r="2" />
+                  {/* Side Wings */}
+                  <polygon points="45,75 25,90 45,90" />
+                  <rect x="25" y="90" width="20" height="20" />
+                  <polygon points="75,75 95,90 75,90" />
+                  <rect x="75" y="90" width="20" height="20" />
+                  {/* Windows */}
+                  <path d="M35 98 v5 a3 3 0 0 1 -6 0 v-5 a3 3 0 0 1 6 0 z" />
+                  <path d="M91 98 v5 a3 3 0 0 1 -6 0 v-5 a3 3 0 0 1 6 0 z" />
+                  {/* Main Door */}
+                  <path d="M52 110 v-15 a8 8 0 0 1 16 0 v15" />
+                  {/* Ground */}
+                  <path d="M15 110 h90" />
+                </svg>
+              </div>
+            </div>
 
-            {/* Cabecera de Navegación del Calendario (Estilo Widget) */}
-            <div className="flex items-center justify-between bg-white border border-[#EBEAE5] rounded-2xl p-4 mb-4 shadow-sm">
-              <div className="flex items-center gap-3">
-                {/* Select de Mes */}
+            {/* Controles del Calendario */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
                 <select
                   value={currentMonth}
                   onChange={(e) => setCurrentMonth(Number(e.target.value))}
-                  className="px-3 py-1.5 border border-[#EBEAE5] bg-white rounded-xl text-xs font-bold text-[#5C4E3C] focus:outline-none focus:ring-1 focus:ring-[#B5336D]/50 cursor-pointer capitalize"
+                  className="px-4 py-2 border-b border-[#EAE3D9] bg-transparent text-sm font-serif font-bold text-[#3D3A35] focus:outline-none focus:border-[#B5336D] cursor-pointer capitalize appearance-none"
                 >
                   {Array.from({ length: 12 }).map((_, i) => (
-                    <option key={i} value={i}>
-                      {getMonthName(i)}
-                    </option>
+                    <option key={i} value={i}>{getMonthName(i)}</option>
                   ))}
                 </select>
 
-                {/* Select de Año */}
                 <select
                   value={currentYear}
                   onChange={(e) => setCurrentYear(Number(e.target.value))}
-                  className="px-3 py-1.5 border border-[#EBEAE5] bg-white rounded-xl text-xs font-bold text-[#5C4E3C] focus:outline-none focus:ring-1 focus:ring-[#B5336D]/50 cursor-pointer"
+                  className="px-4 py-2 border-b border-[#EAE3D9] bg-transparent text-sm font-serif font-bold text-[#3D3A35] focus:outline-none focus:border-[#B5336D] cursor-pointer appearance-none"
                 >
                   {Array.from({ length: 5 }).map((_, i) => {
                     const yr = new Date().getFullYear() - 2 + i;
-                    return (
-                      <option key={yr} value={yr}>
-                        {yr}
-                      </option>
-                    );
+                    return <option key={yr} value={yr}>{yr}</option>;
                   })}
                 </select>
               </div>
 
-              {/* Flechas de Navegación del Widget */}
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => changeMonth(-1)}
-                  className="w-8 h-8 flex items-center justify-center border border-[#EBEAE5] rounded-xl hover:bg-[#F5EFEB] text-sm font-bold text-[#5C4E3C] transition-all cursor-pointer"
-                  title="Mes Anterior"
-                >
-                  &lt;
+              <div className="flex items-center gap-2">
+                <button onClick={() => changeMonth(-1)} className="w-10 h-10 flex items-center justify-center bg-[#80385e] rounded-full hover:bg-[#964a75] text-white transition-all shadow-sm">
+                  ←
                 </button>
-                <button
-                  onClick={() => changeMonth(1)}
-                  className="w-8 h-8 flex items-center justify-center border border-[#EBEAE5] rounded-xl hover:bg-[#F5EFEB] text-sm font-bold text-[#5C4E3C] transition-all cursor-pointer"
-                  title="Mes Siguiente"
-                >
-                  &gt;
+                <button onClick={() => changeMonth(1)} className="w-10 h-10 flex items-center justify-center bg-[#80385e] rounded-full hover:bg-[#964a75] text-white transition-all shadow-sm">
+                  →
                 </button>
               </div>
             </div>
 
-            {/* Grid del Calendario (Estilo Limpio) */}
-            <div className="bg-white border border-[#EBEAE5] rounded-3xl overflow-hidden shadow-sm">
-              <div className="grid grid-cols-7 bg-[#FAF9F6] border-b border-[#EBEAE5] text-center text-xs font-semibold py-3 text-[#7A766F]">
-                <div>lun</div>
-                <div>mar</div>
-                <div>mié</div>
-                <div>jue</div>
-                <div>vie</div>
-                <div>sáb</div>
-                <div>dom</div>
+            {/* Grid del Calendario Estilo Icono Referencia */}
+            <div className="rounded-3xl overflow-hidden shadow-2xl border border-[#4a1f35]/20">
+              <div className="grid grid-cols-7 bg-[#a35b80] text-center text-[10px] sm:text-xs font-sans font-bold tracking-widest py-4 text-white uppercase shadow-md relative z-10">
+                <div>Lun</div>
+                <div>Mar</div>
+                <div>Mié</div>
+                <div>Jue</div>
+                <div>Vie</div>
+                <div>Sáb</div>
+                <div>Dom</div>
               </div>
 
-              <div className="grid grid-cols-7 gap-px bg-[#EBEAE5]">
+              <div className="grid grid-cols-7 gap-1.5 sm:gap-2 p-2 sm:p-4 bg-[#80385e]">
                 {calendarCells.map((cell, idx) => {
-                  const cellIntenciones = initialIntenciones.filter(
-                    item => item.fechaMisaStr === cell.dateStr
-                  );
-                  
-                  // Evaluar restricciones para este día
+                  const cellIntenciones = initialIntenciones.filter(item => item.fechaMisaStr === cell.dateStr);
                   const cellRestricciones = restricciones.filter(r => r.fechaStr === cell.dateStr);
                   const isFullyBlocked = cellRestricciones.some(r => r.hora === null);
                   const isPartiallyBlocked = cellRestricciones.some(r => r.hora !== null);
@@ -873,37 +891,37 @@ export default function AgendaClient({
                   return (
                     <div
                       key={idx}
-                      onClick={() => {
-                        setSelectedCalendarDate(cell.dateStr);
-                      }}
-                      className={`min-h-[70px] md:min-h-[85px] p-2 flex flex-col justify-between cursor-pointer hover:bg-[#FAF6F0] transition-all relative ${!cell.isCurrentMonth ? 'bg-slate-50/40 text-slate-300' : 'bg-white text-[#3D3A35]'}`}
+                      onClick={() => setSelectedCalendarDate(cell.dateStr)}
+                      className={`min-h-[75px] p-2 flex flex-col justify-start cursor-pointer transition-all rounded-xl ${
+                        cell.dateStr === dates.hoy 
+                          ? 'bg-[#964a75] border-2 border-[#EADCB9] shadow-lg scale-[1.02] z-10' 
+                          : 'bg-[#FFFDF9] hover:bg-[#E4CDDA] shadow-sm'
+                      } ${!cell.isCurrentMonth ? 'opacity-40 hover:opacity-100' : ''}`}
                     >
-                      {/* Día y badge de Bloqueado */}
-                      <div className="flex items-center justify-between">
-                        <span className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-lg ${cell.dateStr === dates.hoy ? 'bg-[#B5336D] text-white' : ''}`}>
+                      <div className="flex justify-between items-start w-full">
+                        <span className={`text-sm font-serif font-bold ${cell.dateStr === dates.hoy ? 'text-white' : 'text-[#3D3A35]'}`}>
                           {cell.day}
                         </span>
                         {isFullyBlocked && (
-                          <span className="w-1.5 h-1.5 bg-rose-600 rounded-full" title="Todo el Día Bloqueado" />
+                          <span className="w-2 h-2 bg-red-500 rounded-full mt-1 shadow-sm" />
                         )}
                       </div>
 
-                      {/* Detalles en celda */}
-                      <div className="mt-1 space-y-1">
+                      <div className="mt-2 flex flex-col gap-1 w-full">
                         {isFullyBlocked ? (
-                          <div className="text-[8px] font-bold text-rose-700 bg-rose-50 border border-rose-100/50 px-1 py-0.5 rounded text-center truncate">
-                            Bloqueado
+                          <div className="text-[8px] font-bold text-red-100 bg-red-900/70 px-1 py-0.5 rounded text-center truncate tracking-wider uppercase">
+                            Bloq.
                           </div>
                         ) : (
                           <>
                             {cellIntenciones.length > 0 && (
-                              <div className="text-[8px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-100/50 px-1 py-0.5 rounded text-center truncate">
-                                {cellIntenciones.length} {cellIntenciones.length === 1 ? 'Misa' : 'Misas'}
+                              <div className={`text-[8px] font-bold px-1 py-0.5 rounded text-center truncate tracking-wider uppercase ${cell.dateStr === dates.hoy ? 'bg-white/20 text-white' : 'text-[#5B6B5B] bg-[#E8EFE8]'}`}>
+                                {cellIntenciones.length} Res.
                               </div>
                             )}
                             {isPartiallyBlocked && (
-                              <div className="text-[8px] font-bold text-amber-800 bg-amber-50 border border-amber-100/50 px-1 py-0.5 rounded text-center truncate">
-                                {cellRestricciones.length} Bloqueos
+                              <div className={`text-[8px] font-bold px-1 py-0.5 rounded text-center truncate tracking-wider uppercase ${cell.dateStr === dates.hoy ? 'bg-white/20 text-white' : 'text-[#8A7042] bg-[#F5F0E6]'}`}>
+                                {cellRestricciones.length} Bloq.
                               </div>
                             )}
                           </>
@@ -919,161 +937,146 @@ export default function AgendaClient({
 
         {/* 3. CONFIGURACIÓN (DETALLES DE CUENTA Y AJUSTES DE SACRAMENTOS/HORARIOS) */}
         {activeMenu === 'settings' && (
-          <div className="flex-1 animate-fade-in">
-            <div className="mb-6">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#B89851]">Ajustes</span>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl">
-              {/* Columna Izquierda: Ajustes de Sacramentos e Información de Sesión */}
-              <div className="space-y-6">
-                {/* Panel de Sacramentos */}
-                <div className="bg-white border border-[#EBEAE5] rounded-3xl p-6 shadow-sm">
-                  <h3 className="font-serif font-bold text-[#5C4E3C] text-base mb-4 border-b border-[#FAF9F6] pb-2 flex items-center gap-2">
-                    Control de Sacramentos en Reservas
+          <div className="flex-1 animate-fade-in bg-[#FFFDF9] border border-[#EAE3D9] rounded-[2rem] p-6 md:p-10 shadow-2xl">
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl mx-auto pt-4">
+              {/* Columna Izquierda */}
+              <div className="space-y-12">
+                
+                {/* Control de Sacramentos */}
+                <div>
+                  <h3 className="font-serif text-base text-[#3D3A35] uppercase tracking-widest border-b border-[#EAE3D9] pb-3 mb-4">
+                    Control de Sacramentos
                   </h3>
-                  <p className="text-slate-500 text-[11px] leading-relaxed mb-6">
-                    Habilite o deshabilite la disponibilidad de los sacramentos de Comunión y Confirmación para las reservas de misa públicas. Útil para coordinar períodos especiales o matrimonios de adultos que necesiten estos sacramentos de manera excepcional.
+                  <p className="text-[#8C7A6B] text-xs font-light mb-6 leading-relaxed">
+                    Habilite o deshabilite la disponibilidad de sacramentos (Comunión y Confirmación) para las reservas públicas.
                   </p>
-
+                  
                   <div className="space-y-4">
-                    {/* Comunión Toggle */}
-                    <div className="flex items-center justify-between p-4 bg-[#FAF9F6] border border-[#EBEAE5] rounded-2xl transition-all hover:shadow-xs">
-                      <div>
-                        <span className="font-bold text-[#5C4E3C] text-xs block">Primera Comunión</span>
-                        <span className="text-[10px] text-slate-400">Mostrar en el formulario de reservas públicas</span>
-                      </div>
+                    <div className="flex flex-row items-center justify-between group">
+                      <span className="font-sans text-[10px] font-bold text-[#3D3A35] tracking-widest uppercase shrink-0">
+                        Primera Comunión
+                      </span>
+                      <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA] mx-4 relative top-[-1px] group-hover:border-[#3D3A35]/40 transition-colors"></div>
                       <button
                         onClick={() => handleToggleSacrament('habilitar_comunion', config.habilitarComunion)}
                         disabled={isPending}
-                        className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all duration-300 ${config.habilitarComunion ? 'bg-[#B5336D]' : 'bg-slate-300'}`}
+                        className={`shrink-0 px-4 py-1.5 rounded-full border text-[9px] font-bold uppercase tracking-widest min-w-[95px] text-center transition-all shadow-sm ${
+                          config.habilitarComunion ? 'bg-[#80385e] border-transparent text-white hover:bg-[#964a75]' : 'bg-[#E4CDDA] border-transparent text-[#80385e] hover:bg-[#D8B4C8]'
+                        }`}
                       >
-                        <div
-                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-all duration-300 ${config.habilitarComunion ? 'translate-x-6' : 'translate-x-0'}`}
-                        />
+                        {config.habilitarComunion ? 'Activado' : 'Inactivo'}
                       </button>
                     </div>
 
-                    {/* Confirmación Toggle */}
-                    <div className="flex items-center justify-between p-4 bg-[#FAF9F6] border border-[#EBEAE5] rounded-2xl transition-all hover:shadow-xs">
-                      <div>
-                        <span className="font-bold text-[#5C4E3C] text-xs block">Confirmación</span>
-                        <span className="text-[10px] text-slate-400">Mostrar en el formulario de reservas públicas</span>
-                      </div>
+                    <div className="flex flex-row items-center justify-between group">
+                      <span className="font-sans text-[10px] font-bold text-[#3D3A35] tracking-widest uppercase shrink-0">
+                        Confirmación
+                      </span>
+                      <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA] mx-4 relative top-[-1px] group-hover:border-[#3D3A35]/40 transition-colors"></div>
                       <button
                         onClick={() => handleToggleSacrament('habilitar_confirmacion', config.habilitarConfirmacion)}
                         disabled={isPending}
-                        className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all duration-300 ${config.habilitarConfirmacion ? 'bg-[#B5336D]' : 'bg-slate-300'}`}
+                        className={`shrink-0 px-4 py-1.5 rounded-full border text-[9px] font-bold uppercase tracking-widest min-w-[95px] text-center transition-all shadow-sm ${
+                          config.habilitarConfirmacion ? 'bg-[#80385e] border-transparent text-white hover:bg-[#964a75]' : 'bg-[#E4CDDA] border-transparent text-[#80385e] hover:bg-[#D8B4C8]'
+                        }`}
                       >
-                        <div
-                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-all duration-300 ${config.habilitarConfirmacion ? 'translate-x-6' : 'translate-x-0'}`}
-                        />
+                        {config.habilitarConfirmacion ? 'Activado' : 'Inactivo'}
                       </button>
                     </div>
                   </div>
                 </div>
 
                 {/* Datos de Sesión */}
-                <div className="bg-white border border-[#EBEAE5] rounded-3xl p-6 shadow-sm">
-                  <h3 className="font-serif font-bold text-[#5C4E3C] text-base mb-4 border-b border-[#FAF9F6] pb-2">
+                <div>
+                  <h3 className="font-serif text-base text-[#3D3A35] uppercase tracking-widest border-b border-[#EAE3D9] pb-3 mb-4">
                     Datos de la Sesión
                   </h3>
-                  <div className="space-y-4 text-xs font-sans">
-                    <div>
-                      <span className="block font-bold text-slate-400 uppercase tracking-widest text-[9px]">Usuario Activo:</span>
-                      <span className="font-bold text-slate-700 text-sm">{role === 'sacerdote' ? 'Sacerdote / Padre' : 'Administrador'}</span>
+                  <div className="space-y-4">
+                    <div className="flex flex-row items-center justify-between group">
+                      <span className="font-sans text-[10px] font-bold text-[#3D3A35] tracking-widest uppercase shrink-0">
+                        Usuario Activo
+                      </span>
+                      <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA] mx-4 relative top-[-1px]"></div>
+                      <span className="font-serif italic text-[#8C7A6B] text-sm shrink-0">
+                        {role === 'sacerdote' ? 'Padre' : 'Administrador'}
+                      </span>
                     </div>
-                    <div>
-                      <span className="block font-bold text-slate-400 uppercase tracking-widest text-[9px]">Nivel de Acceso:</span>
-                      <span className="font-mono text-slate-600 uppercase bg-[#F5EFEB] px-2 py-0.5 rounded border border-[#EBEAE5]">{role}</span>
+                    <div className="flex flex-row items-center justify-between group">
+                      <span className="font-sans text-[10px] font-bold text-[#3D3A35] tracking-widest uppercase shrink-0">
+                        Nivel de Acceso
+                      </span>
+                      <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA] mx-4 relative top-[-1px]"></div>
+                      <span className="font-serif italic text-[#8C7A6B] text-sm shrink-0 uppercase">
+                        {role}
+                      </span>
                     </div>
-                    <div>
-                      <span className="block font-bold text-slate-400 uppercase tracking-widest text-[9px]">Parroquia:</span>
-                      <span className="text-slate-700">Parroquia Nuestra Señora del Patrocinio</span>
-                    </div>
-                    <div className="pt-4 border-t border-[#FAF9F6]">
-                      <button
-                        onClick={handleLogout}
-                        className="py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-98"
-                      >
-                        Cerrar Sesión Activa
-                      </button>
+                    <div className="flex flex-row items-center justify-between group">
+                      <span className="font-sans text-[10px] font-bold text-[#3D3A35] tracking-widest uppercase shrink-0">
+                        Parroquia
+                      </span>
+                      <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA] mx-4 relative top-[-1px]"></div>
+                      <span className="font-serif italic text-[#8C7A6B] text-sm shrink-0 text-right max-w-[150px] leading-tight">
+                        Nuestra Señora del Patrocinio
+                      </span>
                     </div>
                   </div>
                 </div>
+
               </div>
 
               {/* Columna Derecha: Gestión de Horarios de Misa */}
-              <div className="bg-white border border-[#EBEAE5] rounded-3xl p-6 shadow-sm flex flex-col">
-                <h3 className="font-serif font-bold text-[#5C4E3C] text-base mb-4 border-b border-[#FAF9F6] pb-2 flex items-center gap-2">
-                  Gestión de Horarios de Misa
+              <div>
+                <h3 className="font-serif text-base text-[#3D3A35] uppercase tracking-widest border-b border-[#EAE3D9] pb-3 mb-4">
+                  Horarios de Misa
                 </h3>
-                <p className="text-slate-500 text-[11px] leading-relaxed mb-6">
-                  Añada o elimine horarios disponibles para las intenciones de misa diarias. Los horarios configurados aquí se verán reflejados inmediatamente en la sección de reservas en línea.
+                <p className="text-[#8C7A6B] text-xs font-light mb-6 leading-relaxed">
+                  Administre los horarios disponibles para intenciones. Estos se reflejarán de forma inmediata en las reservas.
                 </p>
 
-                {/* Formulario para añadir horario */}
-                <div className="bg-[#FAF9F6] border border-[#EBEAE5] rounded-2xl p-4 mb-6">
-                  <span className="block font-bold text-[#5C4E3C] text-xs mb-2">Añadir Nuevo Horario</span>
-                  <div className="flex gap-2 items-center">
-                    <div className="flex-1">
-                      <input
-                        type="time"
-                        value={newScheduleTime}
-                        onChange={(e) => {
-                          setNewScheduleTime(e.target.value);
-                          setScheduleError(null);
-                        }}
-                        className="w-full px-3 py-2 border border-[#EBEAE5] bg-white rounded-xl text-xs text-[#3D3A35] focus:outline-none focus:ring-1 focus:ring-[#B5336D]/50"
-                      />
-                    </div>
-                    <button
-                      onClick={handleAddSchedule}
-                      disabled={isPending || !newScheduleTime}
-                      className="py-2 px-4 bg-[#B5336D] hover:bg-[#972658] disabled:bg-slate-300 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-98 shrink-0"
-                    >
-                      Añadir
-                    </button>
-                  </div>
-                  {scheduleError && (
-                    <span className="text-[10px] text-red-600 block mt-2 font-medium">{scheduleError}</span>
-                  )}
+                <div className="flex items-center gap-2 mb-6">
+                  <input
+                    type="time"
+                    value={newScheduleTime}
+                    onChange={(e) => {
+                      setNewScheduleTime(e.target.value);
+                      setScheduleError(null);
+                    }}
+                    className="flex-1 px-4 py-2.5 bg-white border border-[#EAE3D9] rounded-full text-xs text-[#3D3A35] focus:outline-none focus:border-[#3D3A35] text-center font-sans tracking-wide transition-colors shadow-sm"
+                  />
+                  <button
+                    onClick={handleAddSchedule}
+                    disabled={isPending || !newScheduleTime}
+                    className="shrink-0 px-6 py-2.5 rounded-full border-transparent bg-[#80385e] text-white hover:bg-[#964a75] transition-all text-[10px] font-bold uppercase tracking-widest disabled:opacity-50 shadow-sm"
+                  >
+                    Añadir
+                  </button>
                 </div>
+                {scheduleError && (
+                  <span className="text-[10px] text-[#B5336D] block mt-[-15px] mb-4 font-bold uppercase tracking-wider text-center">{scheduleError}</span>
+                )}
 
-                {/* Listado de horarios actuales */}
-                <div className="flex-1">
-                  <span className="block font-bold text-slate-400 uppercase tracking-widest text-[9px] mb-2">
-                    Horarios Disponibles ({config.horariosMisa.length})
-                  </span>
-
+                <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                   {config.horariosMisa.length === 0 ? (
-                    <div className="text-center py-8 text-slate-400 italic text-xs border border-dashed border-[#EBEAE5] rounded-2xl bg-slate-50">
-                      No hay horarios configurados en el sistema.
+                    <div className="text-center py-6 text-[#8C7A6B] italic font-serif text-sm">
+                      No hay horarios configurados.
                     </div>
                   ) : (
-                    <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
-                      {config.horariosMisa.map((horario) => (
-                        <div
-                          key={horario}
-                          className="flex items-center justify-between p-3 border border-[#EBEAE5] rounded-xl bg-white hover:border-[#B5336D]/30 transition-all"
+                    config.horariosMisa.map((horario) => (
+                      <div key={horario} className="flex flex-row items-center justify-between group">
+                        <span className="font-sans text-xs font-bold text-[#3D3A35] tracking-widest uppercase shrink-0">
+                          {horario}
+                        </span>
+                        <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA] mx-4 relative top-[-1px] group-hover:border-[#3D3A35]/40 transition-colors"></div>
+                        <button
+                          onClick={() => handleRemoveSchedule(horario)}
+                          disabled={isPending}
+                          className="shrink-0 px-4 py-1.5 rounded-full border-transparent bg-[#B5336D] text-white hover:bg-[#972658] transition-all text-[9px] font-bold uppercase tracking-widest min-w-[95px] text-center shadow-sm"
                         >
-                          <div className="flex items-center gap-3">
-                            <span className="text-slate-400 text-xs">🔔</span>
-                            <span className="font-mono text-sm font-bold text-slate-700">{horario}</span>
-                          </div>
-                          <button
-                            onClick={() => handleRemoveSchedule(horario)}
-                            disabled={isPending}
-                            className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all active:scale-95"
-                            title="Eliminar Horario"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+                          Eliminar
+                        </button>
+                      </div>
+                    ))
                   )}
                 </div>
               </div>
@@ -1084,142 +1087,122 @@ export default function AgendaClient({
 
       {/* MODAL DE RESTRICCIONES (Bloquear/Habilitar horarios o días enteros, solicitado por el usuario) */}
       {selectedCalendarDate && (
-        <div className="no-print fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="bg-white border border-[#EBEAE5] rounded-3xl p-6 w-full max-w-md shadow-2xl animate-scale-up">
-            <div className="flex items-center justify-between pb-3 border-b border-[#EBEAE5] mb-4">
-              <div>
-                <h3 className="font-serif font-bold text-[#5C4E3C] text-base">
-                  Gestionar Restricciones
-                </h3>
-                <span className="text-[10px] font-bold text-[#B89851] uppercase tracking-wider block">
-                  {getHumanFriendlyDate(selectedCalendarDate)}
-                </span>
-              </div>
+        <div className="no-print fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-[#FFFDF9] border border-[#EAE3D9] rounded-[2rem] p-6 sm:p-8 w-full max-w-lg shadow-2xl animate-scale-up">
+            
+            {/* Cabecera del Modal */}
+            <div className="flex flex-col items-center justify-center pb-6 border-b border-[#EAE3D9] mb-6 relative">
+              <h3 className="font-serif text-xl sm:text-2xl text-[#3D3A35] uppercase tracking-widest text-center mt-2">
+                Restricciones
+              </h3>
+              <p className="text-xs text-[#8C7A6B] font-light mt-2 text-center max-w-[90%] uppercase tracking-widest">
+                {getHumanFriendlyDate(selectedCalendarDate)}
+              </p>
               <button
                 onClick={() => { setSelectedCalendarDate(null); setRestrictionMotivo(''); }}
-                className="text-[#A5A29B] hover:text-[#3D3A35] text-lg font-bold p-1 leading-none"
+                className="absolute top-0 right-0 text-[#A5A29B] hover:text-[#3D3A35] text-2xl font-light p-1 leading-none transition-colors"
               >
-                ✕
+                ×
               </button>
+
+              <div className="mt-5 w-full">
+                <input
+                  id="motivo"
+                  type="text"
+                  value={restrictionMotivo}
+                  onChange={(e) => setRestrictionMotivo(e.target.value)}
+                  placeholder="Motivo del bloqueo (opcional)"
+                  className="w-full px-4 py-2.5 bg-white border border-[#EAE3D9] rounded-full text-xs text-[#3D3A35] placeholder:text-[#A5A29B] focus:outline-none focus:border-[#3D3A35] text-center font-sans tracking-wide transition-colors shadow-sm"
+                />
+              </div>
             </div>
 
-            {/* Listado de bloqueos activos en la fecha seleccionada */}
-            <div className="space-y-3 mb-6">
-              <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                Bloqueos Activos:
-              </span>
+            {/* Listado estilo Menú */}
+            <div className="space-y-4 mb-8 max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar">
               
-              {activeRestrictionsForSelectedDate.length === 0 ? (
-                <p className="text-xs italic text-slate-400 bg-slate-50 p-3 rounded-xl border border-dashed border-[#EBEAE5] text-center">
-                  No hay restricciones registradas para este día. Las reservas están abiertas.
-                </p>
-              ) : (
-                <div className="space-y-2">
-                  {activeRestrictionsForSelectedDate.map((r) => (
-                    <div
-                      key={r.id}
-                      className="flex items-center justify-between bg-red-50 border border-red-100 rounded-xl p-3 text-xs"
+              {/* Todo el Día */}
+              <div className="flex flex-row items-center justify-between group">
+                <span className="font-sans text-xs font-bold text-[#3D3A35] tracking-widest uppercase shrink-0">
+                  Todo el día
+                </span>
+                <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA] mx-4 relative top-[-1px] group-hover:border-[#3D3A35]/40 transition-colors"></div>
+                {(() => {
+                  const r = activeRestrictionsForSelectedDate.find(x => x.hora === null);
+                  return r ? (
+                    <button
+                      onClick={() => handleRemoveRestriction(r.id)}
+                      disabled={isPending}
+                      className="shrink-0 px-4 py-1.5 rounded-full border border-[#80385e] text-[#80385e] hover:bg-[#80385e] hover:text-white transition-all text-[9px] font-bold uppercase tracking-widest min-w-[95px] text-center shadow-sm"
                     >
-                      <div>
-                        <span className="font-bold text-red-800 block uppercase tracking-wider text-[10px]">
-                          {r.hora === null ? '🚫 TODO EL DÍA BLOQUEADO' : `🚫 HORA BLOQUEADA: ${r.hora}`}
-                        </span>
-                        {r.motivo && (
-                          <span className="text-[11px] text-red-600 block mt-0.5">Motivo: {r.motivo}</span>
-                        )}
-                      </div>
+                      Habilitar
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleAddRestriction(null)}
+                      disabled={isPending || isSelectedDateFullyBlocked}
+                      className={`shrink-0 px-4 py-1.5 rounded-full border text-[9px] font-bold uppercase tracking-widest min-w-[95px] text-center transition-all shadow-sm ${
+                        isSelectedDateFullyBlocked ? 'border-[#EAE3D9] text-[#A5A29B] bg-white cursor-not-allowed' : 'bg-[#80385e] border-transparent text-white hover:bg-[#964a75]'
+                      }`}
+                    >
+                      Bloquear
+                    </button>
+                  );
+                })()}
+              </div>
+
+              {/* Horarios Individuales */}
+              {HORARIOS_DISPONIBLES.map(h => {
+                const r = activeRestrictionsForSelectedDate.find(x => x.hora === h);
+                return (
+                  <div key={h} className="flex flex-row items-center justify-between group">
+                    <span className="font-sans text-xs font-bold text-[#3D3A35] tracking-widest uppercase shrink-0">
+                      {h}
+                    </span>
+                    <div className="flex-1 border-b-[1.5px] border-dotted border-[#D3CEBA] mx-4 relative top-[-1px] group-hover:border-[#3D3A35]/40 transition-colors"></div>
+                    {r ? (
                       <button
                         onClick={() => handleRemoveRestriction(r.id)}
                         disabled={isPending}
-                        className="px-2.5 py-1.5 bg-white border border-red-200 text-red-700 rounded-lg font-bold uppercase text-[9px] hover:bg-red-50 transition-all shrink-0 active:scale-97"
+                        className="shrink-0 px-4 py-1.5 rounded-full border border-[#80385e] text-[#80385e] hover:bg-[#80385e] hover:text-white transition-all text-[9px] font-bold uppercase tracking-widest min-w-[95px] text-center shadow-sm"
                       >
                         Habilitar
                       </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Motivo para el bloqueo */}
-            <div className="mb-4">
-              <label
-                htmlFor="motivo"
-                className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5"
-              >
-                Motivo del Bloqueo:
-              </label>
-              <input
-                id="motivo"
-                type="text"
-                value={restrictionMotivo}
-                onChange={(e) => setRestrictionMotivo(e.target.value)}
-                placeholder="Ej. Reunión de Clero, Mantenimiento..."
-                className="w-full px-3 py-2 border border-[#EBEAE5] bg-white rounded-xl text-xs text-[#3D3A35] focus:outline-none focus:ring-1 focus:ring-[#B5336D]/50"
-              />
-            </div>
-
-            {/* Opciones de creación de bloqueos */}
-            <div className="space-y-3 pt-3 border-t border-[#FAF9F6]">
-              <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                Crear Restricciones:
-              </span>
-
-              {/* Botón para bloquear todo el día */}
-              {!isSelectedDateFullyBlocked && (
-                <button
-                  onClick={() => handleAddRestriction(null)}
-                  disabled={isPending}
-                  className="w-full flex justify-center py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm active:scale-97 disabled:opacity-50"
-                >
-                  🚫 Bloquear Todo el Día
-                </button>
-              )}
-
-              {/* Botones para bloquear horas individuales */}
-              {!isSelectedDateFullyBlocked && (
-                <div className="space-y-2 mt-2">
-                  <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest">
-                    Bloquear horario específico:
-                  </span>
-                  <div className="grid grid-cols-3 gap-2">
-                    {HORARIOS_DISPONIBLES.map((h) => {
-                      const isHourAlreadyBlocked = activeRestrictionsForSelectedDate.some(r => r.hora === h);
-                      return (
-                        <button
-                          key={h}
-                          disabled={isHourAlreadyBlocked || isPending}
-                          onClick={() => handleAddRestriction(h)}
-                          className={`py-2 px-1 text-[10px] font-bold rounded-lg border text-center transition-all ${isHourAlreadyBlocked ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed' : 'bg-white hover:bg-[#F5EFEB] border-slate-200 text-slate-600 hover:text-slate-800'}`}
-                        >
-                          {h}
-                        </button>
-                      );
-                    })}
+                    ) : (
+                      <button
+                        onClick={() => handleAddRestriction(h)}
+                        disabled={isPending || isSelectedDateFullyBlocked}
+                        className={`shrink-0 px-4 py-1.5 rounded-full border text-[9px] font-bold uppercase tracking-widest min-w-[95px] text-center transition-all shadow-sm ${
+                          isSelectedDateFullyBlocked ? 'border-[#EAE3D9] text-[#A5A29B] bg-white cursor-not-allowed' : 'bg-[#80385e] border-transparent text-white hover:bg-[#964a75]'
+                        }`}
+                      >
+                        Bloquear
+                      </button>
+                    )}
                   </div>
-                </div>
-              )}
+                );
+              })}
             </div>
 
-            {/* Enlace para ver misas de este día */}
-            <div className="mt-6 pt-4 border-t border-[#EBEAE5] flex justify-between items-center gap-2">
+            {/* Footer Buttons */}
+            <div className="flex flex-col items-center justify-center gap-4 pt-6 border-t border-[#EAE3D9]">
+              <button
+                onClick={() => { setSelectedCalendarDate(null); setRestrictionMotivo(''); }}
+                className="w-full md:w-auto px-8 py-3 border border-[#3D3A35] text-[#3D3A35] hover:bg-[#3D3A35] hover:text-white rounded-full text-[10px] font-bold uppercase tracking-widest transition-all shadow-sm"
+              >
+                Cerrar
+              </button>
               <button
                 onClick={() => {
                   setSelectedDate(selectedCalendarDate);
                   setSelectedCalendarDate(null);
                   setActiveMenu('today');
                 }}
-                className="text-xs font-bold text-[#B5336D] hover:underline"
+                className="text-[9px] font-bold text-[#8C7A6B] hover:text-[#3D3A35] uppercase tracking-widest transition-colors underline underline-offset-4"
               >
-                🔎 Ver Misas de este Día
-              </button>
-              <button
-                onClick={() => { setSelectedCalendarDate(null); setRestrictionMotivo(''); }}
-                className="px-4 py-2 border border-slate-200 text-xs font-bold uppercase tracking-wider rounded-xl text-slate-600 hover:bg-slate-50 transition-all active:scale-97"
-              >
-                Cerrar
+                Ver Misas de este Día
               </button>
             </div>
+
           </div>
         </div>
       )}

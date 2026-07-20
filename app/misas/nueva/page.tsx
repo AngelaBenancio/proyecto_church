@@ -1083,37 +1083,40 @@ export default function NuevaMisaPage() {
                       </div>
                     </div>
 
-                    {/* Botón Continuar (Paso 1) */}
-                    <button
-                      type="button"
-                      onClick={handleNextStep}
-                      disabled={!isStep1Valido}
-                      className={`
-                        w-full sm:w-auto self-start px-8 py-3.5 mt-2 text-xs font-bold uppercase tracking-wider rounded-full transition-all flex items-center justify-center gap-2 border-[1.5px] cursor-pointer
-                        ${isStep1Valido
-                          ? "border-[#2B2B2B] text-[#2B2B2B] hover:bg-[#D3CEBA]/30 active:scale-95"
-                          : "border-[#E0E0E0] text-[#666666]/40 cursor-not-allowed"
-                        }
-                      `}
-                    >
-                      Continuar
-                    </button>
                   </div>
+                </div>
+
+                {/* Botón Continuar (Paso 1) - Movido al pie de página */}
+                <div className="flex justify-end items-center pt-6 border-t border-[#EADCB9]/40 mt-4">
+                  <button
+                    type="button"
+                    onClick={handleNextStep}
+                    disabled={!isStep1Valido}
+                    className={`
+                      w-full sm:w-auto px-8 py-3.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest rounded-full transition-all cursor-pointer shadow-sm
+                      ${isStep1Valido
+                        ? "bg-[#80385e] text-white hover:bg-[#964a75] active:scale-95"
+                        : "bg-[#F9F5EC] text-[#8C7A6B]/50 border border-[#EADCB9]/40 cursor-not-allowed"
+                      }
+                    `}
+                  >
+                    Continuar &rarr;
+                  </button>
                 </div>
               </div>
             ) : (
               /* PASOS 2, 3 Y 4: DENTRO DE LA TARJETA BLANCA PRINCIPAL */
-              <div className="bg-gradient-to-b from-white to-[#FAF8F5]/90 border border-white/80 rounded-3xl p-6 sm:p-10 shadow-xl shadow-[#9E9A85]/15 relative">
+              <div className="bg-[#FFFDF9] border border-[#EADCB9]/40 rounded-3xl p-6 sm:p-10 shadow-sm relative">
 
                 {step === 2 && (
-                  <div className="space-y-6 animate-fadeIn">
-                    <h3 className="font-serif text-lg font-medium text-[#2B2B2B] border-b border-[#E0E0E0] pb-3">
+                  <div className="space-y-8 animate-fadeIn">
+                    <h3 className="font-serif text-xl sm:text-2xl font-light text-[#2B2B2B] uppercase tracking-tight border-b border-[#EADCB9]/40 pb-4 mb-6">
                       Información del Solicitante y Celebración
                     </h3>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-6">
                       <div>
-                        <label htmlFor="nombre" className="block text-[10px] font-bold uppercase tracking-wider text-[#8C6B2F] mb-1.5">
+                        <label htmlFor="nombre" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
                           Nombre del Solicitante *
                         </label>
                         <input
@@ -1123,15 +1126,15 @@ export default function NuevaMisaPage() {
                           value={nombreSolicitante}
                           onChange={(e) => setNombreSolicitante(e.target.value)}
                           placeholder="Ej. Maha Torres Swilan"
-                          className="w-full text-xs px-4 py-3 bg-[#FFFFFF] border border-[#E1DBCB] rounded-xl focus:outline-none focus:border-[#E69526] focus:ring-4 focus:ring-[#E69526]/10 text-[#2B2B2B] transition-all"
+                          className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
                         />
                         {nombreSolicitante && !isNombreValido && (
-                          <span className="text-[9px] text-red-500 mt-1 block font-medium">El nombre debe tener al menos 3 caracteres.</span>
+                          <span className="text-[9px] text-[#80385e] mt-1 block font-medium">El nombre debe tener al menos 3 caracteres.</span>
                         )}
                       </div>
 
                       <div>
-                        <label htmlFor="telefono" className="block text-[10px] font-bold uppercase tracking-wider text-[#8C6B2F] mb-1.5">
+                        <label htmlFor="telefono" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
                           Celular (Perú) *
                         </label>
                         <input
@@ -1141,16 +1144,16 @@ export default function NuevaMisaPage() {
                           value={telefonoSolicitante}
                           onChange={handleTelefonoChange}
                           placeholder="Ej. 987654321"
-                          className="w-full text-xs px-4 py-3 bg-[#FFFFFF] border border-[#E1DBCB] rounded-xl focus:outline-none focus:border-[#E69526] focus:ring-4 focus:ring-[#E69526]/10 text-[#2B2B2B] transition-all"
+                          className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
                         />
                         {telefonoSolicitante && !isTelefonoValido && (
-                          <span className="text-[9px] text-red-500 mt-1 block font-medium">Debe ser celular de 9 dígitos y empezar con 9.</span>
+                          <span className="text-[9px] text-[#80385e] mt-1 block font-medium">Debe ser celular de 9 dígitos y empezar con 9.</span>
                         )}
                       </div>
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-[10px] font-bold uppercase tracking-wider text-[#8C6B2F] mb-1.5">
+                      <label htmlFor="email" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
                         Correo Electrónico *
                       </label>
                       <input
@@ -1160,17 +1163,17 @@ export default function NuevaMisaPage() {
                         value={emailSolicitante}
                         onChange={(e) => setEmailSolicitante(e.target.value)}
                         placeholder="ejemplo@correo.com"
-                        className="w-full text-xs px-4 py-3 bg-[#FFFFFF] border border-[#E1DBCB] rounded-xl focus:outline-none focus:border-[#E69526] focus:ring-4 focus:ring-[#E69526]/10 text-[#2B2B2B] transition-all"
+                        className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
                       />
                       {emailSolicitante && !isEmailValido && (
-                        <span className="text-[9px] text-red-500 mt-1 block font-medium">Ingrese un correo electrónico válido.</span>
+                        <span className="text-[9px] text-[#80385e] mt-1 block font-medium">Ingrese un correo electrónico válido.</span>
                       )}
                     </div>
 
                     {/* Combo sacramental - Pregunta de misma persona */}
                     {selectedSacraments.length >= 2 && (
-                      <div className="bg-[#FAF8F3] border border-[#EADCB9]/40 rounded-2xl p-4 sm:p-5 space-y-4 shadow-2xs">
-                        <label className="block text-[10px] font-bold uppercase tracking-wider text-[#8C6B2F] mb-1">
+                      <div className="bg-transparent border border-[#EADCB9]/40 rounded-3xl p-6 sm:p-8 space-y-6">
+                        <label className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
                           ¿Los sacramentos seleccionados son para la misma persona? *
                         </label>
                         <div className="flex flex-col sm:flex-row gap-3">
@@ -1181,35 +1184,35 @@ export default function NuevaMisaPage() {
                               setNombreSegundaPersona("");
                               setDniSegundaPersona("");
                             }}
-                            className={`px-5 py-2.5 text-xs font-semibold rounded-xl border transition-all cursor-pointer ${
+                            className={`px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-all cursor-pointer ${
                               isMismaPersona === true
-                                ? "bg-gradient-to-r from-[#a35b80] to-[#8c456b] text-white shadow-md"
-                                : "bg-[#FFFFFF] text-[#2B2B2B] border-[#E0E0E0] hover:bg-[#D3CEBA]/20"
+                                ? "bg-[#80385e] text-white shadow-sm"
+                                : "bg-transparent text-[#8C7A6B] border border-[#EADCB9] hover:bg-[#FFFDF9]"
                             }`}
                           >
-                            Sí, son para la misma persona
+                            Sí, misma persona
                           </button>
                           <button
                             type="button"
                             onClick={() => setIsMismaPersona(false)}
-                            className={`px-5 py-2.5 text-xs font-semibold rounded-xl border transition-all cursor-pointer ${
+                            className={`px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-all cursor-pointer ${
                               isMismaPersona === false
-                                ? "bg-gradient-to-r from-[#a35b80] to-[#8c456b] text-white shadow-md"
-                                : "bg-[#FFFFFF] text-[#2B2B2B] border-[#E0E0E0] hover:bg-[#D3CEBA]/20"
+                                ? "bg-[#80385e] text-white shadow-sm"
+                                : "bg-transparent text-[#8C7A6B] border border-[#EADCB9] hover:bg-[#FFFDF9]"
                             }`}
                           >
-                            No, son para distintas personas (ej. Bautizo del hijo)
+                            No, personas distintas
                           </button>
                         </div>
                         
                         {isMismaPersona === false && (
-                          <div className="border-t border-[#E0E0E0] pt-4 space-y-3">
-                            <h4 className="text-xs font-bold text-[#a35b80] uppercase tracking-wider">
+                          <div className="border-t border-[#D3CEBA]/50 pt-6 space-y-6 mt-6">
+                            <h4 className="font-serif text-lg font-light text-[#80385e] tracking-tight">
                               Datos de la Segunda Persona
                             </h4>
                             <div>
-                              <label htmlFor="nombreSegunda" className="block text-[9px] font-bold uppercase tracking-wider text-[#8C6B2F] mb-1">
-                                Nombre completo de la segunda persona *
+                              <label htmlFor="nombreSegunda" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
+                                Nombre completo *
                               </label>
                               <input
                                 id="nombreSegunda"
@@ -1218,15 +1221,15 @@ export default function NuevaMisaPage() {
                                 value={nombreSegundaPersona}
                                 onChange={(e) => setNombreSegundaPersona(e.target.value)}
                                 placeholder="Ej. Nombre del segundo festejado"
-                                className="w-full text-xs px-4 py-3 bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl focus:outline-none focus:border-[#E69526] text-[#2B2B2B]"
+                                className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
                               />
                               {nombreSegundaPersona && nombreSegundaPersona.trim().length < 3 && (
-                                <span className="text-[9px] text-red-500 mt-1 block">Debe tener al menos 3 caracteres.</span>
+                                <span className="text-[9px] text-[#80385e] mt-1 block">Debe tener al menos 3 caracteres.</span>
                               )}
                             </div>
                             <div>
-                              <label htmlFor="dniSegunda" className="block text-[9px] font-bold uppercase tracking-wider text-[#8C6B2F] mb-1">
-                                DNI de la segunda persona *
+                              <label htmlFor="dniSegunda" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
+                                DNI *
                               </label>
                               <input
                                 id="dniSegunda"
@@ -1235,10 +1238,10 @@ export default function NuevaMisaPage() {
                                 value={dniSegundaPersona}
                                 onChange={(e) => setDniSegundaPersona(e.target.value.replace(/\D/g, "").slice(0, 8))}
                                 placeholder="DNI de 8 dígitos"
-                                className="w-full text-xs px-4 py-3 bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl focus:outline-none focus:border-[#E69526] font-mono text-[#2B2B2B]"
+                                className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
                               />
                               {dniSegundaPersona && dniSegundaPersona.length !== 8 && (
-                                <span className="text-[9px] text-red-500 mt-1 block">Debe tener exactamente 8 números.</span>
+                                <span className="text-[9px] text-[#80385e] mt-1 block">Debe tener exactamente 8 números.</span>
                               )}
                             </div>
                           </div>
@@ -1247,8 +1250,8 @@ export default function NuevaMisaPage() {
                     )}
 
                     {/* Nombre del festejado principal (Dinámico) */}
-                    <div className="pt-2 border-t border-[#E0E0E0]">
-                      <label htmlFor="nombreIntencion" className="block text-[10px] font-bold uppercase tracking-wider text-[#8C6B2F] mb-1.5">
+                    <div>
+                      <label htmlFor="nombreIntencion" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
                         {obtenerLabelNombreIntencion()}
                       </label>
                       <input
@@ -1258,18 +1261,18 @@ export default function NuevaMisaPage() {
                         value={nombreIntencion}
                         onChange={(e) => setNombreIntencion(e.target.value)}
                         placeholder={obtenerPlaceholderNombreIntencion()}
-                        className="w-full text-xs px-4 py-3 bg-[#FFFFFF] border border-[#E1DBCB] rounded-xl focus:outline-none focus:border-[#E69526] text-[#2B2B2B] transition-all"
+                        className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
                       />
                       {nombreIntencion && !isNombreIntencionValido && (
-                        <span className="text-[9px] text-red-500 mt-1 block font-medium">El nombre debe tener al menos 3 caracteres.</span>
+                        <span className="text-[9px] text-[#80385e] mt-1 block font-medium">El nombre debe tener al menos 3 caracteres.</span>
                       )}
                     </div>
 
                     {/* Datos condicionales de Bautizos (Padres/Padrinos) */}
                     {requiereCamposPadresPadrinos && (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#FAF8F3] border border-[#EADCB9]/40 rounded-2xl p-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-6 bg-transparent border border-[#EADCB9]/40 rounded-3xl p-6 sm:p-8">
                         <div>
-                          <label htmlFor="padres" className="block text-[10px] font-bold uppercase tracking-wider text-[#8C6B2F] mb-1.5">
+                          <label htmlFor="padres" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
                             Nombres de los Padres *
                           </label>
                           <input
@@ -1279,14 +1282,14 @@ export default function NuevaMisaPage() {
                             value={padresNombres}
                             onChange={(e) => setPadresNombres(e.target.value)}
                             placeholder="Ej. Pedro Pérez y Ana Ramos"
-                            className="w-full text-xs px-4 py-3 bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl focus:outline-none focus:border-[#E69526] text-[#2B2B2B]"
+                            className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
                           />
                           {padresNombres && padresNombres.trim().length < 5 && (
-                            <span className="text-[9px] text-red-500 mt-1 block">Mínimo 5 caracteres.</span>
+                            <span className="text-[9px] text-[#80385e] mt-1 block">Mínimo 5 caracteres.</span>
                           )}
                         </div>
                         <div>
-                          <label htmlFor="padrinos" className="block text-[10px] font-bold uppercase tracking-wider text-[#8C6B2F] mb-1.5">
+                          <label htmlFor="padrinos" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
                             Nombres de los Padrinos *
                           </label>
                           <input
@@ -1296,10 +1299,10 @@ export default function NuevaMisaPage() {
                             value={padrinosNombres}
                             onChange={(e) => setPadrinosNombres(e.target.value)}
                             placeholder="Ej. Juan Ruiz y Rosa Medina"
-                            className="w-full text-xs px-4 py-3 bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl focus:outline-none focus:border-[#E69526] text-[#2B2B2B]"
+                            className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
                           />
                           {padrinosNombres && padrinosNombres.trim().length < 5 && (
-                            <span className="text-[9px] text-red-500 mt-1 block">Mínimo 5 caracteres.</span>
+                            <span className="text-[9px] text-[#80385e] mt-1 block">Mínimo 5 caracteres.</span>
                           )}
                         </div>
                       </div>
@@ -1307,8 +1310,8 @@ export default function NuevaMisaPage() {
 
                     {/* Datos condicionales de Matrimonio (Cónyuge) */}
                     {requiereCamposConyuge && (
-                      <div className="bg-[#FAF8F3] border border-[#EADCB9]/40 rounded-2xl p-4">
-                        <label htmlFor="conyuge" className="block text-[10px] font-bold uppercase tracking-wider text-[#8C6B2F] mb-1.5">
+                      <div className="bg-transparent border border-[#EADCB9]/40 rounded-3xl p-6 sm:p-8">
+                        <label htmlFor="conyuge" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
                           Nombre del Cónyuge / Segundo Contrayente *
                         </label>
                         <input
@@ -1318,17 +1321,17 @@ export default function NuevaMisaPage() {
                           value={conyugeNombre}
                           onChange={(e) => setConyugeNombre(e.target.value)}
                           placeholder="Ej. Nombre del segundo contrayente"
-                          className="w-full text-xs px-4 py-3 bg-[#FFFFFF] border border-[#E0E0E0] rounded-xl focus:outline-none focus:border-[#E69526] text-[#2B2B2B]"
+                          className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
                         />
                         {conyugeNombre && conyugeNombre.trim().length < 3 && (
-                          <span className="text-[9px] text-red-500 mt-1 block">Mínimo 3 caracteres.</span>
+                          <span className="text-[9px] text-[#80385e] mt-1 block">Mínimo 3 caracteres.</span>
                         )}
                       </div>
                     )}
 
                     {/* Mensaje u Observaciones */}
                     <div>
-                      <label htmlFor="mensaje" className="block text-[10px] font-bold uppercase tracking-wider text-[#8C6B2F] mb-1.5">
+                      <label htmlFor="mensaje" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
                         Observaciones / Peticiones Especiales (Opcional)
                       </label>
                       <textarea
@@ -1337,7 +1340,7 @@ export default function NuevaMisaPage() {
                         onChange={(e) => setMensaje(e.target.value)}
                         placeholder="Ej. por sus 16 años, primer mes de fallecido, u otros detalles"
                         rows={3}
-                        className="w-full text-xs px-4 py-3 bg-[#FFFFFF] border border-[#E1DBCB] rounded-xl focus:outline-none focus:border-[#E69526] text-[#2B2B2B] transition-all resize-none"
+                        className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA] resize-none mt-2"
                       />
                     </div>
                   </div>
@@ -1936,12 +1939,12 @@ export default function NuevaMisaPage() {
                 )}
 
                 {/* Botones de Navegación del Wizard para Pasos 2, 3 y 4 */}
-                <div className="flex justify-between items-center mt-10 pt-6 border-t border-[#E0E0E0]/60">
+                <div className="flex justify-between items-center mt-10 pt-6 border-t border-[#EADCB9]/40">
                   <button
                     type="button"
                     onClick={handlePrevStep}
                     disabled={loading}
-                    className="px-5 py-3 text-xs font-bold uppercase tracking-wider rounded-xl transition-all cursor-pointer border text-[#2B2B2B] bg-transparent border border-[#2B2B2B] hover:bg-[#D3CEBA]/25"
+                    className="px-6 py-3 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest rounded-full transition-all cursor-pointer border bg-transparent text-[#8C7A6B] border-[#EADCB9] hover:bg-[#FFFDF9]"
                   >
                     &larr; Anterior
                   </button>
@@ -1955,10 +1958,10 @@ export default function NuevaMisaPage() {
                         (step === 3 && !isStep3Valido)
                       }
                       className={`
-                        px-6 py-3 text-xs font-bold uppercase tracking-wider rounded-xl text-white transition-all cursor-pointer shadow-md
+                        px-8 py-3 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest rounded-full transition-all cursor-pointer shadow-sm
                         ${((step === 2 && isStep2Valido) || (step === 3 && isStep3Valido))
-                          ? "bg-gradient-to-r from-[#a35b80] to-[#8c456b] hover:from-[#8c456b] hover:to-[#6e3152] shadow-[#a35b80]/20"
-                          : "bg-[#E0E0E0] text-[#666666]/50 cursor-not-allowed"
+                          ? "bg-[#80385e] text-white hover:bg-[#964a75]"
+                          : "bg-[#F9F5EC] text-[#8C7A6B]/50 border border-[#EADCB9]/40 cursor-not-allowed"
                         }
                       `}
                     >
@@ -1970,10 +1973,10 @@ export default function NuevaMisaPage() {
                       onClick={handleSubmit}
                       disabled={!isStep4Valido || loading}
                       className={`
-                        px-8 py-3.5 text-xs font-bold uppercase tracking-wider rounded-xl text-white transition-all cursor-pointer shadow-md
+                        px-8 py-3.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest rounded-full transition-all cursor-pointer shadow-sm
                         ${isStep4Valido && !loading
-                          ? "bg-gradient-to-r from-[#a35b80] to-[#8c456b] hover:from-[#8c456b] hover:to-[#6e3152] shadow-[#a35b80]/20 active:scale-99"
-                          : "bg-[#E0E0E0] text-[#666666]/50 cursor-not-allowed"
+                          ? "bg-[#80385e] text-white hover:bg-[#964a75] active:scale-95"
+                          : "bg-[#F9F5EC] text-[#8C7A6B]/50 border border-[#EADCB9]/40 cursor-not-allowed"
                         }
                       `}
                     >
