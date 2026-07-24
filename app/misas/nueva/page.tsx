@@ -79,7 +79,7 @@ export default function NuevaMisaPage() {
   // Paso 1: Datos de la intención (Fecha y Hora)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedHour, setSelectedHour] = useState<string>("");
-  const [tipoIntencion, setTipoIntencion] = useState("DIFUNTO");
+  const [tipoIntencion, setTipoIntencion] = useState("");
   const [selectedSacraments, setSelectedSacraments] = useState<string[]>([]);
 
   // Paso 2: Datos del formulario y campos condicionales
@@ -107,7 +107,7 @@ export default function NuevaMisaPage() {
   const [fileDniConfirmando, setFileDniConfirmando] = useState<{ name: string; progress: number; isValid: boolean } | null>(null);
 
   // Paso 4: Ofrenda y pago
-  const [montoOfrenda, setMontoOfrenda] = useState("10.00");
+  const [montoOfrenda, setMontoOfrenda] = useState("");
   const [codigoYape, setCodigoYape] = useState("");
 
   // Registro de intenciones previas para mostrar en el calendario
@@ -311,7 +311,7 @@ export default function NuevaMisaPage() {
   const isCamposMatrimonioValidos = !requiereCamposConyuge || conyugeNombre.trim().length >= 3;
 
   // Estados de validación por paso
-  const isStep1Valido = isFechaValida && isHourValida;
+  const isStep1Valido = isFechaValida && isHourValida && (tipoIntencion !== "" || selectedSacraments.length > 0);
   const isStep2Valido =
     isNombreValido &&
     isEmailValido &&
@@ -603,17 +603,19 @@ export default function NuevaMisaPage() {
 
       {/* Header con Pasos Integrados y Degradado Litúrgico */}
       <header className="sticky top-0 z-40 bg-gradient-to-r from-[#80385e] via-[#a35b80] to-[#964a75] text-white py-3 px-4 sm:px-8 shadow-md border-b border-[#a35b80]/20 relative">
-        <div className="max-w-7xl mx-auto flex items-center justify-between w-full min-h-[40px] gap-3">
-          {/* Volver al Inicio (Alineado a la Izquierda) */}
-          <Link 
-            href="/" 
-            className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-white/90 hover:text-white transition-colors shrink-0"
-          >
-            <span className="text-sm font-semibold">&larr;</span> <span className="hidden sm:inline">Volver al Inicio</span><span className="sm:hidden">Inicio</span>
-          </Link>
+        <div className="w-full flex items-center justify-center min-h-[40px] relative">
+          {/* Volver al Inicio (Pegado a la Izquierda) */}
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center">
+            <Link 
+              href="/" 
+              className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-white/90 hover:text-white transition-colors"
+            >
+              <span className="text-sm font-semibold">&larr;</span> <span className="hidden sm:inline">Volver al Inicio</span><span className="sm:hidden">Inicio</span>
+            </Link>
+          </div>
           
-          {/* Pasos Centrados en el Header */}
-          <div className="flex-1 flex items-center justify-center gap-x-2 sm:gap-x-6 select-none overflow-x-auto no-scrollbar py-1">
+          {/* Pasos Centrados en el viewport (desplazados ligeramente a la izquierda por estética) */}
+          <div className="flex items-center justify-center gap-x-3 sm:gap-x-6 select-none overflow-x-auto no-scrollbar py-1 pr-14 sm:pr-24">
             {[
               { number: 1, label: "Programación" },
               { number: 2, label: "Información" },
@@ -1049,8 +1051,8 @@ export default function NuevaMisaPage() {
                                   setSelectedSacraments(nuevosSacramentos);
 
                                   if (nuevosSacramentos.length === 0) {
-                                    setTipoIntencion("DIFUNTO");
-                                    setMontoOfrenda("10.00");
+                                    setTipoIntencion("");
+                                    setMontoOfrenda("");
                                     setIsMismaPersona(null);
                                     setNombreSegundaPersona("");
                                     setDniSegundaPersona("");
@@ -1123,7 +1125,7 @@ export default function NuevaMisaPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-6">
                       <div>
-                        <label htmlFor="nombre" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
+                        <label htmlFor="nombre" className="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-stone-700 mb-2">
                           Nombre del Solicitante *
                         </label>
                         <input
@@ -1133,7 +1135,7 @@ export default function NuevaMisaPage() {
                           value={nombreSolicitante}
                           onChange={(e) => setNombreSolicitante(e.target.value)}
                           placeholder="Ej. Maha Torres Swilan"
-                          className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
+                          className="w-full text-sm px-4 py-3.5 bg-white border border-stone-300 rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-2 focus:ring-[#80385e]/15 text-stone-800 transition-all placeholder:text-stone-400 font-normal shadow-2xs"
                         />
                         {nombreSolicitante && !isNombreValido && (
                           <span className="text-[9px] text-[#80385e] mt-1 block font-medium">El nombre debe tener al menos 3 caracteres.</span>
@@ -1141,7 +1143,7 @@ export default function NuevaMisaPage() {
                       </div>
 
                       <div>
-                        <label htmlFor="telefono" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
+                        <label htmlFor="telefono" className="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-stone-700 mb-2">
                           Celular (Perú) *
                         </label>
                         <input
@@ -1151,7 +1153,7 @@ export default function NuevaMisaPage() {
                           value={telefonoSolicitante}
                           onChange={handleTelefonoChange}
                           placeholder="Ej. 987654321"
-                          className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
+                          className="w-full text-sm px-4 py-3.5 bg-white border border-stone-300 rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-2 focus:ring-[#80385e]/15 text-stone-800 transition-all placeholder:text-stone-400 font-normal shadow-2xs"
                         />
                         {telefonoSolicitante && !isTelefonoValido && (
                           <span className="text-[9px] text-[#80385e] mt-1 block font-medium">Debe ser celular de 9 dígitos y empezar con 9.</span>
@@ -1160,7 +1162,7 @@ export default function NuevaMisaPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
+                      <label htmlFor="email" className="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-stone-700 mb-2">
                         Correo Electrónico *
                       </label>
                       <input
@@ -1170,7 +1172,7 @@ export default function NuevaMisaPage() {
                         value={emailSolicitante}
                         onChange={(e) => setEmailSolicitante(e.target.value)}
                         placeholder="ejemplo@correo.com"
-                        className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
+                        className="w-full text-sm px-4 py-3.5 bg-white border border-stone-300 rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-2 focus:ring-[#80385e]/15 text-stone-800 transition-all placeholder:text-stone-400 font-normal shadow-2xs"
                       />
                       {emailSolicitante && !isEmailValido && (
                         <span className="text-[9px] text-[#80385e] mt-1 block font-medium">Ingrese un correo electrónico válido.</span>
@@ -1180,7 +1182,7 @@ export default function NuevaMisaPage() {
                     {/* Combo sacramental - Pregunta de misma persona */}
                     {selectedSacraments.length >= 2 && (
                       <div className="bg-transparent border border-[#EADCB9]/40 rounded-3xl p-6 sm:p-8 space-y-6">
-                        <label className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
+                        <label className="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-stone-700 mb-2.5">
                           ¿Los sacramentos seleccionados son para la misma persona? *
                         </label>
                         <div className="flex flex-col sm:flex-row gap-3">
@@ -1194,7 +1196,7 @@ export default function NuevaMisaPage() {
                             className={`px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-all cursor-pointer ${
                               isMismaPersona === true
                                 ? "bg-[#80385e] text-white shadow-sm"
-                                : "bg-transparent text-[#8C7A6B] border border-[#EADCB9] hover:bg-[#FFFDF9]"
+                                : "bg-white text-stone-700 border border-stone-300 hover:bg-stone-50"
                             }`}
                           >
                             Sí, misma persona
@@ -1205,7 +1207,7 @@ export default function NuevaMisaPage() {
                             className={`px-5 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-full transition-all cursor-pointer ${
                               isMismaPersona === false
                                 ? "bg-[#80385e] text-white shadow-sm"
-                                : "bg-transparent text-[#8C7A6B] border border-[#EADCB9] hover:bg-[#FFFDF9]"
+                                : "bg-white text-stone-700 border border-stone-300 hover:bg-stone-50"
                             }`}
                           >
                             No, personas distintas
@@ -1218,7 +1220,7 @@ export default function NuevaMisaPage() {
                               Datos de la Segunda Persona
                             </h4>
                             <div>
-                              <label htmlFor="nombreSegunda" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
+                              <label htmlFor="nombreSegunda" className="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-stone-700 mb-2">
                                 Nombre completo *
                               </label>
                               <input
@@ -1228,14 +1230,14 @@ export default function NuevaMisaPage() {
                                 value={nombreSegundaPersona}
                                 onChange={(e) => setNombreSegundaPersona(e.target.value)}
                                 placeholder="Ej. Nombre del segundo festejado"
-                                className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
+                                className="w-full text-sm px-4 py-3.5 bg-white border border-stone-300 rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-2 focus:ring-[#80385e]/15 text-stone-800 transition-all placeholder:text-stone-400 font-normal shadow-2xs"
                               />
                               {nombreSegundaPersona && nombreSegundaPersona.trim().length < 3 && (
                                 <span className="text-[9px] text-[#80385e] mt-1 block">Debe tener al menos 3 caracteres.</span>
                               )}
                             </div>
                             <div>
-                              <label htmlFor="dniSegunda" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
+                              <label htmlFor="dniSegunda" className="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-stone-700 mb-2">
                                 DNI *
                               </label>
                               <input
@@ -1245,7 +1247,7 @@ export default function NuevaMisaPage() {
                                 value={dniSegundaPersona}
                                 onChange={(e) => setDniSegundaPersona(e.target.value.replace(/\D/g, "").slice(0, 8))}
                                 placeholder="DNI de 8 dígitos"
-                                className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
+                                className="w-full text-sm px-4 py-3.5 bg-white border border-stone-300 rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-2 focus:ring-[#80385e]/15 text-stone-800 transition-all placeholder:text-stone-400 font-normal shadow-2xs"
                               />
                               {dniSegundaPersona && dniSegundaPersona.length !== 8 && (
                                 <span className="text-[9px] text-[#80385e] mt-1 block">Debe tener exactamente 8 números.</span>
@@ -1258,7 +1260,7 @@ export default function NuevaMisaPage() {
 
                     {/* Nombre del festejado principal (Dinámico) */}
                     <div>
-                      <label htmlFor="nombreIntencion" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
+                      <label htmlFor="nombreIntencion" className="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-stone-700 mb-2">
                         {obtenerLabelNombreIntencion()}
                       </label>
                       <input
@@ -1268,7 +1270,7 @@ export default function NuevaMisaPage() {
                         value={nombreIntencion}
                         onChange={(e) => setNombreIntencion(e.target.value)}
                         placeholder={obtenerPlaceholderNombreIntencion()}
-                        className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
+                        className="w-full text-sm px-4 py-3.5 bg-white border border-stone-300 rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-2 focus:ring-[#80385e]/15 text-stone-800 transition-all placeholder:text-stone-400 font-normal shadow-2xs"
                       />
                       {nombreIntencion && !isNombreIntencionValido && (
                         <span className="text-[9px] text-[#80385e] mt-1 block font-medium">El nombre debe tener al menos 3 caracteres.</span>
@@ -1279,7 +1281,7 @@ export default function NuevaMisaPage() {
                     {requiereCamposPadresPadrinos && (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-6 bg-transparent border border-[#EADCB9]/40 rounded-3xl p-6 sm:p-8">
                         <div>
-                          <label htmlFor="padres" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
+                          <label htmlFor="padres" className="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-stone-700 mb-2">
                             Nombres de los Padres *
                           </label>
                           <input
@@ -1289,14 +1291,14 @@ export default function NuevaMisaPage() {
                             value={padresNombres}
                             onChange={(e) => setPadresNombres(e.target.value)}
                             placeholder="Ej. Pedro Pérez y Ana Ramos"
-                            className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
+                            className="w-full text-sm px-4 py-3.5 bg-white border border-stone-300 rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-2 focus:ring-[#80385e]/15 text-stone-800 transition-all placeholder:text-stone-400 font-normal shadow-2xs"
                           />
                           {padresNombres && padresNombres.trim().length < 5 && (
                             <span className="text-[9px] text-[#80385e] mt-1 block">Mínimo 5 caracteres.</span>
                           )}
                         </div>
                         <div>
-                          <label htmlFor="padrinos" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
+                          <label htmlFor="padrinos" className="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-stone-700 mb-2">
                             Nombres de los Padrinos *
                           </label>
                           <input
@@ -1306,7 +1308,7 @@ export default function NuevaMisaPage() {
                             value={padrinosNombres}
                             onChange={(e) => setPadrinosNombres(e.target.value)}
                             placeholder="Ej. Juan Ruiz y Rosa Medina"
-                            className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
+                            className="w-full text-sm px-4 py-3.5 bg-white border border-stone-300 rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-2 focus:ring-[#80385e]/15 text-stone-800 transition-all placeholder:text-stone-400 font-normal shadow-2xs"
                           />
                           {padrinosNombres && padrinosNombres.trim().length < 5 && (
                             <span className="text-[9px] text-[#80385e] mt-1 block">Mínimo 5 caracteres.</span>
@@ -1318,7 +1320,7 @@ export default function NuevaMisaPage() {
                     {/* Datos condicionales de Matrimonio (Cónyuge) */}
                     {requiereCamposConyuge && (
                       <div className="bg-transparent border border-[#EADCB9]/40 rounded-3xl p-6 sm:p-8">
-                        <label htmlFor="conyuge" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
+                        <label htmlFor="conyuge" className="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-stone-700 mb-2">
                           Nombre del Cónyuge / Segundo Contrayente *
                         </label>
                         <input
@@ -1328,7 +1330,7 @@ export default function NuevaMisaPage() {
                           value={conyugeNombre}
                           onChange={(e) => setConyugeNombre(e.target.value)}
                           placeholder="Ej. Nombre del segundo contrayente"
-                          className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA]"
+                          className="w-full text-sm px-4 py-3.5 bg-white border border-stone-300 rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-2 focus:ring-[#80385e]/15 text-stone-800 transition-all placeholder:text-stone-400 font-normal shadow-2xs"
                         />
                         {conyugeNombre && conyugeNombre.trim().length < 3 && (
                           <span className="text-[9px] text-[#80385e] mt-1 block">Mínimo 3 caracteres.</span>
@@ -1338,7 +1340,7 @@ export default function NuevaMisaPage() {
 
                     {/* Mensaje u Observaciones */}
                     <div>
-                      <label htmlFor="mensaje" className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#8C7A6B] mb-1.5">
+                      <label htmlFor="mensaje" className="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-stone-700 mb-2">
                         Observaciones / Peticiones Especiales (Opcional)
                       </label>
                       <textarea
@@ -1347,7 +1349,7 @@ export default function NuevaMisaPage() {
                         onChange={(e) => setMensaje(e.target.value)}
                         placeholder="Ej. por sus 16 años, primer mes de fallecido, u otros detalles"
                         rows={3}
-                        className="w-full text-sm px-4 py-3 bg-[#F9F5EC]/50 border border-[#EADCB9] rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-1 focus:ring-[#80385e] text-[#2B2B2B] font-light transition-all placeholder:text-[#D3CEBA] resize-none mt-2"
+                        className="w-full text-sm px-4 py-3.5 bg-white border border-stone-300 rounded-2xl focus:outline-none focus:border-[#80385e] focus:ring-2 focus:ring-[#80385e]/15 text-stone-800 transition-all placeholder:text-stone-400 font-normal shadow-2xs resize-none mt-2"
                       />
                     </div>
                   </div>
@@ -1946,12 +1948,12 @@ export default function NuevaMisaPage() {
                 )}
 
                 {/* Botones de Navegación del Wizard para Pasos 2, 3 y 4 */}
-                <div className="flex justify-between items-center mt-10 pt-6 border-t border-[#EADCB9]/40">
+                <div className="flex justify-between items-center mt-10 pt-6 border-t border-stone-200">
                   <button
                     type="button"
                     onClick={handlePrevStep}
                     disabled={loading}
-                    className="px-6 py-3 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest rounded-full transition-all cursor-pointer border bg-transparent text-[#8C7A6B] border-[#EADCB9] hover:bg-[#FFFDF9]"
+                    className="px-6 py-3 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest rounded-full transition-all cursor-pointer border bg-white text-stone-700 border-stone-200 hover:bg-stone-50 hover:border-stone-300 shadow-2xs"
                   >
                     &larr; Anterior
                   </button>
@@ -1967,8 +1969,8 @@ export default function NuevaMisaPage() {
                       className={`
                         px-8 py-3 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest rounded-full transition-all cursor-pointer shadow-sm
                         ${((step === 2 && isStep2Valido) || (step === 3 && isStep3Valido))
-                          ? "bg-[#80385e] text-white hover:bg-[#964a75]"
-                          : "bg-[#F9F5EC] text-[#8C7A6B]/50 border border-[#EADCB9]/40 cursor-not-allowed"
+                          ? "bg-[#80385e] text-white hover:bg-[#964a75] active:scale-95"
+                          : "bg-stone-105 text-stone-400 border border-stone-200 cursor-not-allowed"
                         }
                       `}
                     >

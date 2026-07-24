@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Header from "../components/Header";
 
 type RequirementSection = {
   title: string;
@@ -227,20 +228,10 @@ export default function RequisitosSacramentosPage() {
 
   return (
     <main className="min-h-screen bg-[#fafaf9] text-slate-900 pb-24 font-sans selection:bg-amber-100">
-      {/* Header Fino de Navegación */}
-      <header className="sticky top-0 z-40 bg-gradient-to-r from-[#80385e] via-[#a35b80] to-[#964a75] shadow-md py-4 px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link 
-            href="/" 
-            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white/80 hover:text-white transition-colors"
-          >
-            <span className="text-sm font-semibold">&larr;</span> Volver al Inicio
-          </Link>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Header */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-6 text-center">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-6 text-center">
         <h1 className="font-serif text-3xl sm:text-5xl font-light text-stone-800 tracking-tight leading-tight">
           Requisitos de los Sacramentos
         </h1>

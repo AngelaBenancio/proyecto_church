@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Header from "./components/Header";
 
 // Componente Logo que representa la silueta de la fachada de la Parroquia Nuestra Señora del Patrocinio
 function LogoIglesia({ className = "w-5 h-5" }: { className?: string }) {
@@ -80,15 +81,56 @@ export default function Home() {
   const servicesSectionRef = useRef<HTMLElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
 
-  const scrollLeft = () => {
+  const isDown = useRef(false);
+  const startX = useRef(0);
+  const scrollLeftVal = useRef(0);
+  const preventClick = useRef(false);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!carouselRef.current) return;
+    isDown.current = true;
+    preventClick.current = false;
+    carouselRef.current.style.scrollSnapType = 'none';
+    carouselRef.current.style.scrollBehavior = 'auto';
+    startX.current = e.pageX - carouselRef.current.offsetLeft;
+    scrollLeftVal.current = carouselRef.current.scrollLeft;
+  };
+
+  const handleMouseLeave = () => {
+    if (!isDown.current) return;
+    isDown.current = false;
     if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: -360, behavior: "smooth" });
+      carouselRef.current.style.scrollSnapType = '';
+      carouselRef.current.style.scrollBehavior = '';
     }
   };
 
-  const scrollRight = () => {
+  const handleMouseUp = () => {
+    if (!isDown.current) return;
+    isDown.current = false;
     if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: 360, behavior: "smooth" });
+      carouselRef.current.style.scrollSnapType = '';
+      carouselRef.current.style.scrollBehavior = '';
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDown.current || !carouselRef.current) return;
+    const x = e.pageX - carouselRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.5;
+    
+    if (Math.abs(x - startX.current) > 5) {
+      preventClick.current = true;
+    }
+    
+    e.preventDefault();
+    carouselRef.current.scrollLeft = scrollLeftVal.current - walk;
+  };
+
+  const handleClickCapture = (e: React.MouseEvent) => {
+    if (preventClick.current) {
+      e.preventDefault();
+      e.stopPropagation();
     }
   };
 
@@ -128,74 +170,7 @@ export default function Home() {
       
 
       {/* Floating Header / Capsule Navigation Bar */}
-      <div className="sticky top-0 z-50 w-full flex justify-center pt-4 px-2 sm:px-4 pointer-events-none -mb-20">
-        <header className="pointer-events-auto w-full max-w-5xl h-14 sm:h-16 bg-slate-950/85 backdrop-blur-md border border-slate-800 rounded-full px-3 sm:px-6 flex items-center justify-between shadow-xl shadow-black/10">
-          {/* Logo & Title */}
-          <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
-            <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-full bg-white/10 text-white flex items-center justify-center border border-white/10 group-hover:bg-amber-400 group-hover:text-slate-950 group-hover:border-amber-400 transition-all duration-300 shrink-0">
-              <LogoIglesia className="w-4 h-4 sm:w-5.5 sm:h-5.5 shrink-0" />
-            </div>
-            <div>
-              <span className="font-serif text-xs sm:text-sm font-bold tracking-tight text-white leading-none block uppercase tracking-wider">
-                Patrocinio
-              </span>
-            </div>
-          </Link>
-
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-6 text-xs uppercase tracking-wider font-semibold">
-            <Link
-              href="/"
-              className="text-white hover:text-amber-400 transition-colors"
-            >
-              Inicio
-            </Link>
-            <Link
-              href="#servicios"
-              className="text-slate-400 hover:text-white transition-colors"
-            >
-              Trámites
-            </Link>
-            <Link
-              href="#horarios"
-              className="text-slate-400 hover:text-white transition-colors"
-            >
-              Horarios
-            </Link>
-            <Link
-              href="#faq"
-              className="text-slate-400 hover:text-white transition-colors"
-            >
-              Ayuda / FAQ
-            </Link>
-          </nav>
-
-          {/* Call to Action Button */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <Link
-              href="#contacto"
-              className="hidden sm:inline-flex text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors py-2 px-3"
-            >
-              Contacto
-            </Link>
-            <Link
-              href="/misas/nueva"
-              className="inline-flex items-center justify-center px-3 py-1.5 sm:px-5 sm:py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-950 bg-white hover:bg-slate-100 transition-all rounded-full shadow-sm hover:scale-105 active:scale-95 duration-200 whitespace-nowrap"
-            >
-              Solicitar Misa
-            </Link>
-            <Link
-              href="/admin/login"
-              className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all border border-white/15 hover:scale-105 active:scale-95 duration-200 shrink-0"
-              title="Acceso Sacerdote"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-              </svg>
-            </Link>
-          </div>
-        </header>
-      </div>
+      <Header className="-mb-20" />
 
       <div className="relative w-full h-[280px] sm:h-[380px] lg:h-[480px] overflow-hidden bg-slate-900 border-b border-slate-100">
         <Image
@@ -217,7 +192,7 @@ export default function Home() {
             />
           </svg>
           <div className="absolute inset-0 pl-5 pr-12 flex items-center gap-2 pointer-events-auto">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#5c3e35] pt-0.5 font-serif border-r-[1.5px] border-[#5c3e35] pr-1 animate-pulse">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#5c3e35] pt-0.5 font-serif">
               {typedText}
             </span>
           </div>
@@ -246,7 +221,7 @@ export default function Home() {
                 <div className="relative z-10 flex flex-col items-center text-center">
                   {/* Cita */}
                   <span className="text-[10px] italic text-[#8C6B2F] font-serif mb-3 select-none">
-                    "Cristo nos reúne en torno a su mesa. Participa de la Santa Misa."
+                    &quot;Cristo nos reúne en torno a su mesa. Participa de la Santa Misa.&quot;
                   </span>
                   
                   {/* Logotipo Oficial en Formato Icono SVG Circular */}
@@ -338,29 +313,14 @@ export default function Home() {
             <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-[#80385e] via-[#80385e]/40 to-transparent pointer-events-none z-20" />
             <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-[#964a75] via-[#964a75]/40 to-transparent pointer-events-none z-20" />
 
-            {/* Navigation Arrow Buttons */}
-            <button 
-              onClick={scrollLeft}
-              className="absolute left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-slate-900/60 hover:bg-white text-white hover:text-[#80385e] border border-slate-700/60 flex items-center justify-center backdrop-blur-md transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer pointer-events-auto hidden sm:flex"
-              aria-label="Anterior"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button 
-              onClick={scrollRight}
-              className="absolute right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-slate-900/60 hover:bg-white text-white hover:text-[#80385e] border border-slate-700/60 flex items-center justify-center backdrop-blur-md transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer pointer-events-auto hidden sm:flex"
-              aria-label="Siguiente"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-
             <div 
               ref={carouselRef}
-              className="group/carousel flex overflow-x-auto gap-6 pt-6 pb-16 snap-x snap-mandatory scroll-smooth scrollbar-none"
+              onMouseDown={handleMouseDown}
+              onMouseLeave={handleMouseLeave}
+              onMouseUp={handleMouseUp}
+              onMouseMove={handleMouseMove}
+              onClickCapture={handleClickCapture}
+              className="group/carousel flex overflow-x-auto gap-6 pt-6 pb-16 snap-x snap-mandatory scroll-smooth scrollbar-none cursor-grab active:cursor-grabbing select-none"
             >
               
               {/* Card 1: Misa */}
@@ -377,7 +337,7 @@ export default function Home() {
                       src="/church_altar.jpg"
                       alt="Intenciones de Misa altar"
                       fill
-                      className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none"
+                      className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none pointer-events-none"
                     />
                   </div>
                   <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-4">
@@ -401,7 +361,7 @@ export default function Home() {
                         Misas
                       </h3>
                       <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed text-center">
-                        Separa la fecha de tu misa comunitaria, ya sea para intenciones tradicionales (salud, difuntos) o celebraciones de bautizos y otros sacramentos. Registra tu ofrenda vía Yape.
+                        Separa la fecha de tu misa, ya sea para intenciones tradicionales (salud, difuntos) o celebraciones de bautizos y otros sacramentos.
                       </p>
                     </div>
                     <Link href="/misas/nueva" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-[#FFFDF9] hover:bg-white transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
@@ -426,7 +386,7 @@ export default function Home() {
                       src="/church_baptism.jpg"
                       alt="Pila bautismal de la iglesia"
                       fill
-                      className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none"
+                      className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none pointer-events-none"
                     />
                   </div>
                   <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-4">
@@ -450,7 +410,7 @@ export default function Home() {
                         Requisitos de Sacramentos
                       </h3>
                       <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed text-center">
-                        Revisa la lista completa de documentos obligatorios (DNI, acta de nacimiento) y charlas de preparación necesarias para padres y padrinos antes de celebrar un bautizo.
+                        Conoce la documentación y preparación previa necesarias para tramitar y celebrar cada uno de los sacramentos.
                       </p>
                     </div>
                     <Link href="/bautizos" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-[#FFFDF9] hover:bg-white transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
@@ -475,7 +435,7 @@ export default function Home() {
                       src="/church_interior_wide.jpg"
                       alt="Interior de la iglesia"
                       fill
-                      className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none"
+                      className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none pointer-events-none"
                     />
                   </div>
                   <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-4">
@@ -524,7 +484,7 @@ export default function Home() {
                       src="/church_hero_bg.jpg"
                       alt="Comunidad parroquial"
                       fill
-                      className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none opacity-85"
+                      className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none opacity-85 pointer-events-none"
                     />
                   </div>
                   <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-4">
@@ -551,8 +511,8 @@ export default function Home() {
                         Infórmate sobre las fechas de inscripción para la preparación sacramental de niños, jóvenes y adultos (Primera Comunión, Confirmación y Catequesis Familiar).
                       </p>
                     </div>
-                    <Link href="#faq" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-[#FFFDF9] hover:bg-white transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
-                      Más Información
+                    <Link href="/catequesis" className="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#80385e] bg-[#FFFDF9] hover:bg-white transition-all rounded-xl shadow-sm hover:scale-102 active:scale-95 duration-200 mt-2">
+                      Ver Información
                     </Link>
                   </div>
                 </div>
@@ -573,7 +533,7 @@ export default function Home() {
                       src="/church_mass.jpg"
                       alt="Atención enfermos altar"
                       fill
-                      className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none brightness-90"
+                      className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none brightness-90 pointer-events-none"
                     />
                   </div>
                   <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-4">
@@ -622,7 +582,7 @@ export default function Home() {
                       src="/church_schedules.jpg"
                       alt="Ofrendas templo interior"
                       fill
-                      className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none brightness-90"
+                      className="object-cover object-center scale-102 hover:scale-105 transition-transform duration-700 select-none brightness-90 pointer-events-none"
                     />
                   </div>
                   <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow gap-4">
